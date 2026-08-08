@@ -94,3 +94,6 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 ## Update (2026-07) — Location Interactivity
 - Homepage Location section: address is now a Google Maps link, email a mailto: link, phone a tel: link (data-testids: location-address-link / location-email-link / location-phone-link).
 - Storefront image now has a hover effect: subtle zoom (scale-105) + warm radial glow around the COSMOS seal + red glow ring/shadow.
+
+## Update (2026-07) — Logo Refresh (site-wide)
+- Regenerated /brand-assets/logos/cosmos-seal.png: kept the celestial seal layout (COSMOS / CANNABIS CURE / BANGALORE ring + moon + stars) but recolored rings/text to light off-white for legibility on the dark navbar, and made the central cannabis fan-leaf more prominent and green. Transparent background (keyed out baked checkerboard via PIL). Applies everywhere (Navbar, Footer, Home hero, ProductDetail, Passport, PassportVerify). Old logo backed up as cosmos-seal-prev-backup.png. Verified via screenshots.
