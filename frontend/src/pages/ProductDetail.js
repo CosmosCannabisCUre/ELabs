@@ -46,7 +46,7 @@ export default function ProductDetail() {
           </motion.div>
 
           <div className="md:py-4">
-            <div className="label text-[#FF2A2A] mb-4">{product.brand}</div>
+            <Link to={`/brand/${(product.brand || "").toLowerCase().replace(/\s+/g, "-")}`} className="label text-[#FF2A2A] mb-4 inline-flex items-center gap-2 hover:underline" data-testid="product-brand-link">{product.brand} →</Link>
             <h1 className="font-display text-6xl md:text-7xl tracking-tight leading-[0.9]">{product.name}</h1>
             <p className="text-xl text-white/50 mt-3 mb-2">{product.tagline}</p>
             <div className="label text-white/35 mb-6">A Cosmos Partner Brand · {product.effect}</div>

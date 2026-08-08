@@ -127,10 +127,16 @@ export default function Home() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="border-r border-b border-white/10 py-10 md:py-14 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.03] transition-colors"
+                className="border-r border-b border-white/10"
               >
-                <div className="font-display text-2xl md:text-3xl group-hover:text-[#FF2A2A] transition-colors">{b}</div>
-                <div className="label text-white/30 text-[9px]">Cosmos Partner</div>
+                <Link
+                  to={`/brand/${b.toLowerCase().replace(/\s+/g, "-")}`}
+                  data-testid={`partner-brand-${b.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="py-10 md:py-14 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.03] transition-colors"
+                >
+                  <div className="font-display text-2xl md:text-3xl group-hover:text-[#FF2A2A] transition-colors">{b}</div>
+                  <div className="label text-white/30 text-[9px]">View brand →</div>
+                </Link>
               </motion.div>
             ))}
           </div>

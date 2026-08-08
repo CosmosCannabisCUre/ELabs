@@ -16,6 +16,7 @@ from datetime import datetime, timezone, timedelta
 import logging
 import bcrypt
 import jwt
+import razorpay
 
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -23,6 +24,14 @@ db = client[os.environ['DB_NAME']]
 
 JWT_SECRET = os.environ['JWT_SECRET']
 JWT_ALGORITHM = "HS256"
+
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '').strip()
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '').strip()
+razorpay_client = (
+    razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+    if RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET
+    else None
+)
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -83,6 +92,7 @@ class OrderCreate(BaseModel):
     phone: str
     address: str
     items: List[OrderItem]
+    payment_method: str = "cod"
 
 
 class Order(BaseModel):
@@ -95,7 +105,18 @@ class Order(BaseModel):
     items: List[OrderItem]
     total: float
     status: str = "pending"
+    payment_method: str = "cod"
+    payment_status: str = "pending"
+    razorpay_order_id: Optional[str] = None
+    razorpay_payment_id: Optional[str] = None
     created_at: str = Field(default_factory=now_iso)
+
+
+class VerifyPayment(BaseModel):
+    order_id: str
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
 
 
 class BlogPost(BaseModel):
@@ -215,10 +236,67 @@ async def create_order(payload: OrderCreate):
     doc = payload.model_dump()
     doc["total"] = round(total, 2)
     doc["status"] = "pending"
+    doc["payment_status"] = "cod_pending" if payload.payment_method == "cod" else "pending"
     doc["created_at"] = now_iso()
     res = await db.orders.insert_one(doc)
     created = await db.orders.find_one({"_id": res.inserted_id})
     return clean(created)
+
+
+# ---------------- Payment routes ----------------
+@api_router.get("/payments/config")
+async def payment_config():
+    return {"enabled": razorpay_client is not None, "key_id": RAZORPAY_KEY_ID}
+
+
+@api_router.post("/payments/create-order")
+async def create_payment_order(payload: OrderCreate):
+    if razorpay_client is None:
+        raise HTTPException(status_code=503, detail="Online payments are not configured. Please use Cash on Delivery or ask the store to add Razorpay keys.")
+    total = round(sum(i.price * i.quantity for i in payload.items), 2)
+    doc = payload.model_dump()
+    doc["payment_method"] = "razorpay"
+    doc["total"] = total
+    doc["status"] = "pending"
+    doc["payment_status"] = "created"
+    doc["created_at"] = now_iso()
+    res = await db.orders.insert_one(doc)
+    order_id = str(res.inserted_id)
+    rzp_order = razorpay_client.order.create({
+        "amount": int(total * 100),
+        "currency": "INR",
+        "receipt": order_id[-40:],
+        "payment_capture": 1,
+    })
+    await db.orders.update_one({"_id": res.inserted_id}, {"$set": {"razorpay_order_id": rzp_order["id"]}})
+    return {
+        "order_id": order_id,
+        "razorpay_order_id": rzp_order["id"],
+        "amount": rzp_order["amount"],
+        "currency": "INR",
+        "key_id": RAZORPAY_KEY_ID,
+    }
+
+
+@api_router.post("/payments/verify")
+async def verify_payment(payload: VerifyPayment):
+    if razorpay_client is None:
+        raise HTTPException(status_code=503, detail="Online payments are not configured.")
+    try:
+        razorpay_client.utility.verify_payment_signature({
+            "razorpay_order_id": payload.razorpay_order_id,
+            "razorpay_payment_id": payload.razorpay_payment_id,
+            "razorpay_signature": payload.razorpay_signature,
+        })
+    except Exception:
+        await db.orders.update_one({"_id": ObjectId(payload.order_id)}, {"$set": {"payment_status": "failed"}})
+        raise HTTPException(status_code=400, detail="Payment verification failed")
+    await db.orders.update_one(
+        {"_id": ObjectId(payload.order_id)},
+        {"$set": {"payment_status": "paid", "status": "confirmed", "razorpay_payment_id": payload.razorpay_payment_id}},
+    )
+    doc = await db.orders.find_one({"_id": ObjectId(payload.order_id)})
+    return clean(doc)
 
 
 @api_router.get("/orders")
@@ -393,18 +471,78 @@ SEED_PRODUCTS = [
         "featured": True,
     },
     {
-        "slug": "rasta-hybrid-cubes",
+        "slug": "rasta-strawberry-3-5",
         "brand": "Rasta",
-        "name": "Rasta Hybrid Cubes",
-        "tagline": "The classic, refined.",
-        "description": "A full-spectrum hybrid honouring the roots of the plant. Rasta delivers a rounded body-and-mind ease — timeless, generous and true. Curated exclusively for the Cosmos flagship.",
-        "price": 2600,
-        "thc": "25mg",
-        "cbd": "8mg",
+        "name": "Strawberry Relax & Reset",
+        "tagline": "3.5% · Pack of 5.",
+        "description": "Rastafari Wellness Relax & Reset gummies in a sweet strawberry, 3.5% full-spectrum Vijaya. A gentle daily reset that unwinds the body and quiets the mind — broad-spectrum and lab-tested.",
+        "price": 702,
+        "thc": "3.5%",
+        "cbd": "Broad-spectrum",
+        "effect": "Relax",
+        "flavor": "Strawberry",
+        "image": "https://dk1kdg2x87tpk.cloudfront.net/wp-content/uploads/2026/04/strawberry.webp",
+        "stock": 100,
+        "featured": True,
+    },
+    {
+        "slug": "rasta-orange-5",
+        "brand": "Rasta",
+        "name": "Orange Relax & Reset",
+        "tagline": "5% · Pack of 5.",
+        "description": "Bright, zesty orange Relax & Reset gummies from Rastafari Wellness at 5% full-spectrum Vijaya. Balanced calm with a citrus lift — crafted for everyday ease.",
+        "price": 900,
+        "thc": "5%",
+        "cbd": "Broad-spectrum",
+        "effect": "Balance",
+        "flavor": "Orange",
+        "image": "https://dk1kdg2x87tpk.cloudfront.net/wp-content/uploads/2026/04/orange.webp",
+        "stock": 90,
+        "featured": True,
+    },
+    {
+        "slug": "rasta-mango-5",
+        "brand": "Rasta",
+        "name": "Mango Relax & Reset",
+        "tagline": "5% · Pack of 5.",
+        "description": "Ripe Alphonso-style mango Relax & Reset gummies from Rastafari Wellness, 5% full-spectrum. Warm, rounded relaxation with a tropical sweetness.",
+        "price": 900,
+        "thc": "5%",
+        "cbd": "Broad-spectrum",
+        "effect": "Relax",
+        "flavor": "Mango",
+        "image": "https://dk1kdg2x87tpk.cloudfront.net/wp-content/uploads/2026/07/mango.webp",
+        "stock": 85,
+        "featured": True,
+    },
+    {
+        "slug": "rasta-kala-khatta-5",
+        "brand": "Rasta",
+        "name": "Kala Khatta Relax & Reset",
+        "tagline": "5% · Pack of 5.",
+        "description": "A nostalgic Indian kala khatta twist on Rastafari Wellness's Relax & Reset gummies, 5% full-spectrum Vijaya. Tangy, bold and deeply calming.",
+        "price": 900,
+        "thc": "5%",
+        "cbd": "Broad-spectrum",
         "effect": "Hybrid",
-        "flavor": "Ruby Berry",
-        "image": "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/56c9ec27f8cbe4528feb26a94e101936fb6706d79ac688b6d748d6c2604aa7e8.jpeg",
+        "flavor": "Kala Khatta",
+        "image": "https://dk1kdg2x87tpk.cloudfront.net/wp-content/uploads/2026/07/kala_khatta.webp",
         "stock": 80,
+        "featured": True,
+    },
+    {
+        "slug": "rasta-cappuccino-5",
+        "brand": "Rasta",
+        "name": "Cappuccino Relax & Reset",
+        "tagline": "5% · Pack of 5.",
+        "description": "A rich cappuccino Relax & Reset gummy from Rastafari Wellness at 5% full-spectrum. Coffee-forward comfort that grounds and soothes — a connoisseur's evening treat.",
+        "price": 900,
+        "thc": "5%",
+        "cbd": "Broad-spectrum",
+        "effect": "Sleep",
+        "flavor": "Cappuccino",
+        "image": "https://dk1kdg2x87tpk.cloudfront.net/wp-content/uploads/2026/07/coffee.webp",
+        "stock": 75,
         "featured": True,
     },
 ]
@@ -458,7 +596,7 @@ async def startup():
 
     for p in SEED_PRODUCTS:
         await db.products.update_one({"slug": p["slug"]}, {"$set": p}, upsert=True)
-    await db.products.delete_many({"slug": {"$in": ["moon-impact", "trost", "cannoza", "rasta"]}})
+    await db.products.delete_many({"slug": {"$in": ["moon-impact", "trost", "cannoza", "rasta", "rasta-hybrid-cubes"]}})
     for b in SEED_BLOG:
         await db.blog.update_one({"slug": b["slug"]}, {"$setOnInsert": b}, upsert=True)
 

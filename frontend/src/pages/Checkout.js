@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
@@ -11,26 +11,82 @@ export default function Checkout() {
   const [form, setForm] = useState({ customer_name: "", email: "", phone: "", address: "" });
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState(null);
+  const [method, setMethod] = useState("cod");
+  const [payEnabled, setPayEnabled] = useState(false);
+
+  useEffect(() => {
+    api.get("/payments/config").then((r) => setPayEnabled(r.data.enabled)).catch(() => {});
+  }, []);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const loadRazorpay = () =>
+    new Promise((resolve) => {
+      if (window.Razorpay) return resolve(true);
+      const s = document.createElement("script");
+      s.src = "https://checkout.razorpay.com/v1/checkout.js";
+      s.onload = () => resolve(true);
+      s.onerror = () => resolve(false);
+      document.body.appendChild(s);
+    });
+
+  const itemsPayload = () => items.map((i) => ({ product_id: i.product_id, name: i.name, price: i.price, quantity: i.quantity }));
+
+  const finish = (data) => {
+    setOrder(data);
+    clear();
+    window.scrollTo(0, 0);
+  };
+
+  const payWithRazorpay = async () => {
+    const ok = await loadRazorpay();
+    if (!ok) return toast.error("Could not load payment gateway. Please try again.");
+    const { data: init } = await api.post("/payments/create-order", { ...form, items: itemsPayload(), payment_method: "razorpay" });
+    const rzp = new window.Razorpay({
+      key: init.key_id,
+      amount: init.amount,
+      currency: init.currency,
+      order_id: init.razorpay_order_id,
+      name: "Cosmos Cannabis Cure",
+      description: "Premium cannabis wellness",
+      prefill: { name: form.customer_name, email: form.email, contact: form.phone },
+      theme: { color: "#DF0000" },
+      handler: async (res) => {
+        try {
+          const { data } = await api.post("/payments/verify", {
+            order_id: init.order_id,
+            razorpay_order_id: res.razorpay_order_id,
+            razorpay_payment_id: res.razorpay_payment_id,
+            razorpay_signature: res.razorpay_signature,
+          });
+          finish(data);
+        } catch {
+          toast.error("Payment verification failed. Please contact support.");
+        } finally {
+          setLoading(false);
+        }
+      },
+      modal: { ondismiss: () => setLoading(false) },
+    });
+    rzp.open();
+  };
 
   const submit = async (e) => {
     e.preventDefault();
     if (items.length === 0) return toast.error("Your bag is empty");
     setLoading(true);
     try {
-      const payload = {
-        ...form,
-        items: items.map((i) => ({ product_id: i.product_id, name: i.name, price: i.price, quantity: i.quantity })),
-      };
-      const { data } = await api.post("/orders", payload);
-      setOrder(data);
-      clear();
-      window.scrollTo(0, 0);
+      if (method === "razorpay" && payEnabled) {
+        await payWithRazorpay();
+        return; // handler resets loading
+      }
+      const { data } = await api.post("/orders", { ...form, items: itemsPayload(), payment_method: "cod" });
+      finish(data);
     } catch (err) {
-      toast.error("Could not place order. Please try again.");
+      const d = err.response?.data?.detail;
+      toast.error(typeof d === "string" ? d : "Could not place order. Please try again.");
     } finally {
-      setLoading(false);
+      if (method !== "razorpay") setLoading(false);
     }
   };
 
@@ -87,12 +143,38 @@ export default function Checkout() {
                 className="w-full border border-white/20 focus:border-white/60 outline-none px-4 py-3 font-mono text-sm bg-transparent resize-none"
               />
             </div>
+            <div>
+              <label className="label block mb-3">Payment Method</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  data-testid="pay-method-cod"
+                  onClick={() => setMethod("cod")}
+                  className={`px-4 py-4 border text-left transition-colors ${method === "cod" ? "border-[#DF0000] bg-white/[0.03]" : "border-white/15 hover:border-white/40"}`}
+                >
+                  <div className="label mb-1">Cash / UPI on Delivery</div>
+                  <div className="text-xs text-white/40">Pay when it arrives</div>
+                </button>
+                <button
+                  type="button"
+                  data-testid="pay-method-razorpay"
+                  onClick={() => setMethod("razorpay")}
+                  className={`px-4 py-4 border text-left transition-colors ${method === "razorpay" ? "border-[#DF0000] bg-white/[0.03]" : "border-white/15 hover:border-white/40"}`}
+                >
+                  <div className="label mb-1">Pay Online</div>
+                  <div className="text-xs text-white/40">{payEnabled ? "UPI · Cards · Netbanking" : "Coming soon"}</div>
+                </button>
+              </div>
+              {method === "razorpay" && !payEnabled && (
+                <p data-testid="pay-disabled-note" className="text-xs text-[#FF2A2A] mt-2">Online payments aren't configured yet — add Razorpay keys to enable. Cash on Delivery works now.</p>
+              )}
+            </div>
             <button
               data-testid="place-order-btn"
-              disabled={loading}
+              disabled={loading || (method === "razorpay" && !payEnabled)}
               className="btn-fill w-full px-10 py-4 bg-[#DF0000] text-white label border border-[#DF0000] disabled:opacity-50"
             >
-              {loading ? "Placing Order…" : `Place Order — ${formatINR(total)}`}
+              {loading ? "Processing…" : method === "razorpay" ? `Pay Online — ${formatINR(total)}` : `Place Order — ${formatINR(total)}`}
             </button>
             <p className="text-xs text-white/40 text-center">Cash / UPI on delivery · 21+ ID required at handover</p>
           </form>

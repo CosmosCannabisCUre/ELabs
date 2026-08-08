@@ -14,6 +14,7 @@ import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
+import BrandPage from "@/pages/BrandPage";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 
@@ -28,6 +29,7 @@ const Site = () => (
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/journal" element={<Blog />} />
       <Route path="/journal/:slug" element={<BlogPost />} />
+      <Route path="/brand/:slug" element={<BrandPage />} />
     </Routes>
     <Footer />
   </>

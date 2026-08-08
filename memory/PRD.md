@@ -29,6 +29,9 @@ Cannabis dispensary in Bangalore — India's first — called "Cosmos Cannabis C
 ## Notes
 - "Cannoza" in original brief = real brand "Cannazo India" — used Cannazo to match real products.
 - Partner product images are external hotlinks (brand CDNs); consider re-hosting for long-term robustness.
+- Real Rasta products sourced from rastafariwellness.com (5 Relax & Reset gummies).
+- Brand story pages at /brand/:slug (moon-impact, trost, cannazo, rasta) with ethos + full range.
+- Razorpay online payments wired (create-order → checkout.js → verify signature). INACTIVE until RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET are set in backend/.env — checkout shows COD + "Pay Online (coming soon)" until then. COD fully working.
 
 ## API Endpoints
 - GET /api/products, GET /api/products/{slug}
