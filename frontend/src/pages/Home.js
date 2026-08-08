@@ -6,9 +6,6 @@ import { ArrowUpRight } from "lucide-react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
-const HERO_IMG =
-  "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/26acdfa4fa5cdbda7967e4f9cc697b5a44af840c1ba1387dc0ad4af5f70747f3.jpeg";
-
 const PARTNERS = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
 
 const line = {
@@ -27,8 +24,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], [0, 180]);
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+  const starsY = useTransform(scrollYProgress, [0, 1], [0, 120]);
 
   useEffect(() => {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
@@ -38,12 +34,13 @@ export default function Home() {
   return (
     <div data-testid="home-page">
       {/* HERO */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden pt-20">
-        <motion.div style={{ y: imgY, scale: imgScale }} className="absolute inset-0 z-0">
-          <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/50 to-[#050507]/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-transparent to-transparent" />
+      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden pt-20 bg-[#050507]">
+        <motion.div style={{ y: starsY }} className="absolute inset-0 z-0">
+          <div className="twinkle-layer twinkle-1" />
+          <div className="twinkle-layer twinkle-2" />
+          <div className="twinkle-layer twinkle-3" />
         </motion.div>
+        <div className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(1000px 500px at 78% 12%, rgba(223,0,0,0.12), transparent 60%)" }} />
 
         <div className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="label text-[#DF0000] mb-8">

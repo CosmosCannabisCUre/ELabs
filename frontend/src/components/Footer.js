@@ -6,6 +6,7 @@ export default function Footer() {
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 pt-20 pb-10">
         <div className="grid md:grid-cols-12 gap-10 border-b border-white/15 pb-16">
           <div className="md:col-span-6">
+            <img src="/brand-assets/logos/cosmos-logo.png" alt="Cosmos Cannabis Cure" className="h-12 md:h-14 w-auto mb-8" />
             <h2 className="font-display text-5xl md:text-7xl leading-[0.9] tracking-tight">
               The Cure,<br />delivered.
             </h2>
