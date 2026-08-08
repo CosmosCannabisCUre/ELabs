@@ -238,6 +238,10 @@ class ConsultInput(BaseModel):
     validity_months: int = 6
 
 
+class WaitlistInput(BaseModel):
+    email: str
+
+
 # ---------------- Auth helpers ----------------
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
@@ -791,6 +795,27 @@ async def get_blog(slug: str):
     if not doc:
         raise HTTPException(status_code=404, detail="Post not found")
     return clean(doc)
+
+
+@api_router.post("/waitlist")
+async def join_waitlist(payload: WaitlistInput):
+    email = payload.email.lower().strip()
+    if "@" not in email or "." not in email.split("@")[-1]:
+        raise HTTPException(status_code=400, detail="Please enter a valid email address")
+    existing = await db.waitlist.find_one({"email": email})
+    if existing:
+        return {"status": "already_subscribed", "message": "You're already on the list"}
+    await db.waitlist.insert_one({
+        "email": email,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"status": "subscribed", "message": "You're on the list"}
+
+
+@api_router.get("/waitlist")
+async def list_waitlist(admin: dict = Depends(get_current_admin)):
+    docs = await db.waitlist.find().sort("created_at", -1).to_list(2000)
+    return {"count": len(docs), "entries": [clean(d) for d in docs]}
 
 
 @api_router.get("/")

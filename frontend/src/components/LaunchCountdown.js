@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Check } from "lucide-react";
+import { api } from "@/lib/api";
 
 // Target launch date — placeholder (~60 days out). Change this to your real launch date/time.
 // Format: ISO 8601 with IST offset (+05:30)
@@ -30,6 +31,9 @@ const Unit = ({ value, label }) => (
 export default function LaunchCountdown({ onClose }) {
   const [t, setT] = useState(getRemaining());
   const [open, setOpen] = useState(true);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const id = setInterval(() => setT(getRemaining()), 1000);
@@ -39,6 +43,21 @@ export default function LaunchCountdown({ onClose }) {
   const dismiss = () => {
     setOpen(false);
     setTimeout(onClose, 500);
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (status === "loading") return;
+    setStatus("loading");
+    setMessage("");
+    try {
+      const { data } = await api.post("/waitlist", { email });
+      setStatus("success");
+      setMessage(data.status === "already_subscribed" ? "You're already on the list." : "You're on the list — see you at launch.");
+    } catch (err) {
+      setStatus("error");
+      setMessage(err?.response?.data?.detail || "Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -109,13 +128,49 @@ export default function LaunchCountdown({ onClose }) {
                 </div>
               )}
 
-              <button
-                data-testid="countdown-enter-btn"
-                onClick={dismiss}
-                className="btn-fill inline-flex items-center gap-3 px-12 py-4 bg-[#DF0000] text-white label border border-[#DF0000]"
-              >
-                Explore the Site
-              </button>
+              {status === "success" ? (
+                <div
+                  data-testid="waitlist-success"
+                  className="flex items-center justify-center gap-3 text-white border border-[#DF0000]/40 bg-[#DF0000]/10 py-4 px-6 max-w-md mx-auto"
+                >
+                  <Check className="w-5 h-5 text-[#FF2A2A]" />
+                  <span className="text-sm">{message}</span>
+                </div>
+              ) : (
+                <form onSubmit={submit} className="max-w-md mx-auto" data-testid="waitlist-form">
+                  <div className="label text-white/40 mb-3">Notify me at launch</div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      data-testid="waitlist-email-input"
+                      className="flex-1 bg-white/5 border border-white/15 focus:border-[#DF0000] outline-none px-5 py-4 text-white placeholder-white/30 text-sm transition-colors"
+                    />
+                    <button
+                      type="submit"
+                      disabled={status === "loading"}
+                      data-testid="waitlist-submit-btn"
+                      className="btn-fill px-8 py-4 bg-[#DF0000] text-white label border border-[#DF0000] disabled:opacity-60 whitespace-nowrap"
+                    >
+                      {status === "loading" ? "Joining…" : "Join Waitlist"}
+                    </button>
+                  </div>
+                  {status === "error" && (
+                    <p data-testid="waitlist-error" className="text-[#FF6B6B] text-xs mt-3 text-left">{message}</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={dismiss}
+                    data-testid="countdown-enter-btn"
+                    className="text-white/40 hover:text-white transition-colors label mt-6"
+                  >
+                    Explore the Site
+                  </button>
+                </form>
+              )}
             </div>
           </motion.div>
         </motion.div>
