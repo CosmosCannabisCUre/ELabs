@@ -11,7 +11,7 @@ export default function ConstructionBanner() {
     setOpen(false);
   };
 
-  const msg = "SITE UNDER CONSTRUCTION — COSMOS CANNABIS CURE IS LAUNCHING SOON IN INDIRANAGAR, BANGALORE";
+  const msg = "COSMOS CANNABIS CURE — INDIA'S FIRST AYURVEDIC CANNABIS DISPENSARY · LAUNCHING SOON IN BANGALORE";
 
   return (
     <div

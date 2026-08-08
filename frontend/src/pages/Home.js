@@ -356,7 +356,7 @@ export default function Home() {
               </div>
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Contact</div>
-                <p className="text-lg">hello@cosmoscannabis.in · +91 90369 47840</p>
+                <p className="text-lg">info@cosmoscannabis.in · +91 90369 47840</p>
               </div>
             </div>
           </div>
