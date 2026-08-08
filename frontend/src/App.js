@@ -15,6 +15,7 @@ import Checkout from "@/pages/Checkout";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import BrandPage from "@/pages/BrandPage";
+import Legal from "@/pages/Legal";
 import LogoOptions from "@/pages/LogoOptions";
 import ConstructionBanner from "@/components/ConstructionBanner";
 import AdminLogin from "@/pages/AdminLogin";
@@ -32,6 +33,7 @@ const Site = () => (
       <Route path="/journal" element={<Blog />} />
       <Route path="/journal/:slug" element={<BlogPost />} />
       <Route path="/brand/:slug" element={<BrandPage />} />
+      <Route path="/legal" element={<Legal />} />
       <Route path="/logo-options" element={<LogoOptions />} />
     </Routes>
     <Footer />

@@ -43,6 +43,17 @@ export default function AdminDashboard() {
     toast.success("Order updated");
   };
 
+  const viewRx = async (rxId) => {
+    try {
+      const { data } = await api.get(`/prescriptions/${rxId}/download`, { responseType: "blob" });
+      const url = URL.createObjectURL(data);
+      window.open(url, "_blank", "noopener");
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch {
+      toast.error("Could not open prescription");
+    }
+  };
+
   const openNew = () => { setForm(EMPTY); setEditing("new"); };
   const openEdit = (p) => { setForm(p); setEditing(p.id); };
 
@@ -104,17 +115,26 @@ export default function AdminDashboard() {
               <thead className="bg-[#0A0A0A] text-white">
                 <tr className="label text-left">
                   <th className="p-4 font-normal">Order</th><th className="p-4 font-normal">Customer</th>
-                  <th className="p-4 font-normal">Items</th><th className="p-4 font-normal">Total</th><th className="p-4 font-normal">Status</th>
+                  <th className="p-4 font-normal">Items</th><th className="p-4 font-normal">Total</th><th className="p-4 font-normal">Rx</th><th className="p-4 font-normal">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.length === 0 && <tr><td colSpan={5} className="p-8 text-center text-[#999]">No orders yet.</td></tr>}
+                {orders.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-[#999]">No orders yet.</td></tr>}
                 {orders.map((o) => (
                   <tr key={o.id} data-testid={`order-row-${o.id}`} className="border-t border-[#E5E5E5]">
                     <td className="p-4 font-mono">#{o.id.slice(-6).toUpperCase()}</td>
                     <td className="p-4">{o.customer_name}<br /><span className="text-[#999] text-xs">{o.phone}</span></td>
                     <td className="p-4 text-xs">{o.items.map((i) => `${i.name}×${i.quantity}`).join(", ")}</td>
                     <td className="p-4 font-mono">{formatINR(o.total)}</td>
+                    <td className="p-4 text-xs">
+                      {o.prescription_file_id ? (
+                        <button data-testid={`view-rx-${o.id}`} onClick={() => viewRx(o.prescription_file_id)} className="text-[#DF0000] underline hover:no-underline">View</button>
+                      ) : o.prescription_declared ? (
+                        <span className="text-[#999]">Declared</span>
+                      ) : (
+                        <span className="text-[#CCC]">—</span>
+                      )}
+                    </td>
                     <td className="p-4">
                       <Select value={o.status} onValueChange={(v) => setStatus(o.id, v)}>
                         <SelectTrigger data-testid={`order-status-${o.id}`} className="w-36 rounded-none border-[#E5E5E5]"><SelectValue /></SelectTrigger>

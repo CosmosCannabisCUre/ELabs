@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -21,6 +22,7 @@ export default function Footer() {
               <li><Link to="/journal" className="hover:text-[#DF0000] transition-colors">Journal</Link></li>
               <li><a href="/#manifesto" className="hover:text-[#DF0000] transition-colors">Manifesto</a></li>
               <li><a href="/#location" className="hover:text-[#DF0000] transition-colors">Location</a></li>
+              <li><Link to="/legal" data-testid="footer-legal-link" className="hover:text-[#DF0000] transition-colors">Legal &amp; Compliance</Link></li>
             </ul>
           </div>
           <div className="md:col-span-3">
@@ -34,9 +36,25 @@ export default function Footer() {
             </p>
           </div>
         </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 mt-14 mb-4" data-testid="footer-compliance">
+          {[
+            { t: "AYUSH-Licensed", d: "Ayurvedic manufacturing" },
+            { t: "Drugs & Cosmetics Act", d: "1940 compliant" },
+            { t: "Lab-Tested", d: "Every batch verified" },
+            { t: "21+ Only", d: "Legal-age verified" },
+          ].map((b) => (
+            <div key={b.t} className="bg-[#08080B] p-5 flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#DF0000] shrink-0" strokeWidth={1.4} />
+              <div>
+                <div className="text-sm leading-tight">{b.t}</div>
+                <div className="text-white/35 text-[11px]">{b.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pt-8">
           <div className="label text-white/35">© 2026 Cosmos Cannabis Cure</div>
-          <div className="label text-white/35">Consume responsibly · 21+ only</div>
+          <Link to="/legal" className="label text-white/35 hover:text-white/70 transition-colors">Consume responsibly · Vijaya (Ayurvedic) · 21+ only</Link>
           <Link to="/admin" data-testid="footer-admin-link" className="label text-white/25 hover:text-white/60 transition-colors">
             Admin
           </Link>

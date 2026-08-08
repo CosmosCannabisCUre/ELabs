@@ -33,6 +33,7 @@ const MANIFESTO = [
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [hovered, setHovered] = useState(null);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const starsY = useTransform(scrollYProgress, [0, 1], [0, 120]);
@@ -112,9 +113,18 @@ export default function Home() {
           <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {products.map((p, i) => (
+          {products.slice(0, 4).map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}
+        </div>
+        <div className="mt-12 flex justify-center">
+          <Link
+            to="/shop"
+            data-testid="home-view-all-btn"
+            className="btn-fill inline-flex items-center gap-3 px-10 py-4 border border-white/25 hover:border-white/60 label transition-colors"
+          >
+            View All {products.length} Products <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 

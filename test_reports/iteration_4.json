@@ -1,0 +1,28 @@
+{
+  "summary": "Frontend-only regression for Cosmos Cannabis Cure iteration: age gate, homepage 'hovered' crash fix, 4-product collection + View All, anatomy hover, /legal page, checkout prescription upload + declaration gate, COD order confirmation, admin Rx column + View link + blob popup, and new green-leaf logo. All 8 requested flows PASS.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "AdminDashboard /admin/dashboard", "issues": ["Order rows / stat values render at very low contrast in the screenshot (faded gray). Verify text contrast (customer name, order id, phone) against dark background — may just be low opacity classes but worth reviewing accessibility (WCAG AA)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Home.js: `products.slice(0,4)` renders 4 cards correctly, and hovered state is now declared at line 36 — homepage no longer crashes. Confirmed no runtime 'hovered is not defined' errors in console/pageerror during hover of Cola/Trichome/Calyx.",
+    "Checkout.js: place-order-btn `disabled` is correctly gated on `!declared`; prescription upload uses api.post /prescriptions/upload and shows filename + toast. COD path (`payment_method: 'cod'`) succeeds and finishes with order-confirmation.",
+    "AdminDashboard.js: view-rx-<orderId> renders only when order has prescription_file_id; clicking opens a blob:// URL in a new tab (verified). Rx column header present.",
+    "Legal.js: All 5 numbered sections, 4 compliance badges, and legal-disclaimer render. Footer legal link present and navigates to /legal.",
+    "Navbar/Footer: /brand-assets/logos/cosmos-seal.png returns 200 (image/png). No 404."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "Admin admin@cosmoscure.in / Cosmos@2026 (used successfully)",
+  "seed_data_creation": "Created 2 test COD orders during testing (customer 'Test User', COD, one with uploaded prescription png). No cleanup required per request.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "External URL from frontend/.env REACT_APP_BACKEND_URL used. Age gate stores localStorage ccc_age_ok='true'. Razorpay is not configured (payments/config.enabled=false); only COD flow was tested. Admin login is not typed submit but a role=button 'Sign In'. Orders tab is a role=button ('Orders'), not a link. Prescription download opens via blob URL popup (window.open).",
+  "rca of the issue": "N/A — no failing scenarios."
+}

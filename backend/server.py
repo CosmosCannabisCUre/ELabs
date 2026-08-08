@@ -5,7 +5,8 @@ import os
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, UploadFile, File, Header, Query
+from fastapi.responses import Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -17,6 +18,8 @@ import logging
 import bcrypt
 import jwt
 import razorpay
+import uuid
+import requests
 
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -32,6 +35,57 @@ razorpay_client = (
     if RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET
     else None
 )
+
+# ---------------- Object Storage (prescription uploads) ----------------
+STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
+STORAGE_URL = STORAGE_BASE.rstrip("/") + "/objstore/api/v1/storage"
+EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
+APP_NAME = "cosmos-cannabis-cure"
+_storage_key = None
+
+MIME_TYPES = {
+    "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
+    "gif": "image/gif", "webp": "image/webp", "pdf": "application/pdf",
+}
+ALLOWED_RX_EXT = set(MIME_TYPES.keys())
+
+
+def init_storage(force: bool = False):
+    global _storage_key
+    if _storage_key and not force:
+        return _storage_key
+    resp = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_KEY}, timeout=30)
+    resp.raise_for_status()
+    _storage_key = resp.json()["storage_key"]
+    return _storage_key
+
+
+def put_object(path: str, data: bytes, content_type: str) -> dict:
+    key = init_storage()
+    resp = requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key, "Content-Type": content_type},
+        data=data, timeout=120,
+    )
+    if resp.status_code == 404:
+        key = init_storage(force=True)
+        resp = requests.put(
+            f"{STORAGE_URL}/objects/{path}",
+            headers={"X-Storage-Key": key, "Content-Type": content_type},
+            data=data, timeout=120,
+        )
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_object(path: str):
+    key = init_storage()
+    resp = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    if resp.status_code == 404:
+        key = init_storage(force=True)
+        resp = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    resp.raise_for_status()
+    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -93,6 +147,8 @@ class OrderCreate(BaseModel):
     address: str
     items: List[OrderItem]
     payment_method: str = "cod"
+    prescription_file_id: Optional[str] = None
+    prescription_declared: bool = False
 
 
 class Order(BaseModel):
@@ -107,6 +163,8 @@ class Order(BaseModel):
     status: str = "pending"
     payment_method: str = "cod"
     payment_status: str = "pending"
+    prescription_file_id: Optional[str] = None
+    prescription_declared: bool = False
     razorpay_order_id: Optional[str] = None
     razorpay_payment_id: Optional[str] = None
     created_at: str = Field(default_factory=now_iso)
@@ -311,6 +369,44 @@ async def update_order(order_id: str, body: dict, admin: dict = Depends(get_curr
     await db.orders.update_one({"_id": ObjectId(order_id)}, {"$set": {"status": status}})
     doc = await db.orders.find_one({"_id": ObjectId(order_id)})
     return clean(doc)
+
+
+# ---------------- Prescription routes ----------------
+@api_router.post("/prescriptions/upload")
+async def upload_prescription(file: UploadFile = File(...)):
+    ext = (file.filename.rsplit(".", 1)[-1].lower() if file.filename and "." in file.filename else "")
+    if ext not in ALLOWED_RX_EXT:
+        raise HTTPException(status_code=400, detail="Please upload a PDF or image (jpg, png, webp).")
+    data = await file.read()
+    if len(data) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Maximum size is 10 MB.")
+    content_type = MIME_TYPES.get(ext, file.content_type or "application/octet-stream")
+    rx_id = str(uuid.uuid4())
+    path = f"{APP_NAME}/prescriptions/{rx_id}.{ext}"
+    try:
+        result = put_object(path, data, content_type)
+    except Exception as e:
+        logger.error(f"Prescription upload failed: {e}")
+        raise HTTPException(status_code=502, detail="Could not store the prescription. Please try again.")
+    await db.prescriptions.insert_one({
+        "id": rx_id,
+        "storage_path": result["path"],
+        "original_filename": file.filename,
+        "content_type": content_type,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "created_at": now_iso(),
+    })
+    return {"id": rx_id, "filename": file.filename}
+
+
+@api_router.get("/prescriptions/{rx_id}/download")
+async def download_prescription(rx_id: str, admin: dict = Depends(get_current_admin)):
+    record = await db.prescriptions.find_one({"id": rx_id, "is_deleted": False})
+    if not record:
+        raise HTTPException(status_code=404, detail="Prescription not found")
+    data, content_type = get_object(record["storage_path"])
+    return Response(content=data, media_type=record.get("content_type", content_type))
 
 
 # ---------------- Blog routes ----------------
@@ -580,6 +676,11 @@ SEED_BLOG = [
 
 @app.on_event("startup")
 async def startup():
+    try:
+        init_storage()
+        logging.getLogger(__name__).info("Object storage initialized")
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Storage init failed: {e}")
     admin_email = os.environ["ADMIN_EMAIL"].lower()
     admin_password = os.environ["ADMIN_PASSWORD"]
     existing = await db.users.find_one({"email": admin_email})

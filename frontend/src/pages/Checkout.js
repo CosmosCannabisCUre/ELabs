@@ -13,6 +13,9 @@ export default function Checkout() {
   const [order, setOrder] = useState(null);
   const [method, setMethod] = useState("cod");
   const [payEnabled, setPayEnabled] = useState(false);
+  const [rx, setRx] = useState(null); // { id, filename }
+  const [rxUploading, setRxUploading] = useState(false);
+  const [declared, setDeclared] = useState(false);
 
   useEffect(() => {
     api.get("/payments/config").then((r) => setPayEnabled(r.data.enabled)).catch(() => {});
@@ -32,6 +35,26 @@ export default function Checkout() {
 
   const itemsPayload = () => items.map((i) => ({ product_id: i.product_id, name: i.name, price: i.price, quantity: i.quantity }));
 
+  const rxPayload = () => ({ prescription_file_id: rx?.id || null, prescription_declared: declared });
+
+  const uploadRx = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setRxUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const { data } = await api.post("/prescriptions/upload", fd, { headers: { "Content-Type": "multipart/form-data" } });
+      setRx(data);
+      toast.success("Prescription uploaded");
+    } catch (err) {
+      const d = err.response?.data?.detail;
+      toast.error(typeof d === "string" ? d : "Could not upload prescription.");
+    } finally {
+      setRxUploading(false);
+    }
+  };
+
   const finish = (data) => {
     setOrder(data);
     clear();
@@ -41,7 +64,7 @@ export default function Checkout() {
   const payWithRazorpay = async () => {
     const ok = await loadRazorpay();
     if (!ok) return toast.error("Could not load payment gateway. Please try again.");
-    const { data: init } = await api.post("/payments/create-order", { ...form, items: itemsPayload(), payment_method: "razorpay" });
+    const { data: init } = await api.post("/payments/create-order", { ...form, ...rxPayload(), items: itemsPayload(), payment_method: "razorpay" });
     const rzp = new window.Razorpay({
       key: init.key_id,
       amount: init.amount,
@@ -74,13 +97,14 @@ export default function Checkout() {
   const submit = async (e) => {
     e.preventDefault();
     if (items.length === 0) return toast.error("Your bag is empty");
+    if (!declared) return toast.error("Please confirm the prescription declaration to continue.");
     setLoading(true);
     try {
       if (method === "razorpay" && payEnabled) {
         await payWithRazorpay();
         return; // handler resets loading
       }
-      const { data } = await api.post("/orders", { ...form, items: itemsPayload(), payment_method: "cod" });
+      const { data } = await api.post("/orders", { ...form, ...rxPayload(), items: itemsPayload(), payment_method: "cod" });
       finish(data);
     } catch (err) {
       const d = err.response?.data?.detail;
@@ -169,9 +193,55 @@ export default function Checkout() {
                 <p data-testid="pay-disabled-note" className="text-xs text-[#FF2A2A] mt-2">Online payments aren't configured yet — add Razorpay keys to enable. Cash on Delivery works now.</p>
               )}
             </div>
+
+            {/* PRESCRIPTION & COMPLIANCE */}
+            <div className="border border-white/15 p-5 space-y-4" data-testid="prescription-block">
+              <div>
+                <div className="label mb-1">Prescription <span className="text-white/40">(optional)</span></div>
+                <p className="text-xs text-white/40 mb-3">
+                  Vijaya (Ayurvedic cannabis) products are best used under guidance. Upload a prescription
+                  from a registered practitioner if you have one — PDF or image, up to 10 MB.
+                </p>
+                <div className="flex items-center gap-3">
+                  <label
+                    data-testid="prescription-upload-label"
+                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 border border-white/25 hover:border-white/60 transition-colors label text-xs"
+                  >
+                    {rxUploading ? "Uploading…" : rx ? "Replace File" : "Upload Prescription"}
+                    <input
+                      data-testid="prescription-file-input"
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp"
+                      onChange={uploadRx}
+                      disabled={rxUploading}
+                      className="hidden"
+                    />
+                  </label>
+                  {rx && (
+                    <span data-testid="prescription-filename" className="text-xs text-[#4ADE80] font-mono truncate max-w-[180px]">
+                      ✓ {rx.filename}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <label className="flex items-start gap-3 cursor-pointer pt-1">
+                <input
+                  data-testid="prescription-declaration"
+                  type="checkbox"
+                  checked={declared}
+                  onChange={(e) => setDeclared(e.target.checked)}
+                  className="mt-1 w-4 h-4 accent-[#DF0000] shrink-0"
+                />
+                <span className="text-xs text-white/55 leading-relaxed">
+                  I confirm I am 21 years or older and am purchasing these Ayurvedic Vijaya products
+                  responsibly for personal wellness use, and will consult a registered practitioner as needed.
+                  <a href="/legal" target="_blank" rel="noreferrer" className="text-[#FF2A2A] hover:underline ml-1">Read our legal &amp; prescription policy</a>.
+                </span>
+              </label>
+            </div>
             <button
               data-testid="place-order-btn"
-              disabled={loading || (method === "razorpay" && !payEnabled)}
+              disabled={loading || !declared || (method === "razorpay" && !payEnabled)}
               className="btn-fill w-full px-10 py-4 bg-[#DF0000] text-white label border border-[#DF0000] disabled:opacity-50"
             >
               {loading ? "Processing…" : method === "razorpay" ? `Pay Online — ${formatINR(total)}` : `Place Order — ${formatINR(total)}`}
