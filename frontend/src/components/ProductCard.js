@@ -13,11 +13,13 @@ export default function ProductCard({ product, index = 0 }) {
       className="group"
     >
       <Link to={`/product/${product.slug}`}>
-        <div className="relative overflow-hidden bg-[#F5F5F5] aspect-[4/5] border border-transparent group-hover:border-[#DF0000] transition-colors duration-300">
+        <div className="relative overflow-hidden bg-[#050507] aspect-[4/5] border border-transparent group-hover:border-[#DF0000] transition-colors duration-300">
+            <div className="absolute inset-0 twinkle-layer twinkle-2 opacity-60" />
+            <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(circle at 50% 45%, rgba(223,0,0,0.14), transparent 62%)" }} />
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+            className="relative z-10 w-full h-full object-cover mix-blend-screen transition-transform duration-[900ms] ease-out group-hover:scale-105"
           />
           <span className="absolute top-4 left-4 label bg-white text-black px-2 py-1">{product.effect}</span>
         </div>

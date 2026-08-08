@@ -36,26 +36,32 @@ export default function ProductDetail() {
 
   return (
     <div data-testid="product-detail-page" className="relative min-h-screen overflow-hidden pt-24 md:pt-28 pb-24">
-      {/* ambient cosmic glow */}
-      <div
-        className="pointer-events-none absolute top-[42%] left-[30%] -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[85vw] max-w-[980px] max-h-[980px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(223,0,0,0.34), rgba(96,32,150,0.14) 42%, transparent 68%)" }}
-      />
+      {/* celestial background: drifting stars + slowly rotating COSMOS seal */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="twinkle-layer twinkle-1" />
+        <div className="twinkle-layer twinkle-3" />
+        <motion.img
+          src="/brand-assets/logos/cosmos-seal.png"
+          alt=""
+          aria-hidden
+          animate={{ rotate: 360 }}
+          transition={{ duration: 160, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[46%] left-[32%] -translate-x-1/2 -translate-y-1/2 w-[75vw] max-w-[820px] opacity-[0.07]"
+        />
+        <div
+          className="absolute top-[46%] left-[32%] -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vw] max-w-[760px] max-h-[760px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(223,0,0,0.16), transparent 66%)" }}
+        />
+      </div>
 
-      <div className="relative max-w-[1600px] mx-auto px-6 md:px-10">
+      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-10">
         <Link to="/shop" className="label inline-flex items-center gap-2 mb-4 md:mb-8 hover:text-[#FF2A2A] transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Shop
         </Link>
 
         <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-center md:min-h-[74vh]">
-          {/* Product, integrated into the cosmos */}
+          {/* Product cut-out floating in the celestial field */}
           <div className="md:col-span-7 relative flex items-center justify-center min-h-[46vh] md:min-h-[70vh]">
-            <span
-              aria-hidden
-              className="marquee-outline pointer-events-none select-none absolute inset-0 flex items-center justify-center text-[30vw] md:text-[17vw] leading-none opacity-[0.06] uppercase"
-            >
-              {product.effect}
-            </span>
             <motion.div
               key={product.slug}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -68,7 +74,7 @@ export default function ProductDetail() {
                 alt={product.name}
                 animate={{ y: [-12, 12] }}
                 transition={{ duration: 6, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-                className="product-integrate w-full max-w-[440px] md:max-w-[520px] object-contain drop-shadow-[0_40px_110px_rgba(223,0,0,0.45)]"
+                className="w-full max-w-[440px] md:max-w-[520px] object-contain mix-blend-screen drop-shadow-[0_40px_110px_rgba(223,0,0,0.35)]"
               />
             </motion.div>
           </div>
