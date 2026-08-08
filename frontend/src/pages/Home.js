@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
 const HERO_IMG =
-  "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/b2e2f0e0963bee59c99f3ec4a669a41c3ed3bf849051a74a4a78f0e78b2a998a.jpeg";
+  "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/26acdfa4fa5cdbda7967e4f9cc697b5a44af840c1ba1387dc0ad4af5f70747f3.jpeg";
 
 const PARTNERS = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
 
