@@ -19,7 +19,7 @@ export default function ProductCard({ product, index = 0 }) {
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
           />
-          <span className="absolute top-4 left-4 label bg-white px-2 py-1">{product.effect}</span>
+          <span className="absolute top-4 left-4 label bg-white text-black px-2 py-1">{product.effect}</span>
         </div>
         <div className="flex items-baseline justify-between mt-5">
           <div>
