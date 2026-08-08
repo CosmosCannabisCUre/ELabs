@@ -33,7 +33,7 @@ export default function Navbar() {
     >
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
         <Link to="/" data-testid="nav-logo" className="flex items-center leading-none">
-          <img src="/brand-assets/logos/cosmos-logo.png" alt="Cosmos Cannabis Cure" className="h-7 md:h-9 w-auto" />
+          <img src="/brand-assets/logos/cosmos-seal.png" alt="Cosmos Cannabis Cure" className="h-12 md:h-14 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
