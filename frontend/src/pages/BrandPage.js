@@ -30,14 +30,26 @@ export default function BrandPage() {
           <div className="grid md:grid-cols-12 gap-8 md:gap-10">
             <div className="md:col-span-7">
               <div className="label text-[#FF2A2A] mb-6">Cosmos Partner Brand</div>
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display text-6xl md:text-8xl tracking-tight leading-[0.85]"
-              >
-                {brand.name}
-              </motion.h1>
+              {brand.logo ? (
+                <motion.img
+                  src={brand.logo}
+                  alt={brand.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="h-24 md:h-32 w-auto object-contain bg-white p-4"
+                  data-testid={`brand-logo-${slug}`}
+                />
+              ) : (
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-display text-6xl md:text-8xl tracking-tight leading-[0.85]"
+                >
+                  {brand.name}
+                </motion.h1>
+              )}
               <p className="text-xl text-white/60 mt-6 max-w-lg">{brand.tagline}</p>
             </div>
             <div className="md:col-span-4 md:col-start-9 self-end">

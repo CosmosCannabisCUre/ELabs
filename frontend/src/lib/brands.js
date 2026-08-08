@@ -28,6 +28,7 @@ export const BRANDS = {
   cannazo: {
     name: "Cannazo",
     slug: "cannazo",
+    logo: "/brand-assets/logos/cannazo.png",
     tagline: "AYUSH-licensed, lab-verified.",
     origin: "India",
     house: "Uplift Vatis gummies",

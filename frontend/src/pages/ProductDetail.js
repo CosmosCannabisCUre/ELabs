@@ -41,8 +41,8 @@ export default function ProductDetail() {
           <ArrowLeft className="w-4 h-4" /> Back to Shop
         </Link>
         <div className="grid md:grid-cols-2 gap-10 md:gap-16">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="bg-[#F5F5F5] aspect-square overflow-hidden">
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="cosmic-stage aspect-square overflow-hidden flex items-center justify-center p-14 md:p-24">
+            <img src={product.image} alt={product.name} className="relative z-10 max-w-full max-h-full object-contain rounded-sm drop-shadow-[0_30px_80px_rgba(223,0,0,0.35)]" />
           </motion.div>
 
           <div className="md:py-4">
