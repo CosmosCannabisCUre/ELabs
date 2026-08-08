@@ -153,11 +153,30 @@ export default function Home() {
           </div>
           <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {products.slice(0, 4).map((p, i) => (
-            <ProductCard key={p.id} product={p} index={i} />
-          ))}
-        </div>
+        {(() => {
+          const order = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
+          const groups = {};
+          products.forEach((p) => { (groups[p.brand] = groups[p.brand] || []).push(p); });
+          const brands = [...order.filter((b) => groups[b]), ...Object.keys(groups).filter((b) => !order.includes(b))];
+          return brands.map((brand) => {
+            const slug = brand.toLowerCase().replace(/\s+/g, "-");
+            return (
+              <div key={brand} className="mb-16 md:mb-20" data-testid={`home-brand-group-${slug}`}>
+                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                  <h3 className="font-display text-3xl md:text-4xl tracking-tight">{brand}</h3>
+                  <Link to={`/brand/${slug}`} data-testid={`home-brand-link-${slug}`} className="label text-[#FF2A2A] hover:underline inline-flex items-center gap-1.5">
+                    View brand <ArrowUpRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                  {groups[brand].slice(0, 4).map((p, i) => (
+                    <ProductCard key={p.id} product={p} index={i} />
+                  ))}
+                </div>
+              </div>
+            );
+          });
+        })()}
         <div className="mt-12 flex justify-center">
           <Link
             to="/shop"
