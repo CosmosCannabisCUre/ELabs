@@ -80,6 +80,25 @@ export default function Legal() {
           })}
         </div>
 
+        {/* Regulatory framework — Ministry of AYUSH */}
+        <div className="mt-20 border-t border-white/15 pt-12">
+          <div className="label text-white/40 mb-6">[ Regulatory Framework ]</div>
+          <div className="flex flex-col md:flex-row items-center gap-8 border border-white/15 p-8" data-testid="ayush-block">
+            <div className="bg-white p-5 shrink-0" data-testid="ayush-logo-card">
+              <img src="/brand-assets/certifications/ministry-of-ayush.png" alt="Ministry of AYUSH, Government of India" className="h-28 w-auto" />
+            </div>
+            <div>
+              <h2 className="font-display text-2xl md:text-3xl leading-tight mb-3">Manufactured under the AYUSH regulatory framework</h2>
+              <p className="text-white/55 text-sm md:text-base leading-relaxed">
+                Our Vijaya (Ayurvedic cannabis-leaf) formulations are produced by manufacturers licensed under the
+                Ministry of AYUSH, Government of India framework, in accordance with the Drugs &amp; Cosmetics Act, 1940.
+                The Government of India emblem is shown to indicate the regulatory framework under which these Ayurvedic
+                medicines are manufactured; it does not imply government endorsement of any specific product.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Compliance badges */}
         <div className="mt-20 border-t border-white/15 pt-12">
           <div className="label text-white/40 mb-6">[ Our Compliance ]</div>

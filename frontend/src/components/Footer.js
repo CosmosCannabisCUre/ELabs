@@ -37,7 +37,16 @@ export default function Footer() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 mt-14 mb-4" data-testid="footer-compliance">
+        <div className="flex flex-col md:flex-row items-center gap-6 mt-14" data-testid="footer-ayush">
+          <div className="bg-white p-3 shrink-0">
+            <img src="/brand-assets/certifications/ministry-of-ayush.png" alt="Ministry of AYUSH, Government of India" className="h-16 w-auto" />
+          </div>
+          <p className="text-white/40 text-xs leading-relaxed max-w-xl">
+            Manufactured under the AYUSH regulatory framework (Ministry of AYUSH, Govt. of India) as per the Drugs &amp; Cosmetics Act, 1940.
+            Emblem shown to indicate regulatory framework; not an endorsement.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 mt-6 mb-4" data-testid="footer-compliance">
           {[
             { t: "AYUSH-Licensed", d: "Ayurvedic manufacturing" },
             { t: "Drugs & Cosmetics Act", d: "1940 compliant" },

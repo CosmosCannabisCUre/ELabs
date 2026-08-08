@@ -56,7 +56,10 @@ Cannabis dispensary in Bangalore — India's first — called "Cosmos Cannabis C
 - Object storage + email helpers; POST/GET prescriptions; passports (create/verify/prescription-by-code/list/remind); _issue_passport shared helper.
 - Orders: /orders/precheck, create_order → awaiting_consultation + is_first_order + email, POST /orders/{id}/consult (issues passport + confirms + email).
 
-### Design decision (needs user confirmation)
+### Regulatory logo (2026-07)
+- Added the **official Ministry of AYUSH / Government of India emblem** (user-provided) on the Legal page ("Regulatory Framework" section) and footer, shown in a white badge with compliant wording: "Manufactured under the AYUSH regulatory framework … not an endorsement." Asset at /brand-assets/certifications/ministry-of-ayush.png.
+
+### Design decision (resolved)
 - Used tasteful **compliance badges** (icon + text) rather than reproducing official Ministry of AYUSH / Govt of India emblems, to avoid misuse of government insignia. User can request the actual emblem if they hold rights/permission.
 
 ## Notes (legacy)
