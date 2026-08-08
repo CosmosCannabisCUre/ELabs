@@ -90,7 +90,7 @@ export default function AdminDashboard() {
   const revenue = orders.filter((o) => o.status !== "cancelled").reduce((s, o) => s + o.total, 0);
 
   return (
-    <div data-testid="admin-dashboard" className="min-h-screen bg-white">
+    <div data-testid="admin-dashboard" className="min-h-screen bg-white text-[#0A0A0A]">
       <header className="border-b border-[#0A0A0A] px-6 md:px-10 h-16 flex items-center justify-between">
         <div className="font-display text-xl">Cosmos<span className="text-[#DF0000]">.</span> <span className="label ml-3 text-[#999]">Admin</span></div>
         <button data-testid="admin-logout" onClick={logout} className="label hover:text-[#DF0000]">Logout</button>
