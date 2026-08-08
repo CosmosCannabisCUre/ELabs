@@ -35,25 +35,61 @@ export default function ProductDetail() {
   };
 
   return (
-    <div data-testid="product-detail-page" className="pt-24 md:pt-28 pb-24 min-h-screen">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-        <Link to="/shop" className="label inline-flex items-center gap-2 mb-8 hover:text-[#DF0000] transition-colors">
+    <div data-testid="product-detail-page" className="relative min-h-screen overflow-hidden pt-24 md:pt-28 pb-24">
+      {/* ambient cosmic glow */}
+      <div
+        className="pointer-events-none absolute top-[42%] left-[30%] -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[85vw] max-w-[980px] max-h-[980px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(223,0,0,0.34), rgba(96,32,150,0.14) 42%, transparent 68%)" }}
+      />
+
+      <div className="relative max-w-[1600px] mx-auto px-6 md:px-10">
+        <Link to="/shop" className="label inline-flex items-center gap-2 mb-4 md:mb-8 hover:text-[#FF2A2A] transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Shop
         </Link>
-        <div className="grid md:grid-cols-2 gap-10 md:gap-16">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="cosmic-stage aspect-square overflow-hidden flex items-center justify-center p-14 md:p-24">
-            <img src={product.image} alt={product.name} className="relative z-10 max-w-full max-h-full object-contain rounded-sm drop-shadow-[0_30px_80px_rgba(223,0,0,0.35)]" />
-          </motion.div>
 
-          <div className="md:py-4">
+        <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-center md:min-h-[74vh]">
+          {/* Product, integrated into the cosmos */}
+          <div className="md:col-span-7 relative flex items-center justify-center min-h-[46vh] md:min-h-[70vh]">
+            <span
+              aria-hidden
+              className="marquee-outline pointer-events-none select-none absolute inset-0 flex items-center justify-center text-[30vw] md:text-[17vw] leading-none opacity-[0.06] uppercase"
+            >
+              {product.effect}
+            </span>
+            <motion.div
+              key={product.slug}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-10 w-full flex justify-center"
+            >
+              <motion.img
+                src={product.image}
+                alt={product.name}
+                animate={{ y: [-12, 12] }}
+                transition={{ duration: 6, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+                className="product-integrate w-full max-w-[440px] md:max-w-[520px] object-contain drop-shadow-[0_40px_110px_rgba(223,0,0,0.45)]"
+              />
+            </motion.div>
+          </div>
+
+          {/* Info */}
+          <div className="md:col-span-5 md:py-4">
             <Link to={`/brand/${(product.brand || "").toLowerCase().replace(/\s+/g, "-")}`} className="label text-[#FF2A2A] mb-4 inline-flex items-center gap-2 hover:underline" data-testid="product-brand-link">{product.brand} →</Link>
-            <h1 className="font-display text-6xl md:text-7xl tracking-tight leading-[0.9]">{product.name}</h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-6xl md:text-7xl tracking-tight leading-[0.88]"
+            >
+              {product.name}
+            </motion.h1>
             <p className="text-xl text-white/50 mt-3 mb-2">{product.tagline}</p>
             <div className="label text-white/35 mb-6">A Cosmos Partner Brand · {product.effect}</div>
             <div className="font-mono text-2xl mb-8">{formatINR(product.price)}</div>
             <p className="text-white/70 leading-relaxed max-w-md mb-10">{product.description}</p>
 
-            <div className="grid grid-cols-4 border-t border-l border-white/10 mb-10 max-w-md">
+            <div className="grid grid-cols-4 border-t border-l border-white/10 mb-10 max-w-md backdrop-blur-sm">
               {specs.map((s) => (
                 <div key={s.k} className="border-r border-b border-white/10 p-4">
                   <div className="label text-white/40 mb-2">{s.k}</div>

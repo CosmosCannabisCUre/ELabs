@@ -133,6 +133,12 @@ body::after {
     pointer-events: none;
 }
 
+/* Product edge-fade so it melts into the cosmic backdrop */
+.product-integrate {
+    -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 48%, #000 60%, transparent 100%);
+    mask-image: radial-gradient(ellipse 74% 74% at 50% 48%, #000 60%, transparent 100%);
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
