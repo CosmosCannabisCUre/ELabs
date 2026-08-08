@@ -28,6 +28,25 @@ Cannabis dispensary in Bangalore — India's first — called "Cosmos Cannabis C
 
 ## Notes
 - "Cannoza" in original brief = real brand "Cannazo India" — used Cannazo to match real products.
+
+## Implemented (2026-07)
+- **Fixed homepage crash**: `hovered` state was undefined in Home.js "Anatomy of the Plant" section → whole site was a blank screen. Declared the useState; site restored.
+- **Legal & Compliance page** (`/legal`): plain-language guide to Indian cannabis law (NDPS Act leaf/seed exemption), Vijaya as Ayurvedic medicine, AYUSH licensing + lab testing, prescription/medical guidance, and who can purchase (21+). Compliance badges + disclaimer. Linked from footer + checkout.
+- **Prescription flow at checkout**: optional prescription file upload (PDF/jpg/png/webp, ≤10MB) to Emergent Object Storage; a REQUIRED declaration checkbox gates the Place Order button. Order stores `prescription_file_id` + `prescription_declared`.
+- **Admin Rx visibility**: orders table has an "Rx" column — "View" (blob-fetch popup, admin-auth) for uploaded scripts, "Declared" for checkbox-only, "—" otherwise.
+- **Fresh green-leaf emblem** (AI-generated): circular red ring + "COSMOS CANNABIS CURE / BANGALORE · EST 2026" text + emerald-green cannabis fan leaf. Background knocked out to transparent (PIL). Powers navbar, footer, and favicon (leaf-on-dark).
+- **Footer compliance strip**: AYUSH-Licensed / Drugs & Cosmetics Act / Lab-Tested / 21+ badges.
+- **Homepage products reduced** to 4 curated cards + "View All N Products" button → /shop.
+
+### Backend additions (server.py)
+- Emergent Object Storage helpers (init_storage/put_object/get_object) using EMERGENT_LLM_KEY.
+- POST /api/prescriptions/upload (public, validates ext + size), GET /api/prescriptions/{id}/download (admin only).
+- OrderCreate/Order models extended with prescription_file_id + prescription_declared.
+
+### Design decision (needs user confirmation)
+- Used tasteful **compliance badges** (icon + text) rather than reproducing official Ministry of AYUSH / Govt of India emblems, to avoid misuse of government insignia. User can request the actual emblem if they hold rights/permission.
+
+## Notes (legacy)
 - Partner product images are external hotlinks (brand CDNs); consider re-hosting for long-term robustness.
 - Real Rasta products sourced from rastafariwellness.com (5 Relax & Reset gummies).
 - Brand story pages at /brand/:slug (moon-impact, trost, cannazo, rasta) with ethos + full range.
