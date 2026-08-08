@@ -71,6 +71,7 @@ export default function Home() {
 
         <div className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(1000px 500px at 78% 12%, rgba(223,0,0,0.12), transparent 60%)" }} />
 
+
         <motion.div style={{ y: heroTextY }} className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="label text-[#DF0000] mb-8">
             Bangalore / Launching Soon / India&apos;s First
