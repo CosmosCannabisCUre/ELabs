@@ -16,6 +16,8 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import BrandPage from "@/pages/BrandPage";
 import Legal from "@/pages/Legal";
+import Passport from "@/pages/Passport";
+import PassportVerify from "@/pages/PassportVerify";
 import LogoOptions from "@/pages/LogoOptions";
 import ConstructionBanner from "@/components/ConstructionBanner";
 import AdminLogin from "@/pages/AdminLogin";
@@ -34,6 +36,8 @@ const Site = () => (
       <Route path="/journal/:slug" element={<BlogPost />} />
       <Route path="/brand/:slug" element={<BrandPage />} />
       <Route path="/legal" element={<Legal />} />
+      <Route path="/passport" element={<Passport />} />
+      <Route path="/passport/verify/:code" element={<PassportVerify />} />
       <Route path="/logo-options" element={<LogoOptions />} />
     </Routes>
     <Footer />
@@ -44,6 +48,7 @@ const Site = () => (
 function App() {
   const [verified, setVerified] = useState(() => localStorage.getItem("ccc_age_ok") === "true");
   const isAdmin = window.location.pathname.startsWith("/admin");
+  const isVerify = window.location.pathname.startsWith("/passport/verify");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,7 +59,7 @@ function App() {
       <CartProvider>
         <BrowserRouter>
           <Toaster position="bottom-right" theme="light" />
-          {!verified && !isAdmin && <AgeGate onVerified={() => setVerified(true)} />}
+          {!verified && !isAdmin && !isVerify && <AgeGate onVerified={() => setVerified(true)} />}
           <Routes>
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

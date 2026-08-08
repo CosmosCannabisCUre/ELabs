@@ -193,6 +193,60 @@ body::after {
     50% { opacity: 1; }
 }
 
+/* ---------- Cinematic "multiverse" motion ---------- */
+.nebula-cloud {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    will-change: transform;
+}
+.nebula-red { background: radial-gradient(circle, rgba(223,0,0,0.55), transparent 70%); }
+.nebula-violet { background: radial-gradient(circle, rgba(120,40,180,0.42), transparent 70%); }
+.nebula-blue { background: radial-gradient(circle, rgba(40,90,200,0.36), transparent 70%); }
+
+@keyframes nebula-float {
+    0%   { transform: translate3d(0,0,0) scale(1); }
+    50%  { transform: translate3d(46px,-34px,0) scale(1.14); }
+    100% { transform: translate3d(0,0,0) scale(1); }
+}
+.nebula-anim-1 { animation: nebula-float 18s ease-in-out infinite; }
+.nebula-anim-2 { animation: nebula-float 26s ease-in-out infinite reverse; }
+.nebula-anim-3 { animation: nebula-float 32s ease-in-out infinite; }
+
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.orbit-spin { animation: spin-slow 70s linear infinite; }
+.orbit-spin-rev { animation: spin-slow 110s linear infinite reverse; }
+
+@keyframes float-y {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+.float-y { animation: float-y 8s ease-in-out infinite; }
+
+@keyframes shoot {
+    0%   { transform: translate3d(-60px,-40px,0) rotate(32deg); opacity: 0; }
+    10%  { opacity: 1; }
+    35%  { opacity: 1; }
+    55%,100% { transform: translate3d(560px,360px,0) rotate(32deg); opacity: 0; }
+}
+.shooting-star {
+    position: absolute;
+    width: 150px; height: 2px;
+    background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0));
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.9));
+    animation: shoot 7s ease-in infinite;
+    pointer-events: none;
+}
+
+@keyframes portal-pulse {
+    0%,100% { opacity: 0.45; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.06); }
+}
+.portal-glow { animation: portal-pulse 6.5s ease-in-out infinite; }
+
+
 @layer base {
     :root {
         --background: 0 0% 100%;

@@ -16,6 +16,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("orders");
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
+  const [passports, setPassports] = useState([]);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function AdminDashboard() {
       const [o, p] = await Promise.all([api.get("/orders"), api.get("/products")]);
       setOrders(o.data);
       setProducts(p.data);
+      api.get("/passports").then((r) => setPassports(r.data)).catch(() => {});
     } catch (err) {
       if (err.response?.status === 401) navigate("/admin");
     }
@@ -43,14 +45,22 @@ export default function AdminDashboard() {
     toast.success("Order updated");
   };
 
-  const viewRx = async (rxId) => {
-    try {
+  const viewRx = async (rxId) => {    try {
       const { data } = await api.get(`/prescriptions/${rxId}/download`, { responseType: "blob" });
       const url = URL.createObjectURL(data);
       window.open(url, "_blank", "noopener");
       setTimeout(() => URL.revokeObjectURL(url), 60000);
     } catch {
       toast.error("Could not open prescription");
+    }
+  };
+
+  const remind = async (code) => {
+    try {
+      const { data } = await api.post(`/passports/${code}/remind`);
+      toast.success(data.sent ? `Reminder sent to ${data.email}` : "Reminder queued");
+    } catch {
+      toast.error("Could not send reminder");
     }
   };
 
@@ -101,7 +111,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex gap-3 mb-8">
-          {["orders", "products"].map((t) => (
+          {["orders", "products", "passports"].map((t) => (
             <button key={t} data-testid={`tab-${t}`} onClick={() => setTab(t)}
               className={`px-6 py-2 label border ${tab === t ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "border-[#E5E5E5]"}`}>
               {t}
@@ -171,6 +181,36 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+        {tab === "passports" && (
+          <div className="border border-[#0A0A0A] overflow-x-auto" data-testid="passports-table">
+            <table className="w-full text-sm">
+              <thead className="bg-[#0A0A0A] text-white">
+                <tr className="label text-left">
+                  <th className="p-4 font-normal">Passport</th><th className="p-4 font-normal">Holder</th>
+                  <th className="p-4 font-normal">Issued</th><th className="p-4 font-normal">Valid Until</th>
+                  <th className="p-4 font-normal">Status</th><th className="p-4 font-normal">Verify</th>
+                </tr>
+              </thead>
+              <tbody>
+                {passports.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-[#999]">No passports yet.</td></tr>}
+                {passports.map((p) => (
+                  <tr key={p.code} className="border-t border-[#E5E5E5]">
+                    <td className="p-4 font-mono">{p.passport_number}</td>
+                    <td className="p-4">{p.holder_name}<br /><span className="text-[#999] text-xs">{p.phone}</span></td>
+                    <td className="p-4">{p.issue_date}</td>
+                    <td className="p-4">{p.expiry_date}</td>
+                    <td className="p-4">
+                      <span className="label" style={{ color: p.status === "valid" ? "#16A34A" : p.status === "expiring" ? "#CA8A04" : "#DF0000" }}>{p.status}</span>
+                    </td>
+                    <td className="p-4"><a href={`/passport/verify/${p.code}`} target="_blank" rel="noreferrer" className="text-[#DF0000] underline hover:no-underline mr-3">Open</a>
+                      <button data-testid={`remind-${p.code}`} onClick={() => remind(p.code)} className="text-[#0A0A0A] underline hover:no-underline">Remind</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

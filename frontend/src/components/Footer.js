@@ -19,6 +19,7 @@ export default function Footer() {
             <div className="label text-white/40 mb-5">Explore</div>
             <ul className="space-y-3 text-sm">
               <li><Link to="/shop" className="hover:text-[#DF0000] transition-colors">Shop All</Link></li>
+              <li><Link to="/passport" data-testid="footer-passport-link" className="hover:text-[#DF0000] transition-colors">COSMOS Passport</Link></li>
               <li><Link to="/journal" className="hover:text-[#DF0000] transition-colors">Journal</Link></li>
               <li><a href="/#manifesto" className="hover:text-[#DF0000] transition-colors">Manifesto</a></li>
               <li><a href="/#location" className="hover:text-[#DF0000] transition-colors">Location</a></li>

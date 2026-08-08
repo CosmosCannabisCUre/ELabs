@@ -37,6 +37,10 @@ export default function Home() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const starsY = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const nebulaY = useTransform(scrollYProgress, [0, 1], [0, 220]);
+  const emblemY = useTransform(scrollYProgress, [0, 1], [0, -160]);
+  const emblemScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
+  const heroTextY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   useEffect(() => {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
@@ -47,16 +51,53 @@ export default function Home() {
     <div data-testid="home-page">
       {/* HERO */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden pt-20 bg-[#050507]">
+        {/* drifting nebula clouds (parallax) */}
+        <motion.div style={{ y: nebulaY }} className="absolute inset-0 z-0 pointer-events-none">
+          <div className="nebula-cloud nebula-red nebula-anim-1" style={{ width: "42vw", height: "42vw", top: "-8%", right: "-6%" }} />
+          <div className="nebula-cloud nebula-violet nebula-anim-2" style={{ width: "34vw", height: "34vw", bottom: "-12%", left: "-8%" }} />
+          <div className="nebula-cloud nebula-blue nebula-anim-3" style={{ width: "26vw", height: "26vw", top: "30%", left: "38%" }} />
+        </motion.div>
+
+        {/* starfield */}
         <motion.div style={{ y: starsY }} className="absolute inset-0 z-0">
           <div className="twinkle-layer twinkle-1" />
           <div className="twinkle-layer twinkle-2" />
           <div className="twinkle-layer twinkle-3" />
         </motion.div>
+
+        {/* shooting stars */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="shooting-star" style={{ top: "14%", left: "8%", animationDelay: "1.5s" }} />
+          <div className="shooting-star" style={{ top: "42%", left: "30%", animationDelay: "4.5s" }} />
+        </div>
+
+        {/* floating celestial emblem with orbit rings */}
+        <motion.div
+          style={{ y: emblemY, scale: emblemScale }}
+          className="absolute z-0 right-[4%] top-[16%] w-[38vw] max-w-[560px] aspect-square pointer-events-none hidden md:block"
+        >
+          <div className="absolute inset-0 rounded-full portal-glow" style={{ background: "radial-gradient(circle, rgba(223,0,0,0.28), transparent 62%)" }} />
+          <div className="absolute inset-[6%] rounded-full border border-white/10 orbit-spin" />
+          <div className="absolute inset-[16%] rounded-full border border-[#DF0000]/25 orbit-spin-rev" />
+          <div className="absolute inset-[6%] orbit-spin">
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#DF0000] shadow-[0_0_12px_#DF0000]" />
+          </div>
+          <motion.img
+            src="/brand-assets/logos/cosmos-seal.png"
+            alt=""
+            aria-hidden
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 0.92, scale: 1 }}
+            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-[18%] w-[64%] h-[64%] object-contain float-y"
+          />
+        </motion.div>
+
         <div className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(1000px 500px at 78% 12%, rgba(223,0,0,0.12), transparent 60%)" }} />
 
-        <div className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
+        <motion.div style={{ y: heroTextY }} className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="label text-[#DF0000] mb-8">
-            Bangalore / Launching Soon / India's First
+            Bangalore / Launching Soon / India&apos;s First
           </motion.div>
           <h1 className="font-display leading-[0.82] tracking-tight text-[22vw] md:text-[15vw]">
             <span className="reveal-mask">
@@ -89,7 +130,7 @@ export default function Home() {
               </Link>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* MARQUEE */}
@@ -270,7 +311,7 @@ export default function Home() {
             <div className="space-y-6 max-w-md">
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Address</div>
-                <p className="text-lg">3104, 6th 'B' Main, HAL II Stage, Indiranagar, Bangalore 560008</p>
+                <p className="text-lg">3104, 6th &apos;B&apos; Main, HAL II Stage, Indiranagar, Bangalore 560008</p>
               </div>
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Hours</div>

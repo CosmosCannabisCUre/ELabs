@@ -19,6 +19,8 @@ import bcrypt
 import jwt
 import razorpay
 import uuid
+import secrets
+import httpx
 import requests
 
 mongo_url = os.environ['MONGO_URL']
@@ -86,6 +88,27 @@ def get_object(path: str):
         resp = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
     resp.raise_for_status()
     return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
+
+
+# ---------------- Email (Emergent managed Resend) ----------------
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMERGENT_EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY")
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "Cosmos Cannabis Cure")
+
+
+async def send_email(to_email: str, subject: str, html: str):
+    if not EMERGENT_EMAIL_KEY:
+        logging.getLogger(__name__).warning("EMERGENT_EMAIL_KEY missing — skipping email")
+        return None
+    payload = {"to": [to_email], "subject": subject, "html": html, "from_name": EMAIL_FROM_NAME}
+    try:
+        async with httpx.AsyncClient(timeout=30) as c:
+            r = await c.post(f"{EMAIL_BASE_URL}/api/v1/email/send", headers={"X-Email-Key": EMERGENT_EMAIL_KEY}, json=payload)
+        r.raise_for_status()
+        return r.json().get("id")
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Email send failed: {e}")
+        return None
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -192,6 +215,16 @@ class BlogPost(BaseModel):
 class LoginInput(BaseModel):
     email: str
     password: str
+
+
+class PassportCreate(BaseModel):
+    holder_name: str
+    phone: str
+    email: str
+    prescription_file_id: str
+    practitioner_name: Optional[str] = None
+    issue_date: str  # 'YYYY-MM-DD'
+    validity_months: int = 6
 
 
 # ---------------- Auth helpers ----------------
@@ -407,6 +440,149 @@ async def download_prescription(rx_id: str, admin: dict = Depends(get_current_ad
         raise HTTPException(status_code=404, detail="Prescription not found")
     data, content_type = get_object(record["storage_path"])
     return Response(content=data, media_type=record.get("content_type", content_type))
+
+
+# ---------------- Passport routes ----------------
+def _passport_status(expiry_iso: str) -> str:
+    try:
+        expiry = datetime.fromisoformat(expiry_iso).date()
+    except Exception:
+        return "unknown"
+    today = datetime.now(timezone.utc).date()
+    if today > expiry:
+        return "expired"
+    if (expiry - today).days <= 30:
+        return "expiring"
+    return "valid"
+
+
+def _public_passport(doc: dict) -> dict:
+    return {
+        "passport_number": doc["passport_number"],
+        "holder_name": doc["holder_name"],
+        "practitioner_name": doc.get("practitioner_name"),
+        "issue_date": doc["issue_date"],
+        "expiry_date": doc["expiry_date"],
+        "status": _passport_status(doc["expiry_date"]),
+        "has_prescription": bool(doc.get("prescription_file_id")),
+        "created_at": doc["created_at"],
+    }
+
+
+@api_router.post("/passports")
+async def create_passport(payload: PassportCreate):
+    rx = await db.prescriptions.find_one({"id": payload.prescription_file_id, "is_deleted": False})
+    if not rx:
+        raise HTTPException(status_code=400, detail="Please upload a valid prescription first.")
+    try:
+        issue = datetime.fromisoformat(payload.issue_date).date()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid issue date.")
+    months = max(1, min(24, payload.validity_months))
+    # add months by approximating 30-day windows to keep it dependency-free
+    expiry = issue + timedelta(days=months * 30)
+    code = secrets.token_urlsafe(16)
+    number = "CCC-" + secrets.token_hex(3).upper()
+    doc = {
+        "code": code,
+        "passport_number": number,
+        "holder_name": payload.holder_name.strip(),
+        "phone": payload.phone.strip(),
+        "email": payload.email.strip().lower(),
+        "practitioner_name": (payload.practitioner_name or "").strip() or None,
+        "prescription_file_id": payload.prescription_file_id,
+        "issue_date": issue.isoformat(),
+        "expiry_date": expiry.isoformat(),
+        "created_at": now_iso(),
+    }
+    await db.passports.insert_one(doc)
+    # confirmation email (non-blocking best-effort)
+    html = f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f14;border:1px solid #222;border-radius:8px;overflow:hidden">
+          <tr><td style="padding:28px 32px;border-bottom:1px solid #222">
+            <div style="color:#DF0000;letter-spacing:3px;font-size:11px;text-transform:uppercase">Cosmos Cannabis Cure</div>
+            <div style="color:#fff;font-size:24px;margin-top:8px">Your COSMOS Passport is ready</div>
+          </td></tr>
+          <tr><td style="padding:28px 32px;color:#c9c9d0;font-size:14px;line-height:1.6">
+            <p>Hello {doc['holder_name']},</p>
+            <p>Your COSMOS Passport has been created. Keep it handy for purchases and for validation with authorities.</p>
+            <table width="100%" style="margin:16px 0;color:#fff;font-size:14px">
+              <tr><td style="padding:6px 0;color:#8a8a95">Passport No.</td><td align="right" style="font-family:monospace">{doc['passport_number']}</td></tr>
+              <tr><td style="padding:6px 0;color:#8a8a95">Issue Date</td><td align="right">{doc['issue_date']}</td></tr>
+              <tr><td style="padding:6px 0;color:#8a8a95">Valid Until</td><td align="right">{doc['expiry_date']}</td></tr>
+            </table>
+            <p style="color:#8a8a95;font-size:12px">This passport records an Ayurvedic Vijaya prescription for wellness use. Renew before the validity date to keep purchasing seamlessly.</p>
+          </td></tr>
+          <tr><td style="padding:18px 32px;border-top:1px solid #222;color:#5a5a63;font-size:11px">Consume responsibly · 21+ only · India</td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
+    await send_email(doc["email"], "Your COSMOS Passport", html)
+    return {"code": code, "passport_number": number, **_public_passport(doc)}
+
+
+@api_router.get("/passports/verify/{code}")
+async def verify_passport(code: str):
+    doc = await db.passports.find_one({"code": code})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Passport not found")
+    return _public_passport(doc)
+
+
+@api_router.get("/passports/{code}/prescription")
+async def passport_prescription(code: str):
+    doc = await db.passports.find_one({"code": code})
+    if not doc or not doc.get("prescription_file_id"):
+        raise HTTPException(status_code=404, detail="Not found")
+    rx = await db.prescriptions.find_one({"id": doc["prescription_file_id"], "is_deleted": False})
+    if not rx:
+        raise HTTPException(status_code=404, detail="Prescription not found")
+    data, content_type = get_object(rx["storage_path"])
+    return Response(content=data, media_type=rx.get("content_type", content_type))
+
+
+@api_router.get("/passports")
+async def list_passports(admin: dict = Depends(get_current_admin)):
+    docs = await db.passports.find().sort("created_at", -1).to_list(500)
+    out = []
+    for d in docs:
+        rec = _public_passport(d)
+        rec["code"] = d["code"]
+        rec["phone"] = d.get("phone")
+        rec["email"] = d.get("email")
+        out.append(rec)
+    return out
+
+
+@api_router.post("/passports/{code}/remind")
+async def remind_passport(code: str, admin: dict = Depends(get_current_admin)):
+    doc = await db.passports.find_one({"code": code})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Passport not found")
+    status = _passport_status(doc["expiry_date"])
+    verb = "has expired" if status == "expired" else "is valid until " + doc["expiry_date"]
+    html = f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f14;border:1px solid #222;border-radius:8px">
+          <tr><td style="padding:28px 32px">
+            <div style="color:#DF0000;letter-spacing:3px;font-size:11px;text-transform:uppercase">Cosmos Cannabis Cure</div>
+            <div style="color:#fff;font-size:22px;margin:8px 0 16px">A gentle reminder about your COSMOS Passport</div>
+            <div style="color:#c9c9d0;font-size:14px;line-height:1.6">
+              <p>Hello {doc['holder_name']},</p>
+              <p>Your COSMOS Passport <b style="color:#fff">{doc['passport_number']}</b> {verb}. To keep purchasing our Ayurvedic Vijaya products smoothly, please keep a valid prescription on file and renew your passport before it lapses.</p>
+              <p style="color:#8a8a95;font-size:12px">Consume responsibly · 21+ only · India</p>
+            </div>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
+    email_id = await send_email(doc["email"], "Your COSMOS Passport — a gentle reminder", html)
+    return {"sent": bool(email_id), "email": doc["email"]}
 
 
 # ---------------- Blog routes ----------------

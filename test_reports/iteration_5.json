@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only regression + new-feature testing for COSMOS Passport, cinematic home hero, admin passports tab, and checkout regression. All key flows PASS. Homepage loads with age-gate (data-testid=age-gate-yes), shows 4 product cards and View All button, cinematic hero (nebulae/emblem/shooting stars) renders without console errors. Navbar 'Passport' link and footer 'COSMOS Passport' link both navigate to /passport. Passport creation flow works end-to-end: submit disabled until file upload, filename appears, on submit the result view renders with passport-card, passport-number (e.g. CCC-829959), QR canvas, status badge, Copy Link and Open Verify buttons. Public verify page /passport/verify/O15djTkR5XQHIDEUyJ-_vg loads WITHOUT the 21+ age gate and shows VALID status, holder 'Aarav Rao', passport details CCC-9F9A24, and sealed prescription image. Invalid code /passport/verify/nope-invalid-xyz shows passport-verify-notfound. Admin login (admin@cosmoscure.in / Cosmos@2026) succeeds, tab-passports present, passports-table shows 2 rows including seeded Aarav Rao, Open link points to /passport/verify/<code>, Remind button fires with success toast 'Reminder sent to delivered@resend.dev'. Checkout regression: place-order-btn disabled initially, enabled after ticking the prescription-declaration checkbox. /legal page renders (8462 chars).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/passports (admin list) vs GET /api/passports/verify/{code}", "issue": "Status inconsistency: a passport created with issue_date=2026-01-15 and valid_until=2026-07-14 (future) is displayed as 'EXPIRED' in the admin passports-table STATUS column, while the same/similar record on the public verify page reports 'Valid'. Suggests two different status-calculation code paths (list endpoint vs verify endpoint) or a timezone/comparison bug. Reproduce: create a passport today, open Admin > Passports; row shows EXPIRED even though valid_until is ~6 months in the future."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin dashboard header/tabs", "issues": ["Very low contrast: 'Cosmos. ADMIN' header, 'LOGOUT' link, and inactive tab labels (ORDERS, PRODUCTS) appear as light-grey on light background and are nearly invisible in screenshots. Consider brightening inactive tab labels."]},
+      {"screen": "Admin passports-table", "issues": ["Row data (passport number, holder name, dates) appears very faint / low contrast against the white row background."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix passport status inconsistency between admin list (`GET /api/passports`) and public verify endpoint (`GET /api/passports/verify/{code}`): unify the valid/expiring/expired calculation.",
+    "Improve contrast of Admin dashboard (header, LOGOUT, inactive tab labels, table row text) — current styling is nearly unreadable on the white background."
+  ],
+  "critical_code_review_comments": [
+    "Ensure a single shared helper computes passport status (valid / expiring / expired) so admin list and verify page always agree.",
+    "Consider disabling the SIGN IN button while loading (already handled via disabled=loading) — good.",
+    "Passport form: the submit button correctly stays disabled until a prescription file is uploaded (good UX / testid coverage)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only run; passport endpoints exercised indirectly and all succeeded)", "frontend": "100% of requested flows passed"},
+  "test_credentials": "Admin: admin@cosmoscure.in / Cosmos@2026 (from review request; /app/memory/test_credentials.md not consulted since credentials were provided).",
+  "seed_data_creation": "Created one test passport during flow (holder='TEST Cosmos User', email=delivered@resend.dev, number CCC-829959). Seeded 'Aarav Rao' CCC-9F9A24 was used for verify+admin tests.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All passport UI flows verified via public URL. If retesting, use existing seeded code O15djTkR5XQHIDEUyJ-_vg (CCC-9F9A24, Aarav Rao) for verify. Admin login button testid is [data-testid=admin-login-btn] (there is no button[type=submit] on the login form). Passport form field testids are passport-holder_name, passport-email, passport-phone, passport-practitioner_name, passport-issue_date, passport-validity, passport-file-input. Age-gate is properly bypassed for any path starting with /passport/verify.",
+  "rca of the issue": "Status inconsistency RCA (hypothesis): the admin list endpoint likely returns/computes status differently from GET /passports/verify/{code}. Likely candidates: (a) list endpoint reads a stored `status` field written at creation time (with a bad expiry calc), while verify endpoint recomputes at read-time; or (b) different date comparison (naive vs aware datetime, or comparing issue_date instead of valid_until). Mitigation: compute status on-the-fly from valid_until in both endpoints using the same helper, or store & keep in sync."
+}
