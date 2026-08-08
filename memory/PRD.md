@@ -101,3 +101,7 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 ## Update (2026-07) — Natural Nebula Hero + Open Graph
 - Hero background: replaced the smooth CSS radial-gradient nebula with a real photographic red nebula image (/brand-assets/cosmic/hero-nebula.jpg, from user's reference) + a film-grain overlay (.grain-overlay in index.css) for a natural, rough, matte look. Removed the old smooth nebula-cloud divs.
 - Open Graph: added /og-image.jpg (1200x630 branded: nebula + "The Cure." + COSMOS seal with green leaf + tagline) and OG/Twitter meta tags in public/index.html (absolute URLs -> https://www.cosmoscannabis.in). Requires frontend restart to serve template changes (done). Verified og:image + twitter:card in served HTML.
+
+## Update (2026-07) — Directions Button + Site-wide Grain
+- Added a "Get Directions" button (data-testid: get-directions-btn) under the Location address on Home, opens Google Maps in a new tab.
+- Added a global film-grain overlay: `.grain-global` (fixed, pointer-events-none, soft-light, ~0.06 opacity) rendered once in App.js for a consistent matte/film look across all pages. Hero keeps its own stronger `.grain-overlay` too.

@@ -59,6 +59,7 @@ function App() {
       <CartProvider>
         <BrowserRouter>
           <Toaster position="bottom-right" theme="light" />
+          <div className="grain-global" aria-hidden />
           {!verified && !isAdmin && !isVerify && <AgeGate onVerified={() => setVerified(true)} />}
           <Routes>
             <Route path="/admin" element={<AdminLogin />} />

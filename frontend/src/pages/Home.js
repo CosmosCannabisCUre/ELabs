@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Marquee from "react-fast-marquee";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
@@ -339,7 +339,17 @@ export default function Home() {
                 </p>
               </div>
             </div>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=3104%2C+6th+B+Main%2C+HAL+II+Stage%2C+Indiranagar%2C+Bangalore+560008"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="get-directions-btn"
+              className="btn-fill mt-8 inline-flex items-center gap-3 px-8 py-4 bg-[#DF0000] text-white label border border-[#DF0000]"
+            >
+              <MapPin className="w-4 h-4" /> Get Directions
+            </a>
           </div>
+
           <div className="md:col-span-6 order-1 md:order-2">
             <div className="group relative overflow-hidden aspect-[16/10] rounded-sm ring-1 ring-white/5 transition-all duration-700 hover:ring-[#FF2A2A]/40 hover:shadow-[0_0_60px_-10px_rgba(255,42,42,0.55)]" data-testid="store-exterior">
               <img
