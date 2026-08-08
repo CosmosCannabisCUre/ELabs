@@ -5,6 +5,7 @@ import { ReactLenis } from "lenis/react";
 import { Toaster } from "sonner";
 import { CartProvider } from "@/context/CartContext";
 import AgeGate from "@/components/AgeGate";
+import LaunchCountdown from "@/components/LaunchCountdown";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
@@ -47,12 +48,20 @@ const Site = () => (
 
 function App() {
   const [verified, setVerified] = useState(() => localStorage.getItem("ccc_age_ok") === "true");
+  const [countdownDone, setCountdownDone] = useState(() => sessionStorage.getItem("ccc_countdown_seen") === "true");
   const isAdmin = window.location.pathname.startsWith("/admin");
   const isVerify = window.location.pathname.startsWith("/passport/verify");
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const closeCountdown = () => {
+    sessionStorage.setItem("ccc_countdown_seen", "true");
+    setCountdownDone(true);
+  };
+
+  const showCountdown = verified && !countdownDone && !isAdmin && !isVerify;
 
   return (
     <ReactLenis root options={{ lerp: 0.09, smoothWheel: true }}>
@@ -61,6 +70,7 @@ function App() {
           <Toaster position="bottom-right" theme="light" />
           <div className="grain-global" aria-hidden />
           {!verified && !isAdmin && !isVerify && <AgeGate onVerified={() => setVerified(true)} />}
+          {showCountdown && <LaunchCountdown onClose={closeCountdown} />}
           <Routes>
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

@@ -105,3 +105,8 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 ## Update (2026-07) — Directions Button + Site-wide Grain
 - Added a "Get Directions" button (data-testid: get-directions-btn) under the Location address on Home, opens Google Maps in a new tab.
 - Added a global film-grain overlay: `.grain-global` (fixed, pointer-events-none, soft-light, ~0.06 opacity) rendered once in App.js for a consistent matte/film look across all pages. Hero keeps its own stronger `.grain-overlay` too.
+
+## Update (2026-07) — Launch Countdown Popup
+- Added components/LaunchCountdown.js: a dismissible "Launching Soon" popup shown once per session (sessionStorage key ccc_countdown_seen) after age verification, hidden on /admin and /passport/verify.
+- Live ticking days/hours/minutes/seconds to LAUNCH_DATE (placeholder 2026-10-07T10:00:00+05:30 — edit this constant to set the real date). At zero it shows "We're Now Open".
+- data-testids: launch-countdown-modal, countdown-timer, countdown-days/hours/minutes/seconds, countdown-dismiss-btn, countdown-enter-btn, countdown-backdrop. Verified via screenshot + dismiss flow.
