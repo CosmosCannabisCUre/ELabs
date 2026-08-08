@@ -178,6 +178,7 @@ export default function Home() {
       <section className="relative border-t border-white/10 py-24 md:py-32 overflow-hidden">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="text-center mb-16">
+            <img src="/brand-assets/botanical/leaf.jpg" alt="" aria-hidden className="h-16 w-auto mx-auto mb-6 object-contain mix-blend-screen opacity-90" />
             <div className="label text-[#FF2A2A] mb-4">[ Botany ]</div>
             <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Anatomy of the Plant</h2>
             <p className="text-white/50 max-w-lg mx-auto mt-5 text-sm">Every gummy begins here. A closer look at the botany behind the cure.</p>
@@ -192,31 +193,39 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="md:text-right border-t border-white/10 pt-4"
+                  onMouseEnter={() => setHovered(a.t)}
+                  onMouseLeave={() => setHovered(null)}
+                  className="md:text-right border-t border-white/10 pt-4 cursor-default"
                 >
                   <div className="label text-[#FF2A2A] mb-2">[ {a.n} ]</div>
-                  <h3 className="font-display text-3xl leading-none mb-2">{a.t}</h3>
+                  <h3 className={`font-display text-3xl leading-none mb-2 transition-colors ${hovered === a.t ? "text-[#FF2A2A]" : ""}`}>{a.t}</h3>
                   <p className="text-white/50 text-sm md:ml-auto md:max-w-[16rem]">{a.d}</p>
                 </motion.div>
               ))}
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="md:col-span-4 order-1 md:order-2 relative flex justify-center"
-            >
+            <div className="md:col-span-4 order-1 md:order-2 relative flex justify-center">
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="w-[70%] h-[70%] rounded-full" style={{ background: "radial-gradient(circle, rgba(223,0,0,0.18), transparent 68%)" }} />
+                <div
+                  className="rounded-full transition-all duration-500"
+                  style={{
+                    width: hovered ? "84%" : "70%",
+                    height: hovered ? "84%" : "70%",
+                    background: `radial-gradient(circle, rgba(223,0,0,${hovered ? 0.34 : 0.18}), transparent 68%)`,
+                  }}
+                />
               </div>
-              <img
+              <motion.img
                 src="/brand-assets/botanical/plant.jpg"
                 alt="Cannabis plant botanical illustration"
-                className="relative w-full max-w-[340px] object-contain mix-blend-screen"
+                initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
+                whileInView={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+                className="relative w-full max-w-[340px] object-contain mix-blend-screen transition-transform duration-500"
+                style={{ transform: hovered ? "scale(1.04)" : "scale(1)" }}
               />
-            </motion.div>
+            </div>
 
             <div className="md:col-span-4 space-y-10 order-3">
               {ANATOMY_RIGHT.map((a, i) => (
@@ -226,10 +235,12 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="border-t border-white/10 pt-4"
+                  onMouseEnter={() => setHovered(a.t)}
+                  onMouseLeave={() => setHovered(null)}
+                  className="border-t border-white/10 pt-4 cursor-default"
                 >
                   <div className="label text-[#FF2A2A] mb-2">[ {a.n} ]</div>
-                  <h3 className="font-display text-3xl leading-none mb-2">{a.t}</h3>
+                  <h3 className={`font-display text-3xl leading-none mb-2 transition-colors ${hovered === a.t ? "text-[#FF2A2A]" : ""}`}>{a.t}</h3>
                   <p className="text-white/50 text-sm max-w-[16rem]">{a.d}</p>
                 </motion.div>
               ))}
