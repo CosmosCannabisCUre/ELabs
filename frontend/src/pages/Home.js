@@ -64,23 +64,6 @@ export default function Home() {
           <div className="twinkle-layer twinkle-3" />
         </motion.div>
 
-        {/* extra shining stars */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          {Array.from({ length: 22 }).map((_, i) => {
-            const top = ((i * 37) % 92) + 3;
-            const left = ((i * 53) % 94) + 2;
-            const size = 2 + (i % 3);
-            const delay = (i % 6) * 0.6;
-            return (
-              <span
-                key={i}
-                className="star-shine"
-                style={{ top: `${top}%`, left: `${left}%`, width: size, height: size, animationDelay: `${delay}s` }}
-              />
-            );
-          })}
-        </div>
-
         {/* shooting stars (comets) */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="shooting-star" style={{ top: "14%", left: "8%", animationDelay: "1.5s" }} />
