@@ -293,16 +293,6 @@ export default function Home() {
                 />
               </div>
 
-              {/* dissection direction axis */}
-              <div className="pointer-events-none absolute left-2 md:left-4 top-0 bottom-0 flex flex-col items-center justify-between py-6 z-10" data-testid="dissection-axis">
-                <span className="label text-[9px] text-white/45">APEX</span>
-                <div className="relative flex-1 my-2 w-px" style={{ background: "repeating-linear-gradient(to bottom, rgba(255,42,42,0.7) 0 6px, transparent 6px 12px)" }}>
-                  <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 -rotate-90 whitespace-nowrap label text-[9px] text-[#FF2A2A] bg-[#050507] px-2">Dissection axis</span>
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-r-[4px] border-t-[7px] border-l-transparent border-r-transparent border-t-[#FF2A2A]" />
-                </div>
-                <span className="label text-[9px] text-white/45">BASE</span>
-              </div>
-
               <motion.img
                 src="/brand-assets/botanical/plant.jpg"
                 alt="Cannabis plant botanical dissection illustration"
@@ -363,7 +353,7 @@ export default function Home() {
           <div className="md:col-span-6 order-1 md:order-2">
             <div className="overflow-hidden aspect-[4/3]">
               <img
-                src="https://images.unsplash.com/photo-1745455782861-43334c2d036f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBtaW5pbWFsaXN0JTIwcGhhcm1hY3klMjBzdG9yZSUyMGludGVyaW9yfGVufDB8fHx8MTc4NjIwMTIxOHww&ixlib=rb-4.1.0&q=85"
+                src="https://images.unsplash.com/photo-1768881187102-ca0131989c8a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxkYXJrJTIwbHV4dXJ5JTIwYXBvdGhlY2FyeSUyMGJvdXRpcXVlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzg2MjIzNTYxfDA&ixlib=rb-4.1.0&q=85"
                 alt="Cosmos Cannabis Cure flagship interior"
                 className="w-full h-full object-cover"
               />
