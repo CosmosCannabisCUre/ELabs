@@ -1,0 +1,20 @@
+{
+  "summary": "Frontend-only visual verification of the product image edge-fade fix on Product Detail pages. Verified 3 target products (rasta-mango-5, cannazo-uplift-cola, moon-impact-stellardust) plus the /shop page. The .product-integrate radial-gradient mask (74% 74% at 50% 48%, black 60% -> transparent 100%) and mix-blend-mode: screen are correctly applied on the product image element. No hard rectangular black-box edge is visible around the product image on any tested product; edges fade smoothly into the dark celestial background. Rotating COSMOS seal watermark and star twinkle layers remain visible behind products. Add to Bag, Buy Now, quantity +/-, and back-to-shop controls render correctly with no layout breakage. Shop page renders 14 product cards with visible effect badges (BALANCE, SLEEP, FOCUS confirmed).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "test_credentials": "N/A (age gate only - data-testid=age-gate-yes)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Product Detail image uses .product-integrate class in /app/frontend/src/index.css with radial-gradient mask-image + mix-blend-screen. Computed styles verified via Playwright: maskImage='radial-gradient(74% 74% at 50% 48%, rgb(0,0,0) 60%, rgba(0,0,0,0) 100%)', mixBlendMode='screen'. Visual screenshots confirmed smooth blend on rasta-mango-5, cannazo-uplift-cola, moon-impact-stellardust. Shop has 14 products; effect badges (BALANCE/SLEEP/FOCUS) visible on cards.",
+  "rca of the issue": "Original bug: product image on Product Detail rendered as an opaque black-background square that visually clashed with the dark celestial background. Fix: apply CSS radial-gradient mask-image to fade the outer edges to transparent + mix-blend-mode:screen so remaining dark pixels blend with the near-black background. Verified fix is live and effective."
+}
