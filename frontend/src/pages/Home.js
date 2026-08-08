@@ -303,16 +303,6 @@ export default function Home() {
                 className="relative w-full max-w-[320px] object-contain mix-blend-screen transition-transform duration-500"
                 style={{ transform: hovered ? "scale(1.04)" : "scale(1)" }}
               />
-              <motion.img
-                src="/brand-assets/botanical/leaf-anatomy.jpg"
-                alt="Cannabis fan leaf"
-                data-testid="anatomy-leaf-image"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute bottom-0 right-0 w-24 md:w-32 object-contain mix-blend-screen pointer-events-none"
-              />
             </div>
 
             <div className="md:col-span-4 space-y-10 order-3">
