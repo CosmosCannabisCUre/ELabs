@@ -87,3 +87,6 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 - P1: Product image upload in admin (object storage)
 - P2: Inventory decrement on order, discount codes, search
 - P2: Blog authoring in admin, wishlists
+
+## Update (2026-07) — Storefront Facade Image
+- Replaced homepage "Visit us in Bangalore" storefront image (/brand-assets/store/storefront.jpg) with a new AI-generated facade based on user's OKKIO reference: kept deep-red organic architecture + capsule-arched windows, replaced OKKIO signage with clean premium "COSMOS" sign + green cannabis-leaf accent, removed central red column, cinematic cosmos night ambiance. Old asset backed up as storefront-okkio-backup.jpg. Verified via screenshot.
