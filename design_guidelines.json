@@ -1,0 +1,99 @@
+{
+  "project": "Cosmos Cannabis Cure",
+  "app_type": "hybrid_fullstack",
+  "vibe": "Clean & premium, editorial ecommerce, awwwards-style",
+  "colors": {
+    "background_light": "#FFFFFF",
+    "background_dark": "#0A0A0A",
+    "text_primary": "#0A0A0A",
+    "text_secondary": "#555555",
+    "accent_red": "#DF0000",
+    "surface_light": "#F5F5F5",
+    "surface_dark": "#141414",
+    "border_light": "#E5E5E5",
+    "border_dark": "#2A2A2A",
+    "instructions": "Use White (#FFFFFF) for 85% of the UI to create a clinical, premium, gallery-like feel. Use Black (#0A0A0A) for typography, strong borders, and the Age Gate. Use Red (#DF0000) extremely sparingly: ONLY for the primary CTA, active states, and kinetic text highlights in the hero. NEVER use transparent backgrounds for headers/dropdowns; use solid white or black to ensure readability."
+  },
+  "typography": {
+    "heading_font": "Bodoni Moda",
+    "body_font": "Manrope",
+    "mono_font": "JetBrains Mono",
+    "instructions": "Bodoni Moda provides an ultra-premium, high-fashion editorial feel for the hero and manifesto. Manrope offers clinical, readable precision for the UI, product details, and admin panel. Use JetBrains Mono for small uppercase labels, coordinates, and chapter numbers (e.g., [ 01 ], [ 02 ]).",
+    "sizing": {
+      "hero": "text-5xl md:text-[8vw] leading-[0.9] tracking-tighter",
+      "h2": "text-4xl md:text-5xl leading-none tracking-tight",
+      "h3": "text-2xl md:text-3xl",
+      "body": "text-base leading-relaxed",
+      "labels": "text-[10px] md:text-xs uppercase tracking-[0.2em]"
+    }
+  },
+  "layouts": {
+    "spacing": "Generous spacing. Use py-24 to py-32 for section padding. Embrace negative space. Elements should feel like they are floating in a pristine gallery.",
+    "grid": "Use a 12-column CSS grid. Break symmetry for editorial layouts (e.g., an image taking 5 columns, text taking 6, offset by 1 column).",
+    "radius": "rounded-none everywhere. Sharp edges enforce the premium, clinical, brutalist aesthetic.",
+    "borders": "1px solid black (#0A0A0A) or subtle gray (#E5E5E5). Use 'border-collapse' style grids for the admin panel and product technical specs."
+  },
+  "motion": {
+    "libraries": [
+      "framer-motion",
+      "@studio-freight/react-lenis",
+      "react-fast-marquee"
+    ],
+    "hero_reveal": "Kinetic text reveal. Use framer-motion to animate 'y' from 100% to 0% with 'overflow-hidden' wrapper masking for a line-by-line typographic entrance.",
+    "scroll_effects": "Use lenis for buttery momentum scrolling. Apply subtle parallax (y: -20 to 20) on product images in the showcase.",
+    "micro_interactions": "Hover states on products should reveal a subtle red 1px border and a crisp shadow. Buttons should have a 'fill' animation (black to red).",
+    "page_transition": "Use an age-gate (black screen) that slides up (y: -100%) to reveal the pristine white homepage upon clicking 'I am 21+'."
+  },
+  "features": {
+    "age_gate": "Full screen, fixed, z-index 50, background_dark. 'Are you 21 or older?' Large Bodoni Moda typography. Red button for 'Yes', subtle gray text for 'No'. Must pass before seeing the site.",
+    "kinetic_hero": "Massive Bodoni Moda text: 'THE CURE'. Line-by-line masked reveal. Small JetBrains Mono text for 'BANGALORE / 2026'. Include one minimal 3D floating gummy or subtle parallax image.",
+    "marquee": "Slow-moving, massive outline text or small editorial ribbon using react-fast-marquee. Text: 'COSMOS CANNABIS CURE — PREMIUM GUMMIES — BANGALORE —'.",
+    "product_showcase": "Four products: Moon Impact, Trost, Cannoza, Rasta. Sharp rectangular cards or clipped frames. Real photography treated with spotlight effects. Hover: Image scales slightly inside hidden overflow.",
+    "manifesto": "Numbered chapters (01. THE VISION, 02. THE CURE). High-contrast editorial layout. Text-heavy, narrow columns (max-w-prose) offset in a 12-column grid.",
+    "store_location": "All-white futuristic pharmacy imagery. Clean text for hours and Bangalore address.",
+    "admin_panel": "Dense, high-utility. Manrope font. Data-heavy layout with border-collapse grids. Standard table layouts (Shadcn customized)."
+  },
+  "components": {
+    "buttons": "Sharp edges, 1px border. Primary: Red background, White text. Secondary: Transparent background, Black border, Black text. Hover: Invert or slide-in fill.",
+    "cards": "No visible containers if possible. Let products float on the white background, or use 1px subtle borders. No soft drop shadows.",
+    "navigation": "Sticky, solid white or solid black background (DO NOT use transparent). Include Logo, Shop, Manifesto, Location, and Cart (with item count).",
+    "inputs": "Shadcn UI customized. rounded-none, border-black/20 focus:border-black focus:ring-0."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1783369997534-7435a5d585df?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxndW1teSUyMGNhbmRpZXMlMjBwcmVtaXVtJTIwbWFjcm98ZW58MHx8fHwxNzg2MjAxMjE4fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Red and black licorice/gummy candies. Use for Rasta Gummies or Moon Impact.",
+      "category": "product_showcase"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1745455782861-43334c2d036f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBtaW5pbWFsaXN0JTIwcGhhcm1hY3klMjBzdG9yZSUyMGludGVyaW9yfGVufDB8fHx8MTc4NjIwMTIxOHww&ixlib=rb-4.1.0&q=85",
+      "description": "Futuristic all-white store interior. Use for the Store Location & Hours section.",
+      "category": "store_location"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1559239115-ce3eb7cb87ea?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwzfHxjYW5uYWJpcyUyMGxlYWYlMjBtYWNybyUyMGNsZWFuJTIwd2hpdGUlMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc4NjIwMTIxOHww&ixlib=rb-4.1.0&q=85",
+      "description": "Green cannabis leaf macro. Apply grayscale filter (via CSS) to fit the white/black/red palette, or use as a single touch of organic color.",
+      "category": "blog_education"
+    }
+  ],
+  "accessibility": {
+    "contrast": "Ensure all text meets WCAG AA (4.5:1). Red text on white is okay, red text on black must be brightened (#FF3B30).",
+    "motion": "Respect prefers-reduced-motion. Disable parallax and heavy framer-motion reveals if active.",
+    "testing": "All interactive elements MUST include a data-testid attribute in kebab-case based on role (e.g., data-testid='age-gate-yes', data-testid='add-to-cart-moon')."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You MUST use Bodoni Moda for display/hero headings and Manrope for UI text/body.",
+    "You MUST NOT apply `transition: all` globally. Apply targeted transitions.",
+    "You MUST NOT center align the app container in App.css.",
+    "Use Lenis for smooth momentum scrolling. This is critical for the premium awwwards feel.",
+    "Use Framer Motion for the Kinetic Hero (staggered, masked line-by-line reveal).",
+    "Use React Fast Marquee for the editorial ribbon.",
+    "NEVER use generic placeholder images (via.placeholder.com). Use the provided Unsplash URLs.",
+    "The color palette is strictly White (dominant), Black (structure/text), and Red (accents/kinetic moments).",
+    "All containers/cards must have sharp edges (rounded-none). Do not use soft border-radius.",
+    "Ensure all interactive components have `data-testid` attributes.",
+    "Do not use HTML-based components for advanced user interactions; customize Shadcn UI components instead.",
+    "Write components in .js format as per the project setup.",
+    "Implement the Age Verification Gate as the first point of interaction."
+  ]
+}
