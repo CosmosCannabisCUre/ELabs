@@ -26,9 +26,10 @@ export default function Footer() {
           <div className="md:col-span-3">
             <div className="label text-white/40 mb-5">Visit</div>
             <p className="text-sm text-white/70 leading-relaxed">
-              14 Church Street<br />
-              Ashok Nagar, Bangalore<br />
-              Karnataka 560001<br /><br />
+              3104, 6th 'B' Main<br />
+              HAL II Stage, Indiranagar<br />
+              Bangalore 560008<br /><br />
+              +91 90369 47840<br />
               Mon–Sun / 10:00 – 22:00
             </p>
           </div>

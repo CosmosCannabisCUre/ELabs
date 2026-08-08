@@ -44,7 +44,7 @@ export default function Home() {
 
         <div className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="label text-[#DF0000] mb-8">
-            Bangalore / EST. 2026 / India's First
+            Bangalore / Launching Soon / India's First
           </motion.div>
           <h1 className="font-display leading-[0.82] tracking-tight text-[22vw] md:text-[15vw]">
             <span className="reveal-mask">
@@ -174,7 +174,7 @@ export default function Home() {
             <div className="space-y-6 max-w-md">
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Address</div>
-                <p className="text-lg">14 Church Street, Ashok Nagar, Bangalore, Karnataka 560001</p>
+                <p className="text-lg">3104, 6th 'B' Main, HAL II Stage, Indiranagar, Bangalore 560008</p>
               </div>
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Hours</div>
@@ -182,7 +182,7 @@ export default function Home() {
               </div>
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Contact</div>
-                <p className="text-lg">hello@cosmoscannabis.in · +91 80 4000 2026</p>
+                <p className="text-lg">hello@cosmoscannabis.in · +91 90369 47840</p>
               </div>
             </div>
           </div>
