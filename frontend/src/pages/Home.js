@@ -348,7 +348,15 @@ export default function Home() {
             <div className="space-y-6 max-w-md">
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Address</div>
-                <p className="text-lg">3104, 6th &apos;B&apos; Main, HAL II Stage, Indiranagar, Bangalore 560008</p>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=3104%2C+6th+B+Main%2C+HAL+II+Stage%2C+Indiranagar%2C+Bangalore+560008"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="location-address-link"
+                  className="text-lg block transition-colors hover:text-[#FF2A2A]"
+                >
+                  3104, 6th &apos;B&apos; Main, HAL II Stage, Indiranagar, Bangalore 560008
+                </a>
               </div>
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Hours</div>
@@ -356,17 +364,34 @@ export default function Home() {
               </div>
               <div className="border-t border-white/10 pt-5">
                 <div className="label text-white/40 mb-2">Contact</div>
-                <p className="text-lg">info@cosmoscannabis.in · +91 90369 47840</p>
+                <p className="text-lg">
+                  <a
+                    href="mailto:info@cosmoscannabis.in"
+                    data-testid="location-email-link"
+                    className="transition-colors hover:text-[#FF2A2A]"
+                  >
+                    info@cosmoscannabis.in
+                  </a>
+                  <span className="text-white/40"> · </span>
+                  <a
+                    href="tel:+919036947840"
+                    data-testid="location-phone-link"
+                    className="transition-colors hover:text-[#FF2A2A]"
+                  >
+                    +91 90369 47840
+                  </a>
+                </p>
               </div>
             </div>
           </div>
           <div className="md:col-span-6 order-1 md:order-2">
-            <div className="overflow-hidden aspect-[16/10]" data-testid="store-exterior">
+            <div className="group relative overflow-hidden aspect-[16/10] rounded-sm ring-1 ring-white/5 transition-all duration-700 hover:ring-[#FF2A2A]/40 hover:shadow-[0_0_60px_-10px_rgba(255,42,42,0.55)]" data-testid="store-exterior">
               <img
                 src="/brand-assets/store/storefront.jpg"
                 alt="Cosmos Cannabis Cure storefront exterior"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
               />
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_45%,rgba(255,190,120,0.28),transparent_45%)]" />
             </div>
           </div>
         </div>

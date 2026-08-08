@@ -90,3 +90,7 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 
 ## Update (2026-07) — Storefront Facade Image
 - Replaced homepage "Visit us in Bangalore" storefront image (/brand-assets/store/storefront.jpg) with a new AI-generated facade based on user's OKKIO reference: kept deep-red organic architecture + capsule-arched windows, replaced OKKIO signage with clean premium "COSMOS" sign + green cannabis-leaf accent, removed central red column, cinematic cosmos night ambiance. Old asset backed up as storefront-okkio-backup.jpg. Verified via screenshot.
+
+## Update (2026-07) — Location Interactivity
+- Homepage Location section: address is now a Google Maps link, email a mailto: link, phone a tel: link (data-testids: location-address-link / location-email-link / location-phone-link).
+- Storefront image now has a hover effect: subtle zoom (scale-105) + warm radial glow around the COSMOS seal + red glow ring/shadow.
