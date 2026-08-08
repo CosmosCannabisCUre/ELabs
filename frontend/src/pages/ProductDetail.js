@@ -130,6 +130,20 @@ export default function ProductDetail() {
             >
               Buy Now
             </button>
+
+            <Link
+              to="/legal"
+              data-testid="ayush-trust-badge"
+              className="mt-6 flex items-center gap-3 border border-white/15 p-3 max-w-md hover:border-white/40 transition-colors group"
+            >
+              <span className="bg-white p-1.5 shrink-0">
+                <img src="/brand-assets/certifications/ministry-of-ayush.png" alt="Ministry of AYUSH, Government of India" className="h-9 w-auto" />
+              </span>
+              <span className="text-xs text-white/55 leading-snug">
+                Manufactured under the <span className="text-white">AYUSH regulatory framework</span> (Ministry of AYUSH, Govt. of India).
+                <span className="text-[#FF2A2A] group-hover:underline ml-1">Legal &amp; compliance →</span>
+              </span>
+            </Link>
           </div>
         </div>
       </div>
