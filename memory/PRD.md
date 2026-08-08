@@ -97,3 +97,7 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 
 ## Update (2026-07) — Logo Refresh (site-wide)
 - Regenerated /brand-assets/logos/cosmos-seal.png: kept the celestial seal layout (COSMOS / CANNABIS CURE / BANGALORE ring + moon + stars) but recolored rings/text to light off-white for legibility on the dark navbar, and made the central cannabis fan-leaf more prominent and green. Transparent background (keyed out baked checkerboard via PIL). Applies everywhere (Navbar, Footer, Home hero, ProductDetail, Passport, PassportVerify). Old logo backed up as cosmos-seal-prev-backup.png. Verified via screenshots.
+
+## Update (2026-07) — Natural Nebula Hero + Open Graph
+- Hero background: replaced the smooth CSS radial-gradient nebula with a real photographic red nebula image (/brand-assets/cosmic/hero-nebula.jpg, from user's reference) + a film-grain overlay (.grain-overlay in index.css) for a natural, rough, matte look. Removed the old smooth nebula-cloud divs.
+- Open Graph: added /og-image.jpg (1200x630 branded: nebula + "The Cure." + COSMOS seal with green leaf + tagline) and OG/Twitter meta tags in public/index.html (absolute URLs -> https://www.cosmoscannabis.in). Requires frontend restart to serve template changes (done). Verified og:image + twitter:card in served HTML.

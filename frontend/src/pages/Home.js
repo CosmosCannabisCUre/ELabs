@@ -49,10 +49,14 @@ export default function Home() {
     <div data-testid="home-page">
       {/* HERO */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden pt-20 bg-[#050507]">
-        {/* drifting red nebula (parallax) */}
+        {/* photographic red nebula backdrop (parallax) — natural matte look */}
         <motion.div style={{ y: nebulaY }} className="absolute inset-0 z-0 pointer-events-none">
-          <div className="nebula-cloud nebula-red nebula-anim-1" style={{ width: "42vw", height: "42vw", top: "-8%", right: "-6%" }} />
-          <div className="nebula-cloud nebula-red nebula-anim-3" style={{ width: "30vw", height: "30vw", bottom: "-14%", left: "-6%", opacity: 0.55 }} />
+          <img
+            src="/brand-assets/cosmic/hero-nebula.jpg"
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover object-right"
+          />
         </motion.div>
 
         {/* starfield */}
@@ -69,7 +73,9 @@ export default function Home() {
           <div className="shooting-star" style={{ top: "8%", left: "58%", animationDelay: "7s" }} />
         </div>
 
-        <div className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(1000px 500px at 78% 12%, rgba(223,0,0,0.12), transparent 60%)" }} />
+        {/* film grain for matte texture */}
+        <div className="grain-overlay z-0" />
+
 
 
         <motion.div style={{ y: heroTextY }} className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
