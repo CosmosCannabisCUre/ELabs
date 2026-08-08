@@ -234,10 +234,34 @@ body::after {
 .shooting-star {
     position: absolute;
     width: 150px; height: 2px;
-    background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0));
-    filter: drop-shadow(0 0 6px rgba(255,255,255,0.9));
+    background: linear-gradient(90deg, rgba(255,255,255,0), #ffffff);
+    border-radius: 2px;
     animation: shoot 7s ease-in infinite;
     pointer-events: none;
+}
+.shooting-star::after {
+    content: "";
+    position: absolute;
+    right: -2px; top: 50%;
+    width: 5px; height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 10px 2px rgba(255,255,255,0.95);
+}
+
+/* shining twinkling stars */
+.star-shine {
+    position: absolute;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 6px 1px rgba(255,255,255,0.85), 0 0 12px 3px rgba(255,255,255,0.35);
+    animation: star-pulse 3.2s ease-in-out infinite;
+    will-change: opacity, transform;
+}
+@keyframes star-pulse {
+    0%, 100% { opacity: 0.25; transform: scale(0.7); }
+    50% { opacity: 1; transform: scale(1.15); }
 }
 
 @keyframes portal-pulse {

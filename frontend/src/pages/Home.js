@@ -51,11 +51,10 @@ export default function Home() {
     <div data-testid="home-page">
       {/* HERO */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden pt-20 bg-[#050507]">
-        {/* drifting nebula clouds (parallax) */}
+        {/* drifting red nebula (parallax) */}
         <motion.div style={{ y: nebulaY }} className="absolute inset-0 z-0 pointer-events-none">
           <div className="nebula-cloud nebula-red nebula-anim-1" style={{ width: "42vw", height: "42vw", top: "-8%", right: "-6%" }} />
-          <div className="nebula-cloud nebula-violet nebula-anim-2" style={{ width: "34vw", height: "34vw", bottom: "-12%", left: "-8%" }} />
-          <div className="nebula-cloud nebula-blue nebula-anim-3" style={{ width: "26vw", height: "26vw", top: "30%", left: "38%" }} />
+          <div className="nebula-cloud nebula-red nebula-anim-3" style={{ width: "30vw", height: "30vw", bottom: "-14%", left: "-6%", opacity: 0.55 }} />
         </motion.div>
 
         {/* starfield */}
@@ -65,10 +64,28 @@ export default function Home() {
           <div className="twinkle-layer twinkle-3" />
         </motion.div>
 
-        {/* shooting stars */}
+        {/* extra shining stars */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {Array.from({ length: 22 }).map((_, i) => {
+            const top = ((i * 37) % 92) + 3;
+            const left = ((i * 53) % 94) + 2;
+            const size = 2 + (i % 3);
+            const delay = (i % 6) * 0.6;
+            return (
+              <span
+                key={i}
+                className="star-shine"
+                style={{ top: `${top}%`, left: `${left}%`, width: size, height: size, animationDelay: `${delay}s` }}
+              />
+            );
+          })}
+        </div>
+
+        {/* shooting stars (comets) */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="shooting-star" style={{ top: "14%", left: "8%", animationDelay: "1.5s" }} />
           <div className="shooting-star" style={{ top: "42%", left: "30%", animationDelay: "4.5s" }} />
+          <div className="shooting-star" style={{ top: "8%", left: "58%", animationDelay: "7s" }} />
         </div>
 
         {/* floating celestial emblem with orbit rings */}
@@ -158,24 +175,14 @@ export default function Home() {
           const groups = {};
           products.forEach((p) => { (groups[p.brand] = groups[p.brand] || []).push(p); });
           const brands = [...order.filter((b) => groups[b]), ...Object.keys(groups).filter((b) => !order.includes(b))];
-          return brands.map((brand) => {
-            const slug = brand.toLowerCase().replace(/\s+/g, "-");
-            return (
-              <div key={brand} className="mb-16 md:mb-20" data-testid={`home-brand-group-${slug}`}>
-                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                  <h3 className="font-display text-3xl md:text-4xl tracking-tight">{brand}</h3>
-                  <Link to={`/brand/${slug}`} data-testid={`home-brand-link-${slug}`} className="label text-[#FF2A2A] hover:underline inline-flex items-center gap-1.5">
-                    View brand <ArrowUpRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                  {groups[brand].slice(0, 4).map((p, i) => (
-                    <ProductCard key={p.id} product={p} index={i} />
-                  ))}
-                </div>
-              </div>
-            );
-          });
+          const featured = brands.map((b) => groups[b][0]).slice(0, 4); // one product per partner
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8" data-testid="home-featured-grid">
+              {featured.map((p, i) => (
+                <ProductCard key={p.id} product={p} index={i} />
+              ))}
+            </div>
+          );
         })()}
         <div className="mt-12 flex justify-center">
           <Link
@@ -285,9 +292,20 @@ export default function Home() {
                   }}
                 />
               </div>
+
+              {/* dissection direction axis */}
+              <div className="pointer-events-none absolute left-2 md:left-4 top-0 bottom-0 flex flex-col items-center justify-between py-6 z-10" data-testid="dissection-axis">
+                <span className="label text-[9px] text-white/45">APEX</span>
+                <div className="relative flex-1 my-2 w-px" style={{ background: "repeating-linear-gradient(to bottom, rgba(255,42,42,0.7) 0 6px, transparent 6px 12px)" }}>
+                  <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 -rotate-90 whitespace-nowrap label text-[9px] text-[#FF2A2A] bg-[#050507] px-2">Dissection axis</span>
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-r-[4px] border-t-[7px] border-l-transparent border-r-transparent border-t-[#FF2A2A]" />
+                </div>
+                <span className="label text-[9px] text-white/45">BASE</span>
+              </div>
+
               <motion.img
                 src="/brand-assets/botanical/plant.jpg"
-                alt="Cannabis plant botanical illustration"
+                alt="Cannabis plant botanical dissection illustration"
                 initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
                 whileInView={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
                 viewport={{ once: true }}
