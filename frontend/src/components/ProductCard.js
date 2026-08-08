@@ -23,6 +23,7 @@ export default function ProductCard({ product, index = 0 }) {
         </div>
         <div className="flex items-baseline justify-between mt-5">
           <div>
+            <div className="label text-white/35 text-[9px] mb-1">{product.brand}</div>
             <h3 className="font-display text-2xl leading-none">{product.name}</h3>
             <p className="text-white/50 text-sm mt-1">{product.tagline}</p>
           </div>

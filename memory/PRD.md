@@ -18,12 +18,17 @@ Cannabis dispensary in Bangalore — India's first — called "Cosmos Cannabis C
 ## Implemented (2026-06)
 - 21+ age gate (slides up on accept)
 - Kinetic hero with masked line reveal + parallax gummy image
-- Editorial marquee, 4-product showcase, numbered manifesto, store location, journal preview
-- Shop with effect filters, product detail (specs, qty, add to cart, buy now)
-- Cart, checkout (COD), order confirmation
-- Journal list + article pages
-- Admin: login, dashboard stats, orders table w/ status update, product CRUD (create/edit/delete)
-- Verified end-to-end: backend curl (products/login/orders/blog) + full UI flow via screenshots
+- **Dark "cosmos" theme**: near-black backdrop with animated starfield + red/violet nebula glow, cosmic hero image (floating red gummy cubes in space)
+- **Partner-brand model**: products carry a `brand` field. Real products pulled from official brand sites — Moon Impact (trymoonimpact.com: Stellardust, Mission Brief, Drift), Trost (thetrost.com: Mello & Kosha gummies), Cannazo (cannazoindia.com: Uplift Vatis gummies), plus a house Rasta. Product images are hotlinked from brand CDNs.
+- Partner Brands strip on home; Shop filters by brand; product detail shows brand attribution
+- Domain updated to cosmoscannabis.in (contact hello@cosmoscannabis.in)
+- Editorial marquee, product showcase (10 products), numbered manifesto, store location, journal
+- Shop, product detail, cart, COD checkout, order confirmation, journal articles
+- Admin: login, dashboard stats, orders table w/ status, product CRUD
+
+## Notes
+- "Cannoza" in original brief = real brand "Cannazo India" — used Cannazo to match real products.
+- Partner product images are external hotlinks (brand CDNs); consider re-hosting for long-term robustness.
 
 ## API Endpoints
 - GET /api/products, GET /api/products/{slug}

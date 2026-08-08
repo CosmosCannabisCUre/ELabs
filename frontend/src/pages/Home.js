@@ -9,7 +9,7 @@ import ProductCard from "@/components/ProductCard";
 const HERO_IMG =
   "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/b2e2f0e0963bee59c99f3ec4a669a41c3ed3bf849051a74a4a78f0e78b2a998a.jpeg";
 
-const PARTNERS = ["Moon Impact", "Trost", "Cannoza", "Rasta"];
+const PARTNERS = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
 
 const line = {
   hidden: { y: "110%" },
@@ -98,8 +98,8 @@ export default function Home() {
       <section id="shop" className="max-w-[1600px] mx-auto px-6 md:px-10 py-24 md:py-32">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div>
-            <div className="label text-[#DF0000] mb-4">[ The Collection ]</div>
-            <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Four Formulas</h2>
+            <div className="label text-[#FF2A2A] mb-4">[ The Collection ]</div>
+            <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">The Gummies</h2>
           </div>
           <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
         </div>

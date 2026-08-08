@@ -46,10 +46,10 @@ export default function ProductDetail() {
           </motion.div>
 
           <div className="md:py-4">
-            <div className="label text-[#FF2A2A] mb-4">{product.effect}</div>
+            <div className="label text-[#FF2A2A] mb-4">{product.brand}</div>
             <h1 className="font-display text-6xl md:text-7xl tracking-tight leading-[0.9]">{product.name}</h1>
             <p className="text-xl text-white/50 mt-3 mb-2">{product.tagline}</p>
-            <div className="label text-white/35 mb-6">A Cosmos Partner Brand</div>
+            <div className="label text-white/35 mb-6">A Cosmos Partner Brand · {product.effect}</div>
             <div className="font-mono text-2xl mb-8">{formatINR(product.price)}</div>
             <p className="text-white/70 leading-relaxed max-w-md mb-10">{product.description}</p>
 
