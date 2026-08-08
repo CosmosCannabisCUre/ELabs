@@ -295,13 +295,23 @@ export default function Home() {
 
               <motion.img
                 src="/brand-assets/botanical/plant.jpg"
-                alt="Cannabis plant botanical dissection illustration"
+                alt="Cannabis plant botanical illustration"
                 initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
                 whileInView={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-                className="relative w-full max-w-[340px] object-contain mix-blend-screen transition-transform duration-500"
+                className="relative w-full max-w-[320px] object-contain mix-blend-screen transition-transform duration-500"
                 style={{ transform: hovered ? "scale(1.04)" : "scale(1)" }}
+              />
+              <motion.img
+                src="/brand-assets/botanical/leaf-anatomy.jpg"
+                alt="Cannabis fan leaf"
+                data-testid="anatomy-leaf-image"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute bottom-0 right-0 w-24 md:w-32 object-contain mix-blend-screen pointer-events-none"
               />
             </div>
 
@@ -350,11 +360,18 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="md:col-span-6 order-1 md:order-2">
-            <div className="overflow-hidden aspect-[4/3]">
+          <div className="md:col-span-6 order-1 md:order-2 space-y-4">
+            <div className="overflow-hidden aspect-[16/10]" data-testid="store-exterior">
               <img
-                src="https://images.unsplash.com/photo-1768881187102-ca0131989c8a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxkYXJrJTIwbHV4dXJ5JTIwYXBvdGhlY2FyeSUyMGJvdXRpcXVlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzg2MjIzNTYxfDA&ixlib=rb-4.1.0&q=85"
-                alt="Cosmos Cannabis Cure flagship interior"
+                src="/brand-assets/store/storefront.jpg"
+                alt="Cosmos Cannabis Cure storefront exterior"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="overflow-hidden aspect-[16/7]" data-testid="store-interior">
+              <img
+                src="/brand-assets/store/flagship.jpg"
+                alt="Cosmos Cannabis Cure interior"
                 className="w-full h-full object-cover"
               />
             </div>
