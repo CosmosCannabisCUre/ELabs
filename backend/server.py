@@ -170,6 +170,9 @@ class OrderCreate(BaseModel):
     address: str
     items: List[OrderItem]
     payment_method: str = "cod"
+    alternate_phone: Optional[str] = None
+    maps_location: Optional[str] = None
+    consultation_consent: bool = False
     prescription_file_id: Optional[str] = None
     prescription_declared: bool = False
 
@@ -224,6 +227,13 @@ class PassportCreate(BaseModel):
     prescription_file_id: str
     practitioner_name: Optional[str] = None
     issue_date: str  # 'YYYY-MM-DD'
+    validity_months: int = 6
+
+
+class ConsultInput(BaseModel):
+    prescription_file_id: str
+    doctor_notes: Optional[str] = None
+    practitioner_name: Optional[str] = None
     validity_months: int = 6
 
 
@@ -321,16 +331,69 @@ async def delete_product(product_id: str, admin: dict = Depends(get_current_admi
 
 
 # ---------------- Order routes ----------------
+async def _is_first_order(email: str, phone: str) -> bool:
+    q = {"$or": [{"email": email.strip().lower()}, {"phone": phone.strip()}]}
+    prior = await db.orders.count_documents(q)
+    return prior == 0
+
+
+async def _order_received_email(doc: dict):
+    first = doc.get("is_first_order")
+    extra = ("<p>As this is your first order, please keep your Google Maps location and an alternate number handy — "
+             "it helps our delivery team reach you.</p>") if first else ""
+    html = f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f14;border:1px solid #222;border-radius:8px;overflow:hidden">
+          <tr><td style="padding:28px 32px;border-bottom:1px solid #222">
+            <div style="color:#DF0000;letter-spacing:3px;font-size:11px;text-transform:uppercase">Cosmos Cannabis Cure</div>
+            <div style="color:#fff;font-size:24px;margin-top:8px">We've received your order</div>
+          </td></tr>
+          <tr><td style="padding:28px 32px;color:#c9c9d0;font-size:14px;line-height:1.6">
+            <p>Hello {doc['customer_name']},</p>
+            <p>Thank you for your order (total <b style="color:#fff">₹{int(doc['total'])}</b>). Our in-house Ayurvedic
+            doctor will call you shortly for a short consultation. After the consult, your prescription and guidance
+            are issued and your order is confirmed for processing and delivery.</p>
+            {extra}
+            <p style="color:#8a8a95;font-size:12px">Consume responsibly · 21+ only · India</p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
+    await send_email(doc["email"], "Your Cosmos order — consultation next", html)
+
+
+@api_router.post("/orders/precheck")
+async def order_precheck(body: dict):
+    email = (body.get("email") or "").strip().lower()
+    phone = (body.get("phone") or "").strip()
+    address = (body.get("address") or "").strip()
+    if not email and not phone:
+        return {"is_first_order": True, "address_changed": True, "needs_location": True}
+    q = {"$or": [{"email": email}, {"phone": phone}]}
+    last = await db.orders.find_one(q, sort=[("created_at", -1)])
+    if not last:
+        return {"is_first_order": True, "address_changed": True, "needs_location": True}
+    address_changed = bool(address) and address != (last.get("address") or "").strip()
+    return {"is_first_order": False, "address_changed": address_changed, "needs_location": address_changed}
+
+
 @api_router.post("/orders")
 async def create_order(payload: OrderCreate):
     total = sum(i.price * i.quantity for i in payload.items)
     doc = payload.model_dump()
     doc["total"] = round(total, 2)
-    doc["status"] = "pending"
+    doc["status"] = "awaiting_consultation"
     doc["payment_status"] = "cod_pending" if payload.payment_method == "cod" else "pending"
+    doc["is_first_order"] = await _is_first_order(payload.email, payload.phone)
+    doc["consultation_status"] = "pending"
+    doc["doctor_notes"] = None
+    doc["passport_code"] = None
     doc["created_at"] = now_iso()
     res = await db.orders.insert_one(doc)
     created = await db.orders.find_one({"_id": res.inserted_id})
+    await _order_received_email(created)
     return clean(created)
 
 
@@ -348,8 +411,12 @@ async def create_payment_order(payload: OrderCreate):
     doc = payload.model_dump()
     doc["payment_method"] = "razorpay"
     doc["total"] = total
-    doc["status"] = "pending"
+    doc["status"] = "awaiting_consultation"
     doc["payment_status"] = "created"
+    doc["is_first_order"] = await _is_first_order(payload.email, payload.phone)
+    doc["consultation_status"] = "pending"
+    doc["doctor_notes"] = None
+    doc["passport_code"] = None
     doc["created_at"] = now_iso()
     res = await db.orders.insert_one(doc)
     order_id = str(res.inserted_id)
@@ -384,9 +451,10 @@ async def verify_payment(payload: VerifyPayment):
         raise HTTPException(status_code=400, detail="Payment verification failed")
     await db.orders.update_one(
         {"_id": ObjectId(payload.order_id)},
-        {"$set": {"payment_status": "paid", "status": "confirmed", "razorpay_payment_id": payload.razorpay_payment_id}},
+        {"$set": {"payment_status": "paid", "status": "awaiting_consultation", "razorpay_payment_id": payload.razorpay_payment_id}},
     )
     doc = await db.orders.find_one({"_id": ObjectId(payload.order_id)})
+    await _order_received_email(doc)
     return clean(doc)
 
 
@@ -402,6 +470,56 @@ async def update_order(order_id: str, body: dict, admin: dict = Depends(get_curr
     await db.orders.update_one({"_id": ObjectId(order_id)}, {"$set": {"status": status}})
     doc = await db.orders.find_one({"_id": ObjectId(order_id)})
     return clean(doc)
+
+
+@api_router.post("/orders/{order_id}/consult")
+async def consult_order(order_id: str, payload: ConsultInput, admin: dict = Depends(get_current_admin)):
+    order = await db.orders.find_one({"_id": ObjectId(order_id)})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    # issue a COSMOS Passport from the doctor's prescription
+    passport = await _issue_passport(
+        holder_name=order["customer_name"],
+        phone=order.get("phone", ""),
+        email=order["email"],
+        prescription_file_id=payload.prescription_file_id,
+        practitioner_name=payload.practitioner_name or "Cosmos In-house Ayurvedic Doctor",
+        issue_date=datetime.now(timezone.utc).date().isoformat(),
+        validity_months=payload.validity_months,
+    )
+    await db.orders.update_one(
+        {"_id": ObjectId(order_id)},
+        {"$set": {
+            "status": "confirmed",
+            "consultation_status": "completed",
+            "doctor_notes": (payload.doctor_notes or "").strip() or None,
+            "prescription_file_id": payload.prescription_file_id,
+            "passport_code": passport["code"],
+        }},
+    )
+    # order confirmation email (post-consult)
+    html = f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f14;border:1px solid #222;border-radius:8px;overflow:hidden">
+          <tr><td style="padding:28px 32px;border-bottom:1px solid #222">
+            <div style="color:#DF0000;letter-spacing:3px;font-size:11px;text-transform:uppercase">Cosmos Cannabis Cure</div>
+            <div style="color:#fff;font-size:24px;margin-top:8px">Your order is confirmed</div>
+          </td></tr>
+          <tr><td style="padding:28px 32px;color:#c9c9d0;font-size:14px;line-height:1.6">
+            <p>Hello {order['customer_name']},</p>
+            <p>Your consultation is complete and your prescription has been issued. Your order is now confirmed
+            and moving to processing and dispatch.</p>
+            <p style="color:#fff">Your COSMOS Passport: <b style="font-family:monospace">{passport['passport_number']}</b> — valid until {passport['expiry_date']}.</p>
+            <p style="color:#8a8a95;font-size:12px">Consume responsibly · 21+ only · India</p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
+    await send_email(order["email"], "Your Cosmos order is confirmed", html)
+    doc = await db.orders.find_one({"_id": ObjectId(order_id)})
+    return {"order": clean(doc), "passport": {"code": passport["code"], "passport_number": passport["passport_number"]}}
 
 
 # ---------------- Prescription routes ----------------
@@ -469,34 +587,30 @@ def _public_passport(doc: dict) -> dict:
     }
 
 
-@api_router.post("/passports")
-async def create_passport(payload: PassportCreate):
-    rx = await db.prescriptions.find_one({"id": payload.prescription_file_id, "is_deleted": False})
+async def _issue_passport(holder_name, phone, email, prescription_file_id,
+                          practitioner_name, issue_date, validity_months):
+    rx = await db.prescriptions.find_one({"id": prescription_file_id, "is_deleted": False})
     if not rx:
         raise HTTPException(status_code=400, detail="Please upload a valid prescription first.")
     try:
-        issue = datetime.fromisoformat(payload.issue_date).date()
+        issue = datetime.fromisoformat(issue_date).date()
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid issue date.")
-    months = max(1, min(24, payload.validity_months))
-    # add months by approximating 30-day windows to keep it dependency-free
+    months = max(1, min(24, validity_months))
     expiry = issue + timedelta(days=months * 30)
-    code = secrets.token_urlsafe(16)
-    number = "CCC-" + secrets.token_hex(3).upper()
     doc = {
-        "code": code,
-        "passport_number": number,
-        "holder_name": payload.holder_name.strip(),
-        "phone": payload.phone.strip(),
-        "email": payload.email.strip().lower(),
-        "practitioner_name": (payload.practitioner_name or "").strip() or None,
-        "prescription_file_id": payload.prescription_file_id,
+        "code": secrets.token_urlsafe(16),
+        "passport_number": "CCC-" + secrets.token_hex(3).upper(),
+        "holder_name": holder_name.strip(),
+        "phone": (phone or "").strip(),
+        "email": email.strip().lower(),
+        "practitioner_name": (practitioner_name or "").strip() or None,
+        "prescription_file_id": prescription_file_id,
         "issue_date": issue.isoformat(),
         "expiry_date": expiry.isoformat(),
         "created_at": now_iso(),
     }
     await db.passports.insert_one(doc)
-    # confirmation email (non-blocking best-effort)
     html = f"""
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
       <tr><td align="center">
@@ -507,13 +621,12 @@ async def create_passport(payload: PassportCreate):
           </td></tr>
           <tr><td style="padding:28px 32px;color:#c9c9d0;font-size:14px;line-height:1.6">
             <p>Hello {doc['holder_name']},</p>
-            <p>Your COSMOS Passport has been created. Keep it handy for purchases and for validation with authorities.</p>
+            <p>Your COSMOS Passport has been created from your consultation. Keep it handy for purchases and for validation with authorities.</p>
             <table width="100%" style="margin:16px 0;color:#fff;font-size:14px">
               <tr><td style="padding:6px 0;color:#8a8a95">Passport No.</td><td align="right" style="font-family:monospace">{doc['passport_number']}</td></tr>
               <tr><td style="padding:6px 0;color:#8a8a95">Issue Date</td><td align="right">{doc['issue_date']}</td></tr>
               <tr><td style="padding:6px 0;color:#8a8a95">Valid Until</td><td align="right">{doc['expiry_date']}</td></tr>
             </table>
-            <p style="color:#8a8a95;font-size:12px">This passport records an Ayurvedic Vijaya prescription for wellness use. Renew before the validity date to keep purchasing seamlessly.</p>
           </td></tr>
           <tr><td style="padding:18px 32px;border-top:1px solid #222;color:#5a5a63;font-size:11px">Consume responsibly · 21+ only · India</td></tr>
         </table>
@@ -521,7 +634,18 @@ async def create_passport(payload: PassportCreate):
     </table>
     """
     await send_email(doc["email"], "Your COSMOS Passport", html)
-    return {"code": code, "passport_number": number, **_public_passport(doc)}
+    return doc
+
+
+
+
+@api_router.post("/passports")
+async def create_passport(payload: PassportCreate):
+    doc = await _issue_passport(
+        payload.holder_name, payload.phone, payload.email, payload.prescription_file_id,
+        payload.practitioner_name, payload.issue_date, payload.validity_months,
+    )
+    return {"code": doc["code"], "passport_number": doc["passport_number"], **_public_passport(doc)}
 
 
 @api_router.get("/passports/verify/{code}")

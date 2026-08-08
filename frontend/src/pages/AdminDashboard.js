@@ -9,7 +9,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
-const STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
+const STATUSES = ["awaiting_consultation", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 const EMPTY = { slug: "", name: "", tagline: "", description: "", price: 0, thc: "10mg", cbd: "0mg", effect: "Balance", flavor: "Berry", image: "", stock: 100, featured: true };
 
 export default function AdminDashboard() {
@@ -19,6 +19,10 @@ export default function AdminDashboard() {
   const [passports, setPassports] = useState([]);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
+  const [consult, setConsult] = useState(null); // order being consulted
+  const [cForm, setCForm] = useState({ notes: "", validity: 6, practitioner: "" });
+  const [cRx, setCRx] = useState(null);
+  const [cUploading, setCUploading] = useState(false);
   const navigate = useNavigate();
 
   const load = useCallback(async () => {
@@ -54,6 +58,44 @@ export default function AdminDashboard() {
       toast.error("Could not open prescription");
     }
   };
+
+  const openConsult = (o) => { setConsult(o); setCForm({ notes: "", validity: 6, practitioner: "" }); setCRx(null); };
+
+  const uploadConsultRx = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const { data } = await api.post("/prescriptions/upload", fd, { headers: { "Content-Type": "multipart/form-data" } });
+      setCRx(data);
+      toast.success("Prescription uploaded");
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Upload failed");
+    } finally {
+      setCUploading(false);
+    }
+  };
+
+  const submitConsult = async (e) => {
+    e.preventDefault();
+    if (!cRx) return toast.error("Upload the prescription first");
+    try {
+      await api.post(`/orders/${consult.id}/consult`, {
+        prescription_file_id: cRx.id,
+        doctor_notes: cForm.notes,
+        practitioner_name: cForm.practitioner || null,
+        validity_months: Number(cForm.validity),
+      });
+      toast.success("Consultation saved · order confirmed · passport issued");
+      setConsult(null);
+      load();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Could not save consultation");
+    }
+  };
+
 
   const remind = async (code) => {
     try {
@@ -125,7 +167,7 @@ export default function AdminDashboard() {
               <thead className="bg-[#0A0A0A] text-white">
                 <tr className="label text-left">
                   <th className="p-4 font-normal">Order</th><th className="p-4 font-normal">Customer</th>
-                  <th className="p-4 font-normal">Items</th><th className="p-4 font-normal">Total</th><th className="p-4 font-normal">Rx</th><th className="p-4 font-normal">Status</th>
+                  <th className="p-4 font-normal">Items</th><th className="p-4 font-normal">Total</th><th className="p-4 font-normal">Consultation</th><th className="p-4 font-normal">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -133,14 +175,21 @@ export default function AdminDashboard() {
                 {orders.map((o) => (
                   <tr key={o.id} data-testid={`order-row-${o.id}`} className="border-t border-[#E5E5E5]">
                     <td className="p-4 font-mono">#{o.id.slice(-6).toUpperCase()}</td>
-                    <td className="p-4">{o.customer_name}<br /><span className="text-[#999] text-xs">{o.phone}</span></td>
+                    <td className="p-4">
+                      {o.customer_name}{o.is_first_order && <span className="ml-2 text-[9px] align-middle px-1.5 py-0.5 bg-[#DF0000] text-white">FIRST</span>}
+                      <br /><span className="text-[#999] text-xs">{o.phone}{o.alternate_phone ? ` · alt ${o.alternate_phone}` : ""}</span>
+                      {o.maps_location && <><br /><a href={o.maps_location} target="_blank" rel="noreferrer" className="text-[#DF0000] text-xs underline">Map pin</a></>}
+                    </td>
                     <td className="p-4 text-xs">{o.items.map((i) => `${i.name}×${i.quantity}`).join(", ")}</td>
                     <td className="p-4 font-mono">{formatINR(o.total)}</td>
                     <td className="p-4 text-xs">
-                      {o.prescription_file_id ? (
-                        <button data-testid={`view-rx-${o.id}`} onClick={() => viewRx(o.prescription_file_id)} className="text-[#DF0000] underline hover:no-underline">View</button>
-                      ) : o.prescription_declared ? (
-                        <span className="text-[#999]">Declared</span>
+                      {o.status === "awaiting_consultation" ? (
+                        <button data-testid={`consult-${o.id}`} onClick={() => openConsult(o)} className="px-3 py-1.5 bg-[#DF0000] text-white label text-[10px]">Consult</button>
+                      ) : o.prescription_file_id ? (
+                        <div className="space-y-1">
+                          <button data-testid={`view-rx-${o.id}`} onClick={() => viewRx(o.prescription_file_id)} className="text-[#DF0000] underline hover:no-underline block">View Rx</button>
+                          {o.passport_code && <a href={`/passport/verify/${o.passport_code}`} target="_blank" rel="noreferrer" className="text-[#0A0A0A] underline block">Passport</a>}
+                        </div>
                       ) : (
                         <span className="text-[#CCC]">—</span>
                       )}
@@ -240,6 +289,42 @@ export default function AdminDashboard() {
             </div>
             <button data-testid="save-product-btn" className="btn-fill w-full py-3 bg-[#DF0000] text-white label border border-[#DF0000]">Save Product</button>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={consult !== null} onOpenChange={(o) => !o && setConsult(null)}>
+        <DialogContent className="rounded-none max-w-lg" data-testid="consult-dialog">
+          <DialogHeader><DialogTitle className="font-display text-2xl">Doctor Consultation</DialogTitle></DialogHeader>
+          {consult && (
+            <form onSubmit={submitConsult} className="space-y-4">
+              <div className="text-sm text-[#666]">Order <span className="font-mono">#{consult.id.slice(-6).toUpperCase()}</span> · {consult.customer_name} · {consult.phone}</div>
+              <div>
+                <label className="label block mb-1">Prescription File</label>
+                <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 border border-[#0A0A0A]/30 hover:border-[#0A0A0A] transition-colors label text-xs">
+                  {cUploading ? "Uploading…" : cRx ? "Replace File" : "Upload Prescription"}
+                  <input data-testid="consult-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={uploadConsultRx} disabled={cUploading} className="hidden" />
+                </label>
+                {cRx && <span data-testid="consult-filename" className="ml-3 text-xs text-[#16A34A] font-mono">✓ {cRx.filename}</span>}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label block mb-1">Practitioner</label>
+                  <input value={cForm.practitioner} onChange={(e) => setCForm({ ...cForm, practitioner: e.target.value })} placeholder="Dr. name (BAMS)" className="w-full border border-[#0A0A0A]/20 outline-none px-3 py-2 font-mono text-sm" />
+                </div>
+                <div>
+                  <label className="label block mb-1">Validity (months)</label>
+                  <input type="number" min="1" max="24" value={cForm.validity} onChange={(e) => setCForm({ ...cForm, validity: e.target.value })} className="w-full border border-[#0A0A0A]/20 outline-none px-3 py-2 font-mono text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="label block mb-1">Consultation Notes / Guidance</label>
+                <textarea rows={3} value={cForm.notes} onChange={(e) => setCForm({ ...cForm, notes: e.target.value })} className="w-full border border-[#0A0A0A]/20 outline-none px-3 py-2 font-mono text-sm resize-none" />
+              </div>
+              <button data-testid="consult-submit" disabled={!cRx} className="btn-fill w-full py-3 bg-[#DF0000] text-white label border border-[#DF0000] disabled:opacity-50">
+                Issue Passport &amp; Confirm Order
+              </button>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </div>

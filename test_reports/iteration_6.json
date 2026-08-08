@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend E2E testing completed for the new consultation-first order flow, admin consult→confirm→passport flow, admin readability, and regression on /legal, /passport, home. All core flows PASSED.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin › Orders table", "issues": ["Some legacy orders (created before status enum change) render with an empty Status dropdown value because their DB status is not one of STATUSES (awaiting_consultation/confirmed/…). Not part of this iteration's scope but worth normalizing in a migration."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "AdminDashboard.js is 332 lines with two dialogs and three tabs; consider splitting Consult dialog and product form into their own components to stay well under the 700-line guideline as it grows.",
+    "Checkout precheck effect runs on every keystroke of email/phone/address (debounced 500ms) — fine, but consider only firing once email+phone are minimally valid to avoid extra calls.",
+    "Consult dialog is missing a Radix DialogDescription / aria-describedby (console warning). Add <DialogDescription> for a11y."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (not tested this iteration)", "frontend": "100%"},
+  "test_credentials": "Admin: admin@cosmoscure.in / Cosmos@2026 (worked)",
+  "seed_data_creation": "Created 1 new checkout order with unique email t1test+<ts>@example.com and consulted 1 order (passport CCC issued).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Verified: (1) /checkout with data-testid=checkout-* fields renders; place-order-btn stays disabled until consultation-consent is checked; toast 'Please share your Google Maps location link for delivery.' appears when first-order maps_location empty; after filling maps + consent, COD order places and data-testid=order-confirmation shows and mentions doctor call + confirmation email. (2) precheck endpoint correctly flagged first-time email as needs_location=true (location-note visible with 'first order' copy). (3) Admin login OK; admin-dashboard text is rgb(10,10,10) on rgb(255,255,255) — readable. (4) Consult button visible only for awaiting_consultation orders; consult-dialog opens; file upload sets consult-filename; consult-submit issues passport, closes dialog, order row now shows View Rx + Passport link and status='confirmed'. (5) Passport link /passport/verify/<code> shows VALID passport with sealed Rx image. (6) /legal renders (8.4KB body). (7) /passport standalone: passport-submit disabled=true until file uploaded. (8) Home shows 'View All' and products. Only minor observation: some older seed orders have empty Status select because DB status not in current STATUSES enum.",
+  "rca of the issue": "N/A — no functional regressions found."
+}
