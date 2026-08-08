@@ -110,3 +110,7 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 - Added components/LaunchCountdown.js: a dismissible "Launching Soon" popup shown once per session (sessionStorage key ccc_countdown_seen) after age verification, hidden on /admin and /passport/verify.
 - Live ticking days/hours/minutes/seconds to LAUNCH_DATE (placeholder 2026-10-07T10:00:00+05:30 — edit this constant to set the real date). At zero it shows "We're Now Open".
 - data-testids: launch-countdown-modal, countdown-timer, countdown-days/hours/minutes/seconds, countdown-dismiss-btn, countdown-enter-btn, countdown-backdrop. Verified via screenshot + dismiss flow.
+
+## Update (2026-07) — Waitlist + Marquee Separator
+- Waitlist: backend POST /api/waitlist {email} (dedupe, validates) stores in `waitlist` collection; GET /api/waitlist (admin) returns {count, entries}. Frontend: email capture form inside the LaunchCountdown popup (data-testids: waitlist-form, waitlist-email-input, waitlist-submit-btn, waitlist-success, waitlist-error). Verified via curl + UI submit.
+- Replaced decorative separator em-dashes ("—") with "~" in the hero marquee (Home.js) and bottom ticker (ConstructionBanner.js). In-sentence/grammatical em-dashes and hyphenated words left unchanged.

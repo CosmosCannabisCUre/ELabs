@@ -121,7 +121,7 @@ export default function Home() {
         <Marquee speed={60} gradient={false}>
           {Array.from({ length: 4 }).map((_, i) => (
             <span key={i} className="font-display text-5xl md:text-7xl mx-8 flex items-center gap-8">
-              Cosmos Cannabis Cure <span className="text-[#DF0000]">—</span> Premium Gummies <span className="text-[#DF0000]">—</span> Bangalore <span className="marquee-outline">—</span>
+              Cosmos Cannabis Cure <span className="text-[#DF0000]">~</span> Premium Gummies <span className="text-[#DF0000]">~</span> Bangalore <span className="marquee-outline">~</span>
             </span>
           ))}
         </Marquee>

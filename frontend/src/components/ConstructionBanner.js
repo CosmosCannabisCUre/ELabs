@@ -11,7 +11,7 @@ export default function ConstructionBanner() {
     setOpen(false);
   };
 
-  const msg = "COSMOS CANNABIS CURE — INDIA'S FIRST AYURVEDIC CANNABIS DISPENSARY · LAUNCHING SOON IN BANGALORE";
+  const msg = "COSMOS CANNABIS CURE ~ INDIA'S FIRST AYURVEDIC CANNABIS DISPENSARY · LAUNCHING SOON IN BANGALORE";
 
   return (
     <div
