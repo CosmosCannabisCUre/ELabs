@@ -1,0 +1,22 @@
+{
+  "summary": "Frontend E2E tested the two new admin features: Doctor Consult Queue (default admin tab) and Passport Renewals button. All acceptance criteria PASSED.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "AdminDashboard.js continues to grow (queue tab + two dialogs + three tabs). Still under 700 lines but recommend extracting ConsultDialog and PassportsTab into their own components soon.",
+    "run-reminders-btn has no loading/disabled state while the POST is in-flight; rapid double-clicks could fire duplicate requests (backend is idempotent so no data harm, but UX-wise add cRunningReminders flag & disable button)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "Admin: admin@cosmoscure.in / Cosmos@2026 (worked)",
+  "seed_data_creation": "None needed — one pending order (Rhea Kapoor, tel:9845012345) was already present in the queue and used for consult flow. No new orders created this iteration.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Verified in this iteration against REACT_APP_BACKEND_URL: (1) After admin login, default active tab is CONSULT QUEUE — [data-testid=tab-queue] and [data-testid=consult-queue] both present without switching tabs. Stats show 'PENDING CONSULTS' with count 1. (2) Queue card [data-testid=queue-card-<orderId>] present for Rhea Kapoor; [data-testid=call-<id>] href='tel:9845012345' (starts with tel: ✓); Map pin link visible. (3) Clicked [data-testid=queue-consult-<id>] → [data-testid=consult-dialog] opened; uploaded 70-byte PNG via [data-testid=consult-file-input]; [data-testid=consult-submit] issued passport & confirmed order; dialog closed; queue card removed; Pending Consults count went 1 → 0. (4) Orders tab shows that order with status='confirmed' and a Passport link (visible in screenshot as #38A672 Rhea Kapoor row). Opening /passport/verify/<code> in a new tab renders VALID passport. (5) Passports tab [data-testid=tab-passports] has [data-testid=run-reminders-btn]; clicking it shows toast 'No passports need reminders right now' (no passports were within 7-day window / all already reminded — idempotency verified: second click produced the same toast, no errors). (6) Regression: Orders table headers = ['ORDER','CUSTOMER','ITEMS','TOTAL','CONSULTATION','STATUS'] — Consultation column intact with View Rx / Passport links. Admin dashboard computed style: color=rgb(10,10,10) on bg=rgb(255,255,255) — high-contrast readable. No console errors observed. Note: to actually observe a non-zero 'N renewal reminder(s) sent' toast, seed at least one passport with valid_until within the next 7 days AND renewal_reminded_for cleared/unset."
+}

@@ -20,6 +20,7 @@ import jwt
 import razorpay
 import uuid
 import secrets
+import asyncio
 import httpx
 import requests
 
@@ -709,6 +710,74 @@ async def remind_passport(code: str, admin: dict = Depends(get_current_admin)):
     return {"sent": bool(email_id), "email": doc["email"]}
 
 
+RENEWAL_WINDOW_DAYS = 7
+
+
+async def _send_renewal_email(doc: dict, status: str) -> bool:
+    lapsed = status == "expired"
+    headline = "Your COSMOS Passport has expired" if lapsed else "Your COSMOS Passport is expiring soon"
+    line = (f"expired on <b style=\"color:#fff\">{doc['expiry_date']}</b>" if lapsed
+            else f"is valid until <b style=\"color:#fff\">{doc['expiry_date']}</b>")
+    html = f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f14;border:1px solid #222;border-radius:8px">
+          <tr><td style="padding:28px 32px">
+            <div style="color:#DF0000;letter-spacing:3px;font-size:11px;text-transform:uppercase">Cosmos Cannabis Cure</div>
+            <div style="color:#fff;font-size:22px;margin:8px 0 16px">{headline}</div>
+            <div style="color:#c9c9d0;font-size:14px;line-height:1.6">
+              <p>Hello {doc['holder_name']},</p>
+              <p>Your COSMOS Passport <b style="color:#fff">{doc['passport_number']}</b> {line}. To keep ordering our
+              Ayurvedic Vijaya products without interruption, please renew your prescription and passport.</p>
+              <p style="color:#8a8a95;font-size:12px">Consume responsibly · 21+ only · India</p>
+            </div>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
+    return bool(await send_email(doc["email"], headline, html))
+
+
+async def _run_renewal_reminders() -> int:
+    """Email holders whose passport is expiring within the window or already expired.
+    Idempotent per expiry_date via `renewal_reminded_for`."""
+    sent = 0
+    cursor = db.passports.find({})
+    async for doc in cursor:
+        status = _passport_status(doc.get("expiry_date", ""))
+        if status not in ("expiring", "expired"):
+            continue
+        if doc.get("renewal_reminded_for") == doc.get("expiry_date"):
+            continue
+        ok = await _send_renewal_email(doc, status)
+        if ok:
+            await db.passports.update_one(
+                {"code": doc["code"]},
+                {"$set": {"renewal_reminded_for": doc["expiry_date"], "renewal_reminded_at": now_iso()}},
+            )
+            sent += 1
+    if sent:
+        logging.getLogger(__name__).info(f"Renewal reminders sent: {sent}")
+    return sent
+
+
+async def _renewal_reminder_loop():
+    await asyncio.sleep(60)  # let startup settle
+    while True:
+        try:
+            await _run_renewal_reminders()
+        except Exception as e:
+            logging.getLogger(__name__).error(f"Renewal loop error: {e}")
+        await asyncio.sleep(12 * 60 * 60)  # every 12 hours
+
+
+@api_router.post("/passports/run-reminders")
+async def run_renewal_reminders(admin: dict = Depends(get_current_admin)):
+    count = await _run_renewal_reminders()
+    return {"sent": count}
+
+
 # ---------------- Blog routes ----------------
 @api_router.get("/blog")
 async def list_blog():
@@ -1000,6 +1069,8 @@ async def startup():
     await db.products.delete_many({"slug": {"$in": ["moon-impact", "trost", "cannoza", "rasta", "rasta-hybrid-cubes"]}})
     for b in SEED_BLOG:
         await db.blog.update_one({"slug": b["slug"]}, {"$setOnInsert": b}, upsert=True)
+
+    asyncio.create_task(_renewal_reminder_loop())
 
 
 app.include_router(api_router)

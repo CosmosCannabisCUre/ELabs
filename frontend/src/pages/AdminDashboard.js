@@ -13,7 +13,7 @@ const STATUSES = ["awaiting_consultation", "confirmed", "processing", "shipped",
 const EMPTY = { slug: "", name: "", tagline: "", description: "", price: 0, thc: "10mg", cbd: "0mg", effect: "Balance", flavor: "Berry", image: "", stock: 100, featured: true };
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState("orders");
+  const [tab, setTab] = useState("queue");
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [passports, setPassports] = useState([]);
@@ -97,6 +97,15 @@ export default function AdminDashboard() {
   };
 
 
+  const runReminders = async () => {
+    try {
+      const { data } = await api.post("/passports/run-reminders");
+      toast.success(data.sent ? `${data.sent} renewal reminder(s) sent` : "No passports need reminders right now");
+    } catch {
+      toast.error("Could not run reminders");
+    }
+  };
+
   const remind = async (code) => {
     try {
       const { data } = await api.post(`/passports/${code}/remind`);
@@ -130,6 +139,7 @@ export default function AdminDashboard() {
   };
 
   const revenue = orders.filter((o) => o.status !== "cancelled").reduce((s, o) => s + o.total, 0);
+  const pending = orders.filter((o) => o.status === "awaiting_consultation");
 
   return (
     <div data-testid="admin-dashboard" className="min-h-screen bg-white text-[#0A0A0A]">
@@ -139,8 +149,9 @@ export default function AdminDashboard() {
       </header>
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-10">
-        <div className="grid grid-cols-3 gap-px bg-[#E5E5E5] border border-[#E5E5E5] mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#E5E5E5] border border-[#E5E5E5] mb-10">
           {[
+            { l: "Pending Consults", v: pending.length },
             { l: "Orders", v: orders.length },
             { l: "Products", v: products.length },
             { l: "Revenue", v: formatINR(revenue) },
@@ -152,14 +163,40 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className="flex gap-3 mb-8">
-          {["orders", "products", "passports"].map((t) => (
+        <div className="flex gap-3 mb-8 flex-wrap">
+          {["queue", "orders", "products", "passports"].map((t) => (
             <button key={t} data-testid={`tab-${t}`} onClick={() => setTab(t)}
               className={`px-6 py-2 label border ${tab === t ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "border-[#E5E5E5]"}`}>
-              {t}
+              {t === "queue" ? `Consult Queue${pending.length ? ` (${pending.length})` : ""}` : t}
             </button>
           ))}
         </div>
+
+        {tab === "queue" && (
+          <div data-testid="consult-queue">
+            {pending.length === 0 && <div className="border border-[#E5E5E5] p-10 text-center text-[#999]">No pending consultations. All caught up.</div>}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pending.map((o) => (
+                <div key={o.id} data-testid={`queue-card-${o.id}`} className="border border-[#0A0A0A] p-5 flex flex-col">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <div className="font-display text-xl leading-none">{o.customer_name}</div>
+                      <div className="font-mono text-xs text-[#999] mt-1">#{o.id.slice(-6).toUpperCase()} · {new Date(o.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</div>
+                    </div>
+                    {o.is_first_order && <span className="text-[9px] px-1.5 py-0.5 bg-[#DF0000] text-white">FIRST</span>}
+                  </div>
+                  <div className="text-xs text-[#555] mb-3">{o.items.map((i) => `${i.name}×${i.quantity}`).join(", ")} · <span className="font-mono">{formatINR(o.total)}</span></div>
+                  {o.maps_location && <a href={o.maps_location} target="_blank" rel="noreferrer" className="text-[#DF0000] text-xs underline mb-3">Delivery map pin</a>}
+                  <div className="mt-auto flex gap-2 pt-3">
+                    <a data-testid={`call-${o.id}`} href={`tel:${o.phone}`} className="flex-1 text-center px-3 py-2.5 border border-[#0A0A0A] label text-[10px] hover:bg-[#0A0A0A] hover:text-white transition-colors">Call {o.phone}</a>
+                    <button data-testid={`queue-consult-${o.id}`} onClick={() => openConsult(o)} className="flex-1 px-3 py-2.5 bg-[#DF0000] text-white label text-[10px]">Consult &amp; Confirm</button>
+                  </div>
+                  {o.alternate_phone && <a href={`tel:${o.alternate_phone}`} className="text-[10px] text-[#999] underline mt-2">Alt: {o.alternate_phone}</a>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {tab === "orders" && (
           <div className="border border-[#0A0A0A] overflow-x-auto">
@@ -233,7 +270,11 @@ export default function AdminDashboard() {
           </div>
         )}
         {tab === "passports" && (
-          <div className="border border-[#0A0A0A] overflow-x-auto" data-testid="passports-table">
+          <div>
+            <div className="flex justify-end mb-4">
+              <button data-testid="run-reminders-btn" onClick={runReminders} className="px-5 py-2.5 bg-[#0A0A0A] text-white label text-xs hover:bg-[#DF0000] transition-colors">Run Renewal Reminders</button>
+            </div>
+            <div className="border border-[#0A0A0A] overflow-x-auto" data-testid="passports-table">
             <table className="w-full text-sm">
               <thead className="bg-[#0A0A0A] text-white">
                 <tr className="label text-left">
@@ -260,6 +301,7 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+          </div>
           </div>
         )}
       </div>
