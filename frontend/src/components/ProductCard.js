@@ -19,7 +19,7 @@ export default function ProductCard({ product, index = 0 }) {
           <img
             src={product.image}
             alt={product.name}
-            className="relative z-10 w-full h-full object-cover mix-blend-screen transition-transform duration-[900ms] ease-out group-hover:scale-105"
+            className="relative z-10 w-full h-full object-contain p-6 transition-transform duration-[900ms] ease-out group-hover:scale-105"
           />
           <span className="absolute top-4 left-4 label bg-white text-black px-2 py-1">{product.effect}</span>
         </div>

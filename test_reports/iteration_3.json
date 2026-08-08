@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only visual verification of the 'black box around product image' bug fix on Product Detail pages and Shop page. Passed age gate (data-testid='age-gate-yes'), navigated to /product/rasta-mango-5, /product/cannazo-uplift-cola, /product/moon-impact-stellardust and /shop. Confirmed via screenshots that the product images now float as true transparent cutouts over the celestial background (drifting stars + faint rotating COSMOS seal watermark + soft red radial glow). There is NO visible black rectangular box/square around any pack on any of the 3 PDPs or on the shop cards. The COSMOS seal watermark PNG served at /brand-assets/logos/cosmos-seal.png is confirmed colorType=6 (RGBA) with fully transparent corners (alpha=0). Product name, price, THC/CBD/Effect/Flavor spec grid, quantity stepper, Add to Bag and Buy Now buttons render with no layout breakage on all 3 PDPs. Shop page renders 14 product cards on dark celestial tiles with BALANCE / FOCUS / SLEEP effect badges visible.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ProductDetail.js and ProductCard.js correctly removed mix-blend-screen and radial mask workarounds; images are now clean object-contain PNGs with drop-shadow — this is the right approach now that the source PNGs are true alpha cutouts.",
+    "The COSMOS seal watermark is served at 844KB (1024x1024 RGBA). Consider optimizing (WebP or reduced PNG palette) since it is used as a background on every PDP.",
+    "Sampled product img in JS resolved to the seal watermark (first <img> inside the celestial container). Not a bug — just note for future automated pixel-diff tests: scope the selector to a container that excludes the watermark, e.g. add data-testid=\"product-hero-image\" on the actual product <img>. Recommend adding this testid to make automated visual regression easier."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "None required. Age gate: click [data-testid='age-gate-yes'].",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Bug fix for the black-box-around-product-image on Product Detail pages is visually verified across rasta-mango-5, cannazo-uplift-cola, moon-impact-stellardust and the /shop grid. If further automated pixel-level regression is needed, request main agent add data-testid='product-hero-image' on the actual product <img> in ProductDetail.js — currently the first <img> inside product-detail-page is the cosmos-seal watermark, which trips up naive selectors.",
+  "rca of the issue": "Original bug: product images rendered inside an opaque black square because the source PNGs had a solid black background and the previous fix relied on mix-blend-screen + radial CSS masks, which failed on browsers/DPI combos. Mitigation applied by main agent: (1) replaced product image assets with true alpha-transparent PNGs (background alpha-keyed out) served at /brand-assets/cutout/<slug>.png, (2) removed mix-blend-mode and mask-image CSS from both ProductDetail.js and ProductCard.js so the transparent PNG composites directly over the celestial background. Verified visually — no black rectangle remains."
+}

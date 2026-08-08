@@ -74,7 +74,7 @@ export default function ProductDetail() {
                 alt={product.name}
                 animate={{ y: [-12, 12] }}
                 transition={{ duration: 6, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-                className="product-integrate w-full max-w-[440px] md:max-w-[520px] object-contain mix-blend-screen drop-shadow-[0_40px_110px_rgba(223,0,0,0.35)]"
+                className="w-full max-w-[440px] md:max-w-[520px] object-contain drop-shadow-[0_40px_110px_rgba(223,0,0,0.35)]"
               />
             </motion.div>
           </div>
