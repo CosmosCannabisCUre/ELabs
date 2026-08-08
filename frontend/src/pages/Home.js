@@ -8,6 +8,17 @@ import ProductCard from "@/components/ProductCard";
 
 const PARTNERS = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
 
+const ANATOMY_LEFT = [
+  { n: "01", t: "Cola", d: "The dense flowering cluster at the top — where potency concentrates." },
+  { n: "02", t: "Sugar Leaf", d: "Small trichome-frosted leaves nestled among the flowers." },
+  { n: "03", t: "Fan Leaf", d: "The iconic seven-point leaf — the plant's solar engine." },
+];
+const ANATOMY_RIGHT = [
+  { n: "04", t: "Calyx", d: "The teardrop base of each bud, richest in cannabinoids." },
+  { n: "05", t: "Trichome", d: "Microscopic resin glands carrying THC, CBD and terpenes." },
+  { n: "06", t: "Stem & Root", d: "The structure and foundation that feed the whole plant." },
+];
+
 const line = {
   hidden: { y: "110%" },
   show: (i) => ({ y: "0%", transition: { duration: 0.9, delay: 0.3 + i * 0.12, ease: [0.22, 1, 0.36, 1] } }),
@@ -159,6 +170,70 @@ export default function Home() {
                 <p className="md:col-span-5 md:col-start-8 text-white/55 leading-relaxed">{m.b}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ANATOMY OF THE PLANT */}
+      <section className="relative border-t border-white/10 py-24 md:py-32 overflow-hidden">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-10">
+          <div className="text-center mb-16">
+            <div className="label text-[#FF2A2A] mb-4">[ Botany ]</div>
+            <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Anatomy of the Plant</h2>
+            <p className="text-white/50 max-w-lg mx-auto mt-5 text-sm">Every gummy begins here. A closer look at the botany behind the cure.</p>
+          </div>
+
+          <div className="grid md:grid-cols-12 gap-8 md:gap-6 items-center">
+            <div className="md:col-span-4 space-y-10 order-2 md:order-1">
+              {ANATOMY_LEFT.map((a, i) => (
+                <motion.div
+                  key={a.n}
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="md:text-right border-t border-white/10 pt-4"
+                >
+                  <div className="label text-[#FF2A2A] mb-2">[ {a.n} ]</div>
+                  <h3 className="font-display text-3xl leading-none mb-2">{a.t}</h3>
+                  <p className="text-white/50 text-sm md:ml-auto md:max-w-[16rem]">{a.d}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="md:col-span-4 order-1 md:order-2 relative flex justify-center"
+            >
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div className="w-[70%] h-[70%] rounded-full" style={{ background: "radial-gradient(circle, rgba(223,0,0,0.18), transparent 68%)" }} />
+              </div>
+              <img
+                src="/brand-assets/botanical/plant.jpg"
+                alt="Cannabis plant botanical illustration"
+                className="relative w-full max-w-[340px] object-contain mix-blend-screen"
+              />
+            </motion.div>
+
+            <div className="md:col-span-4 space-y-10 order-3">
+              {ANATOMY_RIGHT.map((a, i) => (
+                <motion.div
+                  key={a.n}
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="border-t border-white/10 pt-4"
+                >
+                  <div className="label text-[#FF2A2A] mb-2">[ {a.n} ]</div>
+                  <h3 className="font-display text-3xl leading-none mb-2">{a.t}</h3>
+                  <p className="text-white/50 text-sm max-w-[16rem]">{a.d}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

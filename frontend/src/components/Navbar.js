@@ -31,9 +31,9 @@ export default function Navbar() {
         scrolled ? "bg-[#050507]/90 backdrop-blur-md border-b border-white/10" : "bg-transparent"
       }`}
     >
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-20 md:h-24 flex items-center justify-between">
         <Link to="/" data-testid="nav-logo" className="flex items-center leading-none">
-          <img src="/brand-assets/logos/cosmos-seal.png" alt="Cosmos Cannabis Cure" className="h-12 md:h-14 w-auto" />
+          <img src="/brand-assets/logos/cosmos-seal.png" alt="Cosmos Cannabis Cure" className="h-16 md:h-20 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
