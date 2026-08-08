@@ -40,6 +40,7 @@ class Product(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
     slug: str
+    brand: str = "Cosmos"
     name: str
     tagline: str
     description: str
@@ -55,6 +56,7 @@ class Product(BaseModel):
 
 class ProductCreate(BaseModel):
     slug: str
+    brand: str = "Cosmos"
     name: str
     tagline: str
     description: str

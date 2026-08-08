@@ -7,7 +7,9 @@ import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
 const HERO_IMG =
-  "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/6b651aa2f776b9a36fc2917c4a128d99922190420d8175bf0d522283dbc48a20.jpeg";
+  "https://static.prod-images.emergentagent.com/jobs/1fef2c4b-6b16-4dd9-8afb-bc98d943e39c/images/b2e2f0e0963bee59c99f3ec4a669a41c3ed3bf849051a74a4a78f0e78b2a998a.jpeg";
+
+const PARTNERS = ["Moon Impact", "Trost", "Cannoza", "Rasta"];
 
 const line = {
   hidden: { y: "110%" },
@@ -36,10 +38,11 @@ export default function Home() {
   return (
     <div data-testid="home-page">
       {/* HERO */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden bg-white pt-20">
+      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-end overflow-hidden pt-20">
         <motion.div style={{ y: imgY, scale: imgScale }} className="absolute inset-0 z-0">
-          <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-90" />
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+          <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/50 to-[#050507]/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-transparent to-transparent" />
         </motion.div>
 
         <div className="relative z-10 max-w-[1600px] w-full mx-auto px-6 md:px-10 pb-16 md:pb-24">
@@ -63,7 +66,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="max-w-md text-[#555] leading-relaxed"
+              className="max-w-md text-white/60 leading-relaxed"
             >
               Premium, lab-tested cannabis gummies — engineered for rest, balance, focus and ease. Precisely dosed. Beautifully made.
             </motion.p>
@@ -71,7 +74,7 @@ export default function Home() {
               <Link
                 to="/shop"
                 data-testid="hero-shop-btn"
-                className="btn-fill inline-flex items-center gap-3 px-10 py-4 bg-[#0A0A0A] text-white label"
+                className="btn-fill inline-flex items-center gap-3 px-10 py-4 bg-[#DF0000] text-white label border border-[#DF0000]"
               >
                 Shop the Collection <ArrowUpRight className="w-4 h-4" />
               </Link>
@@ -81,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* MARQUEE */}
-      <section className="py-8 border-y border-[#E5E5E5] bg-white overflow-hidden">
+      <section className="py-8 border-y border-white/10 overflow-hidden">
         <Marquee speed={60} gradient={false}>
           {Array.from({ length: 4 }).map((_, i) => (
             <span key={i} className="font-display text-5xl md:text-7xl mx-8 flex items-center gap-8">
@@ -98,7 +101,7 @@ export default function Home() {
             <div className="label text-[#DF0000] mb-4">[ The Collection ]</div>
             <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Four Formulas</h2>
           </div>
-          <p className="text-[#555] max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
+          <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {products.map((p, i) => (
@@ -107,10 +110,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MANIFESTO */}
-      <section id="manifesto" className="bg-[#0A0A0A] text-white py-24 md:py-40">
+      {/* PARTNER BRANDS */}
+      <section className="border-y border-white/10 py-16 md:py-20">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-          <div className="label text-[#DF0000] mb-20">[ Manifesto ]</div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div className="label text-[#FF2A2A]">[ Partner Brands ]</div>
+            <p className="text-white/45 text-sm max-w-md">
+              Cosmos curates four independent maisons of cannabis wellness — each a specialist in its craft, united under one roof in Bangalore.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-white/10">
+            {PARTNERS.map((b, i) => (
+              <motion.div
+                key={b}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="border-r border-b border-white/10 py-10 md:py-14 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.03] transition-colors"
+              >
+                <div className="font-display text-2xl md:text-3xl group-hover:text-[#FF2A2A] transition-colors">{b}</div>
+                <div className="label text-white/30 text-[9px]">Cosmos Partner</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MANIFESTO */}
+      <section id="manifesto" className="py-24 md:py-40">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-10">
+          <div className="label text-[#FF2A2A] mb-20">[ Manifesto ]</div>
           <div className="space-y-px">
             {MANIFESTO.map((m, i) => (
               <motion.div
@@ -134,22 +164,22 @@ export default function Home() {
       <section id="location" className="max-w-[1600px] mx-auto px-6 md:px-10 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-6 order-2 md:order-1">
-            <div className="label text-[#DF0000] mb-6">[ The Flagship ]</div>
+            <div className="label text-[#FF2A2A] mb-6">[ The Flagship ]</div>
             <h2 className="font-display text-5xl md:text-6xl tracking-tight leading-[0.9] mb-8">
               Visit us in<br />Bangalore
             </h2>
             <div className="space-y-6 max-w-md">
-              <div className="border-t border-[#E5E5E5] pt-5">
-                <div className="label text-[#555] mb-2">Address</div>
+              <div className="border-t border-white/10 pt-5">
+                <div className="label text-white/40 mb-2">Address</div>
                 <p className="text-lg">14 Church Street, Ashok Nagar, Bangalore, Karnataka 560001</p>
               </div>
-              <div className="border-t border-[#E5E5E5] pt-5">
-                <div className="label text-[#555] mb-2">Hours</div>
+              <div className="border-t border-white/10 pt-5">
+                <div className="label text-white/40 mb-2">Hours</div>
                 <p className="text-lg">Monday – Sunday / 10:00 – 22:00</p>
               </div>
-              <div className="border-t border-[#E5E5E5] pt-5">
-                <div className="label text-[#555] mb-2">Contact</div>
-                <p className="text-lg">hello@cosmoscure.in · +91 80 4000 2026</p>
+              <div className="border-t border-white/10 pt-5">
+                <div className="label text-white/40 mb-2">Contact</div>
+                <p className="text-lg">hello@cosmoscannabis.in · +91 80 4000 2026</p>
               </div>
             </div>
           </div>
@@ -166,28 +196,28 @@ export default function Home() {
       </section>
 
       {/* JOURNAL */}
-      <section className="bg-[#F5F5F5] py-24 md:py-32">
+      <section className="border-t border-white/10 py-24 md:py-32">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
           <div className="flex justify-between items-end mb-16">
             <div>
-              <div className="label text-[#DF0000] mb-4">[ Journal ]</div>
+              <div className="label text-[#FF2A2A] mb-4">[ Journal ]</div>
               <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Learn</h2>
             </div>
-            <Link to="/journal" className="label hover:text-[#DF0000] transition-colors flex items-center gap-2">
+            <Link to="/journal" className="label hover:text-[#FF2A2A] transition-colors flex items-center gap-2">
               All Articles <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-px bg-[#E5E5E5]">
+          <div className="grid md:grid-cols-3 gap-px bg-white/10">
             {posts.map((p) => (
               <Link
                 key={p.id}
                 to={`/journal/${p.slug}`}
                 data-testid={`journal-card-${p.slug}`}
-                className="bg-[#F5F5F5] hover:bg-white p-8 md:p-10 transition-colors group"
+                className="bg-[#050507] hover:bg-white/[0.03] p-8 md:p-10 transition-colors group"
               >
-                <div className="label text-[#DF0000] mb-6">{p.category} · {p.read_time}</div>
-                <h3 className="font-display text-3xl leading-tight mb-4 group-hover:text-[#DF0000] transition-colors">{p.title}</h3>
-                <p className="text-[#555] text-sm leading-relaxed">{p.excerpt}</p>
+                <div className="label text-[#FF2A2A] mb-6">{p.category} · {p.read_time}</div>
+                <h3 className="font-display text-3xl leading-tight mb-4 group-hover:text-[#FF2A2A] transition-colors">{p.title}</h3>
+                <p className="text-white/50 text-sm leading-relaxed">{p.excerpt}</p>
               </Link>
             ))}
           </div>

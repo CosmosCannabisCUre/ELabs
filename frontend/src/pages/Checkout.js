@@ -43,9 +43,9 @@ export default function Checkout() {
           </motion.div>
           <div className="label text-[#DF0000] mb-4">[ Order Confirmed ]</div>
           <h1 className="font-display text-5xl md:text-6xl tracking-tight mb-6">Thank you, {order.customer_name.split(" ")[0]}.</h1>
-          <p className="text-[#555] mb-2">Your order <span className="font-mono">#{order.id.slice(-6).toUpperCase()}</span> is being prepared.</p>
-          <p className="text-[#555] mb-10">A confirmation will reach {order.email}. Total: <span className="font-mono">{formatINR(order.total)}</span></p>
-          <Link to="/shop" className="btn-fill inline-block px-10 py-4 bg-[#0A0A0A] text-white label">Continue Shopping</Link>
+          <p className="text-white/50 mb-2">Your order <span className="font-mono">#{order.id.slice(-6).toUpperCase()}</span> is being prepared.</p>
+          <p className="text-white/50 mb-10">A confirmation will reach {order.email}. Total: <span className="font-mono">{formatINR(order.total)}</span></p>
+          <Link to="/shop" className="btn-fill inline-block px-10 py-4 bg-[#DF0000] text-white label border border-[#DF0000]">Continue Shopping</Link>
         </div>
       </div>
     );
@@ -72,7 +72,7 @@ export default function Checkout() {
                   type={f.type}
                   value={form[f.k]}
                   onChange={set(f.k)}
-                  className="w-full border border-[#0A0A0A]/20 focus:border-[#0A0A0A] outline-none px-4 py-3 font-mono text-sm bg-white"
+                  className="w-full border border-white/20 focus:border-white/60 outline-none px-4 py-3 font-mono text-sm bg-transparent"
                 />
               </div>
             ))}
@@ -84,7 +84,7 @@ export default function Checkout() {
                 rows={3}
                 value={form.address}
                 onChange={set("address")}
-                className="w-full border border-[#0A0A0A]/20 focus:border-[#0A0A0A] outline-none px-4 py-3 font-mono text-sm bg-white resize-none"
+                className="w-full border border-white/20 focus:border-white/60 outline-none px-4 py-3 font-mono text-sm bg-transparent resize-none"
               />
             </div>
             <button
@@ -94,15 +94,15 @@ export default function Checkout() {
             >
               {loading ? "Placing Order…" : `Place Order — ${formatINR(total)}`}
             </button>
-            <p className="text-xs text-[#999] text-center">Cash / UPI on delivery · 21+ ID required at handover</p>
+            <p className="text-xs text-white/40 text-center">Cash / UPI on delivery · 21+ ID required at handover</p>
           </form>
 
           <div className="md:col-span-5">
-            <div className="border border-[#0A0A0A] p-8">
+            <div className="border border-white/15 p-8">
               <div className="label mb-6">Your Bag ({items.length})</div>
               {items.map((i) => (
-                <div key={i.product_id} className="flex justify-between text-sm py-2 border-b border-[#E5E5E5]">
-                  <span>{i.name} <span className="text-[#999] font-mono">×{i.quantity}</span></span>
+                <div key={i.product_id} className="flex justify-between text-sm py-2 border-b border-white/10">
+                  <span>{i.name} <span className="text-white/40 font-mono">×{i.quantity}</span></span>
                   <span className="font-mono">{formatINR(i.price * i.quantity)}</span>
                 </div>
               ))}

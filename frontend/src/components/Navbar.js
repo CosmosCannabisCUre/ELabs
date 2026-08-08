@@ -28,7 +28,7 @@ export default function Navbar() {
     <header
       data-testid="navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-white border-b border-[#E5E5E5]" : "bg-transparent"
+        scrolled ? "bg-[#050507]/90 backdrop-blur-md border-b border-white/10" : "bg-transparent"
       }`}
     >
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
@@ -63,7 +63,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-white border-t border-[#E5E5E5] px-6 py-6 flex flex-col gap-5">
+        <div className="md:hidden bg-[#050507] border-t border-white/10 px-6 py-6 flex flex-col gap-5">
           {links.map((l) => (
             <a key={l.label} href={l.to} className="label" onClick={() => setOpen(false)}>
               {l.label}

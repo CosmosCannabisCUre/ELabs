@@ -4,11 +4,14 @@
 @tailwind utilities;
 
 :root {
-    --red: #DF0000;
-    --ink: #0A0A0A;
-    --paper: #FFFFFF;
-    --surface: #F5F5F5;
-    --line: #E5E5E5;
+    --red: #FF2A2A;
+    --red-deep: #DF0000;
+    --ink: #050507;
+    --paper: #050507;
+    --surface: #0F0F14;
+    --line: #22222B;
+    --text: #EDEDF0;
+    --muted: #8A8A95;
 }
 
 * {
@@ -18,10 +21,43 @@
 body {
     margin: 0;
     font-family: 'Manrope', sans-serif;
-    background: var(--paper);
-    color: var(--ink);
+    background: #050507;
+    color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cosmic starfield + nebula backdrop */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(1200px 600px at 80% -5%, rgba(223, 0, 0, 0.14), transparent 60%),
+        radial-gradient(900px 500px at 10% 110%, rgba(80, 20, 120, 0.14), transparent 60%),
+        #050507;
+}
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 90% 20%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 55% 15%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 15% 65%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 85% 85%, rgba(255,255,255,0.55), transparent);
+    background-size: 600px 600px, 500px 500px, 700px 700px, 550px 550px, 650px 650px, 480px 480px, 720px 720px;
+    opacity: 0.5;
+    animation: drift 200s linear infinite;
+}
+@keyframes drift {
+    from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+    to { background-position: 600px 300px, -500px 400px, 700px -350px, -300px 500px, 400px 600px, -480px -200px, 720px 360px; }
 }
 
 .font-display {
@@ -33,13 +69,13 @@ body {
 
 ::selection {
     background: var(--red);
-    color: #fff;
+    color: #050507;
 }
 
 /* thin scrollbar */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #fff; }
-::-webkit-scrollbar-thumb { background: #0A0A0A; }
+::-webkit-scrollbar-track { background: #050507; }
+::-webkit-scrollbar-thumb { background: #DF0000; }
 
 .label {
     font-family: 'JetBrains Mono', monospace;
@@ -62,7 +98,7 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--red);
+    background: var(--red-deep);
     transform: translateY(101%);
     transition: transform 0.4s cubic-bezier(0.65,0,0.35,1);
     z-index: -1;
@@ -71,7 +107,7 @@ body {
 
 .marquee-outline {
     font-family: 'Bodoni Moda', serif;
-    -webkit-text-stroke: 1px #0A0A0A;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.35);
     color: transparent;
 }
 

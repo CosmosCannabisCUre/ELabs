@@ -23,7 +23,7 @@ export default function BlogPost() {
         </Link>
         <div className="label text-[#DF0000] mb-6">{post.category} · {post.read_time} · {post.date}</div>
         <h1 className="font-display text-5xl md:text-6xl tracking-tight leading-[0.95] mb-10">{post.title}</h1>
-        <div className="text-lg leading-relaxed text-[#222] space-y-6">
+        <div className="text-lg leading-relaxed text-white/70 space-y-6">
           {post.body.split("\n\n").map((para, i) => (
             <p key={i}>{para}</p>
           ))}

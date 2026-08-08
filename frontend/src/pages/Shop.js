@@ -19,14 +19,14 @@ export default function Shop() {
         <div className="label text-[#DF0000] mb-4">[ Shop All ]</div>
         <h1 className="font-display text-6xl md:text-8xl tracking-tight leading-[0.85] mb-12">The Collection</h1>
 
-        <div className="flex flex-wrap gap-3 mb-16 border-t border-[#E5E5E5] pt-8">
+        <div className="flex flex-wrap gap-3 mb-16 border-t border-white/10 pt-8">
           {effects.map((e) => (
             <button
               key={e}
               data-testid={`filter-${e.toLowerCase()}`}
               onClick={() => setFilter(e)}
               className={`px-6 py-2 label border transition-colors ${
-                filter === e ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "border-[#E5E5E5] hover:border-[#0A0A0A]"
+                filter === e ? "bg-[#DF0000] text-white border-[#DF0000]" : "border-white/15 hover:border-white"
               }`}
             >
               {e}

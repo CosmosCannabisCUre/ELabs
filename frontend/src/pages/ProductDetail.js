@@ -46,28 +46,29 @@ export default function ProductDetail() {
           </motion.div>
 
           <div className="md:py-4">
-            <div className="label text-[#DF0000] mb-4">{product.effect}</div>
+            <div className="label text-[#FF2A2A] mb-4">{product.effect}</div>
             <h1 className="font-display text-6xl md:text-7xl tracking-tight leading-[0.9]">{product.name}</h1>
-            <p className="text-xl text-[#555] mt-3 mb-6">{product.tagline}</p>
+            <p className="text-xl text-white/50 mt-3 mb-2">{product.tagline}</p>
+            <div className="label text-white/35 mb-6">A Cosmos Partner Brand</div>
             <div className="font-mono text-2xl mb-8">{formatINR(product.price)}</div>
-            <p className="text-[#333] leading-relaxed max-w-md mb-10">{product.description}</p>
+            <p className="text-white/70 leading-relaxed max-w-md mb-10">{product.description}</p>
 
-            <div className="grid grid-cols-4 border-t border-l border-[#E5E5E5] mb-10 max-w-md">
+            <div className="grid grid-cols-4 border-t border-l border-white/10 mb-10 max-w-md">
               {specs.map((s) => (
-                <div key={s.k} className="border-r border-b border-[#E5E5E5] p-4">
-                  <div className="label text-[#999] mb-2">{s.k}</div>
+                <div key={s.k} className="border-r border-b border-white/10 p-4">
+                  <div className="label text-white/40 mb-2">{s.k}</div>
                   <div className="font-mono text-sm">{s.v}</div>
                 </div>
               ))}
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center border border-[#0A0A0A]">
-                <button data-testid="qty-decrease" onClick={() => setQty((q) => Math.max(1, q - 1))} className="p-4 hover:bg-[#F5F5F5]">
+              <div className="flex items-center border border-white/20">
+                <button data-testid="qty-decrease" onClick={() => setQty((q) => Math.max(1, q - 1))} className="p-4 hover:bg-white/5">
                   <Minus className="w-4 h-4" />
                 </button>
                 <span data-testid="qty-value" className="w-12 text-center font-mono">{qty}</span>
-                <button data-testid="qty-increase" onClick={() => setQty((q) => q + 1)} className="p-4 hover:bg-[#F5F5F5]">
+                <button data-testid="qty-increase" onClick={() => setQty((q) => q + 1)} className="p-4 hover:bg-white/5">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -83,7 +84,7 @@ export default function ProductDetail() {
             <button
               data-testid="buy-now-btn"
               onClick={() => { add(product, qty); navigate("/checkout"); }}
-              className="mt-4 w-full px-10 py-4 border border-[#0A0A0A] label hover:bg-[#0A0A0A] hover:text-white transition-colors"
+              className="mt-4 w-full px-10 py-4 border border-white/20 label hover:bg-white hover:text-black transition-colors"
             >
               Buy Now
             </button>

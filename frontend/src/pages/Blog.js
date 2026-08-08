@@ -15,7 +15,7 @@ export default function Blog() {
         <div className="label text-[#DF0000] mb-4">[ Journal ]</div>
         <h1 className="font-display text-6xl md:text-8xl tracking-tight leading-[0.85] mb-16">Education<br />& Culture</h1>
 
-        <div className="border-t border-[#0A0A0A]">
+        <div className="border-t border-white/15">
           {posts.map((p, i) => (
             <motion.div
               key={p.id}
@@ -24,10 +24,10 @@ export default function Blog() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.05 }}
             >
-              <Link to={`/journal/${p.slug}`} data-testid={`blog-item-${p.slug}`} className="group grid md:grid-cols-12 gap-4 py-10 border-b border-[#E5E5E5] items-baseline">
+              <Link to={`/journal/${p.slug}`} data-testid={`blog-item-${p.slug}`} className="group grid md:grid-cols-12 gap-4 py-10 border-b border-white/10 items-baseline">
                 <div className="md:col-span-2 label text-[#DF0000]">{p.category}</div>
                 <h2 className="md:col-span-7 font-display text-3xl md:text-4xl leading-tight group-hover:text-[#DF0000] transition-colors">{p.title}</h2>
-                <p className="md:col-span-3 text-[#555] text-sm">{p.excerpt}</p>
+                <p className="md:col-span-3 text-white/50 text-sm">{p.excerpt}</p>
               </Link>
             </motion.div>
           ))}
