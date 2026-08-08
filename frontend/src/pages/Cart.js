@@ -23,8 +23,8 @@ export default function Cart() {
             <div className="md:col-span-8 border-t border-white/15">
               {items.map((i) => (
                 <div key={i.product_id} data-testid={`cart-item-${i.product_id}`} className="flex gap-6 py-6 border-b border-white/10">
-                  <div className="w-24 h-28 bg-[#F5F5F5] overflow-hidden shrink-0">
-                    <img src={i.image} alt={i.name} className="w-full h-full object-cover" />
+                  <div className="w-24 h-28 overflow-hidden shrink-0">
+                    <img src={i.image} alt={i.name} className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">
