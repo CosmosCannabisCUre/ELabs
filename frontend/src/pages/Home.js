@@ -360,18 +360,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="md:col-span-6 order-1 md:order-2 space-y-4">
+          <div className="md:col-span-6 order-1 md:order-2">
             <div className="overflow-hidden aspect-[16/10]" data-testid="store-exterior">
               <img
                 src="/brand-assets/store/storefront.jpg"
                 alt="Cosmos Cannabis Cure storefront exterior"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="overflow-hidden aspect-[16/7]" data-testid="store-interior">
-              <img
-                src="/brand-assets/store/flagship.jpg"
-                alt="Cosmos Cannabis Cure interior"
                 className="w-full h-full object-cover"
               />
             </div>
