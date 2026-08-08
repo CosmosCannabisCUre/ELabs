@@ -1,55 +1,60 @@
-import { useEffect } from "react";
 import "@/App.css";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { ReactLenis } from "lenis/react";
+import { Toaster } from "sonner";
+import { CartProvider } from "@/context/CartContext";
+import AgeGate from "@/components/AgeGate";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Home from "@/pages/Home";
+import Shop from "@/pages/Shop";
+import ProductDetail from "@/pages/ProductDetail";
+import Cart from "@/pages/Cart";
+import Checkout from "@/pages/Checkout";
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminDashboard from "@/pages/AdminDashboard";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const Site = () => (
+  <>
+    <Navbar />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/shop" element={<Shop />} />
+      <Route path="/product/:slug" element={<ProductDetail />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/journal" element={<Blog />} />
+      <Route path="/journal/:slug" element={<BlogPost />} />
+    </Routes>
+    <Footer />
+  </>
+);
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+function App() {
+  const [verified, setVerified] = useState(() => localStorage.getItem("ccc_age_ok") === "true");
+  const isAdmin = window.location.pathname.startsWith("/admin");
 
   useEffect(() => {
-    helloWorldApi();
+    window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ReactLenis root options={{ lerp: 0.09, smoothWheel: true }}>
+      <CartProvider>
+        <BrowserRouter>
+          <Toaster position="bottom-right" theme="light" />
+          {!verified && !isAdmin && <AgeGate onVerified={() => setVerified(true)} />}
+          <Routes>
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/*" element={<Site />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
+    </ReactLenis>
   );
 }
 
