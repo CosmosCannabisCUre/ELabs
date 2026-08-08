@@ -38,8 +38,6 @@ export default function Home() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const starsY = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const nebulaY = useTransform(scrollYProgress, [0, 1], [0, 220]);
-  const emblemY = useTransform(scrollYProgress, [0, 1], [0, -160]);
-  const emblemScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
   const heroTextY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   useEffect(() => {
@@ -70,28 +68,6 @@ export default function Home() {
           <div className="shooting-star" style={{ top: "42%", left: "30%", animationDelay: "4.5s" }} />
           <div className="shooting-star" style={{ top: "8%", left: "58%", animationDelay: "7s" }} />
         </div>
-
-        {/* floating celestial emblem with orbit rings */}
-        <motion.div
-          style={{ y: emblemY, scale: emblemScale }}
-          className="absolute z-0 right-[4%] top-[16%] w-[38vw] max-w-[560px] aspect-square pointer-events-none hidden md:block"
-        >
-          <div className="absolute inset-0 rounded-full portal-glow" style={{ background: "radial-gradient(circle, rgba(223,0,0,0.28), transparent 62%)" }} />
-          <div className="absolute inset-[6%] rounded-full border border-white/10 orbit-spin" />
-          <div className="absolute inset-[16%] rounded-full border border-[#DF0000]/25 orbit-spin-rev" />
-          <div className="absolute inset-[6%] orbit-spin">
-            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#DF0000] shadow-[0_0_12px_#DF0000]" />
-          </div>
-          <motion.img
-            src="/brand-assets/logos/cosmos-seal.png"
-            alt=""
-            aria-hidden
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 0.92, scale: 1 }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-[18%] w-[64%] h-[64%] object-contain float-y"
-          />
-        </motion.div>
 
         <div className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(1000px 500px at 78% 12%, rgba(223,0,0,0.12), transparent 60%)" }} />
 
