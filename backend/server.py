@@ -797,6 +797,29 @@ async def get_blog(slug: str):
     return clean(doc)
 
 
+async def _waitlist_welcome_email(to_email: str):
+    html = f"""
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#050507;padding:32px;font-family:Arial,Helvetica,sans-serif">
+      <tr><td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f14;border:1px solid #222;border-radius:8px;overflow:hidden">
+          <tr><td style="padding:28px 32px;border-bottom:1px solid #222">
+            <div style="color:#DF0000;letter-spacing:3px;font-size:11px;text-transform:uppercase">Cosmos Cannabis Cure ~ Bangalore</div>
+            <div style="color:#fff;font-size:24px;margin-top:8px">You're on the list</div>
+          </td></tr>
+          <tr><td style="padding:28px 32px;color:#c9c9d0;font-size:14px;line-height:1.6">
+            <p>Welcome to the cosmos.</p>
+            <p>You'll be among the first to know when <b style="color:#fff">India's first premium cannabis dispensary</b>
+            opens its doors in Indiranagar, Bangalore. We'll send you launch news, early access and a little something
+            for being here first.</p>
+            <p style="color:#8a8a95;font-size:12px;margin-top:24px">Consume responsibly · 21+ only · India</p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+    """
+    await send_email(to_email, "You're on the list — Cosmos Cannabis Cure", html)
+
+
 @api_router.post("/waitlist")
 async def join_waitlist(payload: WaitlistInput):
     email = payload.email.lower().strip()
@@ -809,6 +832,10 @@ async def join_waitlist(payload: WaitlistInput):
         "email": email,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
+    try:
+        await _waitlist_welcome_email(email)
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Waitlist welcome email failed: {e}")
     return {"status": "subscribed", "message": "You're on the list"}
 
 

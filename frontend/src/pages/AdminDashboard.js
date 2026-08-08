@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [passports, setPassports] = useState([]);
+  const [waitlist, setWaitlist] = useState([]);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [consult, setConsult] = useState(null); // order being consulted
@@ -31,6 +32,7 @@ export default function AdminDashboard() {
       setOrders(o.data);
       setProducts(p.data);
       api.get("/passports").then((r) => setPassports(r.data)).catch(() => {});
+      api.get("/waitlist").then((r) => setWaitlist(r.data.entries || [])).catch(() => {});
     } catch (err) {
       if (err.response?.status === 401) navigate("/admin");
     }
@@ -42,6 +44,18 @@ export default function AdminDashboard() {
   }, [navigate, load]);
 
   const logout = () => { localStorage.removeItem("ccc_token"); navigate("/admin"); };
+
+  const exportWaitlistCsv = () => {
+    const rows = [["email", "joined_at"], ...waitlist.map((w) => [w.email, w.created_at])];
+    const csv = rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `cosmos-waitlist-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const setStatus = async (id, status) => {
     await api.patch(`/orders/${id}`, { status });
@@ -170,10 +184,10 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex gap-3 mb-8 flex-wrap">
-          {["queue", "orders", "products", "passports"].map((t) => (
+          {["queue", "orders", "products", "passports", "waitlist"].map((t) => (
             <button key={t} data-testid={`tab-${t}`} onClick={() => setTab(t)}
               className={`px-6 py-2 label border ${tab === t ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "border-[#E5E5E5]"}`}>
-              {t === "queue" ? `Consult Queue${pending.length ? ` (${pending.length})` : ""}` : t}
+              {t === "queue" ? `Consult Queue${pending.length ? ` (${pending.length})` : ""}` : t === "waitlist" ? `Waitlist${waitlist.length ? ` (${waitlist.length})` : ""}` : t}
             </button>
           ))}
         </div>
@@ -308,6 +322,36 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
+          </div>
+        )}
+
+        {tab === "waitlist" && (
+          <div data-testid="waitlist-panel">
+            <div className="flex justify-between items-center mb-4">
+              <div className="text-sm text-[#666]">{waitlist.length} signup{waitlist.length === 1 ? "" : "s"}</div>
+              <button data-testid="export-waitlist-btn" onClick={exportWaitlistCsv} disabled={waitlist.length === 0} className="px-5 py-2.5 bg-[#0A0A0A] text-white label text-xs hover:bg-[#DF0000] transition-colors disabled:opacity-50">Export CSV</button>
+            </div>
+            <div className="border border-[#0A0A0A] overflow-x-auto" data-testid="waitlist-table">
+              <table className="w-full text-sm">
+                <thead className="bg-[#0A0A0A] text-white">
+                  <tr className="label text-left">
+                    <th className="p-4 font-normal">#</th>
+                    <th className="p-4 font-normal">Email</th>
+                    <th className="p-4 font-normal">Joined</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {waitlist.length === 0 && <tr><td colSpan={3} className="p-8 text-center text-[#999]">No signups yet.</td></tr>}
+                  {waitlist.map((w, i) => (
+                    <tr key={w.id || w.email} className="border-t border-[#E5E5E5]" data-testid={`waitlist-row-${i}`}>
+                      <td className="p-4 text-[#999]">{i + 1}</td>
+                      <td className="p-4">{w.email}</td>
+                      <td className="p-4 text-[#666]">{w.created_at ? new Date(w.created_at).toLocaleString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

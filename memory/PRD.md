@@ -114,3 +114,7 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 ## Update (2026-07) — Waitlist + Marquee Separator
 - Waitlist: backend POST /api/waitlist {email} (dedupe, validates) stores in `waitlist` collection; GET /api/waitlist (admin) returns {count, entries}. Frontend: email capture form inside the LaunchCountdown popup (data-testids: waitlist-form, waitlist-email-input, waitlist-submit-btn, waitlist-success, waitlist-error). Verified via curl + UI submit.
 - Replaced decorative separator em-dashes ("—") with "~" in the hero marquee (Home.js) and bottom ticker (ConstructionBanner.js). In-sentence/grammatical em-dashes and hyphenated words left unchanged.
+
+## Update (2026-07) — Waitlist Admin Tab + Welcome Email
+- Admin Dashboard: added a "Waitlist" tab (data-testid tab-waitlist) showing all signups (#, email, joined) with an Export CSV button (export-waitlist-btn). Loads from GET /api/waitlist. testids: waitlist-panel, waitlist-table, waitlist-row-{i}.
+- Welcome email: POST /api/waitlist now sends a branded "You're on the list" email via the existing Emergent-managed Resend send_email() helper (fire-and-forget, errors logged not thrown). Verified 202 Accepted for a valid recipient (delivered@resend.dev); note: invalid domains like example.com return 422 from the provider (expected). Test entries cleaned from DB.
