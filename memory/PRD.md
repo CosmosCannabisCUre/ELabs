@@ -43,6 +43,19 @@ Cannabis dispensary in Bangalore — India's first — called "Cosmos Cannabis C
 - POST /api/prescriptions/upload (public, validates ext + size), GET /api/prescriptions/{id}/download (admin only).
 - OrderCreate/Order models extended with prescription_file_id + prescription_declared.
 
+## Implemented (2026-07, session 2)
+- **Cinematic homepage** ("What If?" celestial): drifting parallax nebulae, floating rotating emblem with orbit rings, shooting stars, scroll parallax on hero text (Home.js + index.css keyframes).
+- **Logo revised**: user preferred the previous celestial seal; regenerated it in site-red (#DF0000) with an emerald-green cannabis leaf among the moon/orbit/stars. Transparent PNG → navbar/footer/favicon.
+- **COSMOS Passport** (standalone, no login): /passport create (name/phone/email/practitioner/issue-date/validity + prescription upload) → sealed passport card with QR seal; /passport/verify/:code PUBLIC verify page (bypasses age gate) showing holder, dates, Valid/Expiring/Expired status + sealed Rx image. Admin Passports tab + email reminder action.
+- **Consultation-first order flow** (real business process): checkout no longer uploads a prescription; instead captures alternate number + Google Maps location (required for first orders / changed address, via /orders/precheck) + a required consultation-consent checkbox. Order → status `awaiting_consultation` + order-received email. Doctor (admin) opens Consult dialog, uploads prescription + notes → auto-issues the customer's COSMOS Passport, sets order `confirmed`, sends confirmation email.
+- **Transactional emails** via Emergent-managed Resend: order-received, order-confirmed (with passport), passport-created, passport-reminder.
+- **Admin readability fix** (dashboard now dark text on white).
+- CRM = this admin panel (per user). Razorpay & WhatsApp deferred by user.
+
+### Backend additions (server.py, session 2)
+- Object storage + email helpers; POST/GET prescriptions; passports (create/verify/prescription-by-code/list/remind); _issue_passport shared helper.
+- Orders: /orders/precheck, create_order → awaiting_consultation + is_first_order + email, POST /orders/{id}/consult (issues passport + confirms + email).
+
 ### Design decision (needs user confirmation)
 - Used tasteful **compliance badges** (icon + text) rather than reproducing official Ministry of AYUSH / Govt of India emblems, to avoid misuse of government insignia. User can request the actual emblem if they hold rights/permission.
 

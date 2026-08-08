@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { api, formatINR } from "@/lib/api";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
-const STATUSES = ["awaiting_consultation", "confirmed", "processing", "shipped", "delivered", "cancelled"];
+const STATUSES = ["awaiting_consultation", "confirmed", "processing", "shipped", "delivered", "cancelled", "pending"];
 const EMPTY = { slug: "", name: "", tagline: "", description: "", price: 0, thc: "10mg", cbd: "0mg", effect: "Balance", flavor: "Berry", image: "", stock: 100, featured: true };
 
 export default function AdminDashboard() {
@@ -266,7 +266,9 @@ export default function AdminDashboard() {
 
       <Dialog open={editing !== null} onOpenChange={(o) => !o && setEditing(null)}>
         <DialogContent className="rounded-none max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="font-display text-2xl">{editing === "new" ? "New Product" : "Edit Product"}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="font-display text-2xl">{editing === "new" ? "New Product" : "Edit Product"}</DialogTitle>
+            <DialogDescription className="text-[#666]">Fill in the product details below.</DialogDescription>
+          </DialogHeader>
           <form onSubmit={saveProduct} className="space-y-4">
             {[
               { k: "name", l: "Name" }, { k: "slug", l: "Slug" }, { k: "tagline", l: "Tagline" },
@@ -294,7 +296,9 @@ export default function AdminDashboard() {
 
       <Dialog open={consult !== null} onOpenChange={(o) => !o && setConsult(null)}>
         <DialogContent className="rounded-none max-w-lg" data-testid="consult-dialog">
-          <DialogHeader><DialogTitle className="font-display text-2xl">Doctor Consultation</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="font-display text-2xl">Doctor Consultation</DialogTitle>
+            <DialogDescription className="text-[#666]">Upload the prescription and notes to issue the passport and confirm this order.</DialogDescription>
+          </DialogHeader>
           {consult && (
             <form onSubmit={submitConsult} className="space-y-4">
               <div className="text-sm text-[#666]">Order <span className="font-mono">#{consult.id.slice(-6).toUpperCase()}</span> · {consult.customer_name} · {consult.phone}</div>
