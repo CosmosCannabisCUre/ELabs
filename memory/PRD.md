@@ -56,6 +56,10 @@ Cannabis dispensary in Bangalore — India's first — called "Cosmos Cannabis C
 - Object storage + email helpers; POST/GET prescriptions; passports (create/verify/prescription-by-code/list/remind); _issue_passport shared helper.
 - Orders: /orders/precheck, create_order → awaiting_consultation + is_first_order + email, POST /orders/{id}/consult (issues passport + confirms + email).
 
+### Doctor Queue + Passport Renewals (2026-07)
+- **Doctor Consult Queue**: default admin tab listing all `awaiting_consultation` orders as cards (oldest first) with one-tap **Call** (tel:), alt-number, map pin, FIRST badge, and **Consult & Confirm** (opens the consult dialog → issues passport + confirms order). "Pending Consults" stat added.
+- **Passport Renewals**: backend background loop (`_renewal_reminder_loop`, every 12h, 60s after startup) + admin **Run Renewal Reminders** button (`POST /api/passports/run-reminders`). Emails holders whose passport expires within 7 days or is expired; idempotent per expiry via `renewal_reminded_for`.
+
 ### Regulatory logo (2026-07)
 - Added the **official Ministry of AYUSH / Government of India emblem** (user-provided) on the Legal page ("Regulatory Framework" section) and footer, shown in a white badge with compliant wording: "Manufactured under the AYUSH regulatory framework … not an endorsement." Asset at /brand-assets/certifications/ministry-of-ayush.png.
 

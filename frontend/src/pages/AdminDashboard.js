@@ -97,12 +97,18 @@ export default function AdminDashboard() {
   };
 
 
+  const [runningReminders, setRunningReminders] = useState(false);
+
   const runReminders = async () => {
+    if (runningReminders) return;
+    setRunningReminders(true);
     try {
       const { data } = await api.post("/passports/run-reminders");
       toast.success(data.sent ? `${data.sent} renewal reminder(s) sent` : "No passports need reminders right now");
     } catch {
       toast.error("Could not run reminders");
+    } finally {
+      setRunningReminders(false);
     }
   };
 
@@ -272,7 +278,7 @@ export default function AdminDashboard() {
         {tab === "passports" && (
           <div>
             <div className="flex justify-end mb-4">
-              <button data-testid="run-reminders-btn" onClick={runReminders} className="px-5 py-2.5 bg-[#0A0A0A] text-white label text-xs hover:bg-[#DF0000] transition-colors">Run Renewal Reminders</button>
+              <button data-testid="run-reminders-btn" onClick={runReminders} disabled={runningReminders} className="px-5 py-2.5 bg-[#0A0A0A] text-white label text-xs hover:bg-[#DF0000] transition-colors disabled:opacity-50">{runningReminders ? "Sending…" : "Run Renewal Reminders"}</button>
             </div>
             <div className="border border-[#0A0A0A] overflow-x-auto" data-testid="passports-table">
             <table className="w-full text-sm">
