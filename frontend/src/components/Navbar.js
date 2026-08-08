@@ -33,8 +33,9 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-20 md:h-24 flex items-center justify-between">
-        <Link to="/" data-testid="nav-logo" className="flex items-center leading-none">
-          <img src="/brand-assets/logos/cosmos-seal.png" alt="Cosmos Cannabis Cure" className="h-16 md:h-20 w-auto" />
+        <Link to="/" data-testid="nav-logo" className="flex items-center gap-3 leading-none">
+          <img src="/brand-assets/logos/cosmos-seal.png" alt="Cosmos Cannabis Cure" className="h-14 md:h-16 w-auto" />
+          <span data-testid="nav-wordmark" className="font-display text-2xl md:text-3xl tracking-[0.18em]">COSMOS</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
