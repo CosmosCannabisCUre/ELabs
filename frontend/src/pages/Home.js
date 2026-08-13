@@ -129,13 +129,19 @@ export default function Home() {
 
       {/* SHOWCASE */}
       <section id="shop" className="max-w-[1600px] mx-auto px-6 md:px-10 py-24 md:py-32">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6"
+        >
           <div>
             <div className="label text-[#FF2A2A] mb-4">[ The Collection ]</div>
             <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">The Gummies</h2>
           </div>
           <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
-        </div>
+        </motion.div>
         {(() => {
           const order = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
           const groups = {};
@@ -296,7 +302,13 @@ export default function Home() {
       {/* LOCATION */}
       <section id="location" className="max-w-[1600px] mx-auto px-6 md:px-10 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-10 items-center">
-          <div className="md:col-span-6 order-2 md:order-1">
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="md:col-span-6 order-2 md:order-1"
+          >
             <div className="label text-[#FF2A2A] mb-6">[ The Flagship ]</div>
             <h2 className="font-display text-5xl md:text-6xl tracking-tight leading-[0.9] mb-8">
               Visit us in<br />Bangalore
@@ -348,9 +360,15 @@ export default function Home() {
             >
               <MapPin className="w-4 h-4" /> Get Directions
             </a>
-          </div>
+          </motion.div>
 
-          <div className="md:col-span-6 order-1 md:order-2">
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="md:col-span-6 order-1 md:order-2"
+          >
             <div className="group relative overflow-hidden aspect-[16/10] rounded-sm ring-1 ring-white/5 transition-all duration-700 hover:ring-[#FF2A2A]/40 hover:shadow-[0_0_60px_-10px_rgba(255,42,42,0.55)]" data-testid="store-exterior">
               <img
                 src="/brand-assets/store/storefront.jpg"
@@ -359,14 +377,20 @@ export default function Home() {
               />
               <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_45%,rgba(255,190,120,0.28),transparent_45%)]" />
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* JOURNAL */}
       <section className="border-t border-white/10 py-24 md:py-32">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-          <div className="flex justify-between items-end mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-between items-end mb-16"
+          >
             <div>
               <div className="label text-[#FF2A2A] mb-4">[ Journal ]</div>
               <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Learn</h2>
@@ -374,19 +398,26 @@ export default function Home() {
             <Link to="/journal" className="label hover:text-[#FF2A2A] transition-colors flex items-center gap-2">
               All Articles <ArrowUpRight className="w-4 h-4" />
             </Link>
-          </div>
+          </motion.div>
           <div className="grid md:grid-cols-3 gap-px bg-white/10">
-            {posts.map((p) => (
-              <Link
+            {posts.map((p, i) => (
+              <motion.div
                 key={p.id}
-                to={`/journal/${p.slug}`}
-                data-testid={`journal-card-${p.slug}`}
-                className="bg-[#050507] hover:bg-white/[0.03] p-8 md:p-10 transition-colors group"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="label text-[#FF2A2A] mb-6">{p.category} · {p.read_time}</div>
-                <h3 className="font-display text-3xl leading-tight mb-4 group-hover:text-[#FF2A2A] transition-colors">{p.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed">{p.excerpt}</p>
-              </Link>
+                <Link
+                  to={`/journal/${p.slug}`}
+                  data-testid={`journal-card-${p.slug}`}
+                  className="block bg-[#050507] hover:bg-white/[0.03] p-8 md:p-10 transition-colors group h-full"
+                >
+                  <div className="label text-[#FF2A2A] mb-6">{p.category} · {p.read_time}</div>
+                  <h3 className="font-display text-3xl leading-tight mb-4 group-hover:text-[#FF2A2A] transition-colors">{p.title}</h3>
+                  <p className="text-white/50 text-sm leading-relaxed">{p.excerpt}</p>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>

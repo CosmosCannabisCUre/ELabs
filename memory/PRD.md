@@ -118,3 +118,8 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 ## Update (2026-07) — Waitlist Admin Tab + Welcome Email
 - Admin Dashboard: added a "Waitlist" tab (data-testid tab-waitlist) showing all signups (#, email, joined) with an Export CSV button (export-waitlist-btn). Loads from GET /api/waitlist. testids: waitlist-panel, waitlist-table, waitlist-row-{i}.
 - Welcome email: POST /api/waitlist now sends a branded "You're on the list" email via the existing Emergent-managed Resend send_email() helper (fire-and-forget, errors logged not thrown). Verified 202 Accepted for a valid recipient (delivered@resend.dev); note: invalid domains like example.com return 422 from the provider (expected). Test entries cleaned from DB.
+
+## Update (2026-07) — Homepage Animations + Age Gate Verification
+- Added framer-motion scroll-reveal animations to Home.js sections that lacked them: Showcase header ("The Gummies"), Location columns (slide-in from sides), and Journal header + staggered cards.
+- Age gate reported bug ("age check not working"): verified by testing_agent (iteration_8.json) — works 100% end-to-end in PREVIEW (gate shows on fresh load, Yes dismisses + persists via localStorage ccc_age_ok, No blocks). Not reproducible in preview; RCA = likely stale PRODUCTION build → user should redeploy.
+- Minor: benign framer-motion useScroll positioning console warning (non-blocking).
