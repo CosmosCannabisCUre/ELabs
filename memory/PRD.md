@@ -140,3 +140,6 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 - Composited the actual featured product packs (Moon Impact / Trost mello / Cannazo UPLIFT) into the three interior niches via image editing (interior-concept.jpg updated).
 - Generated a reception + doctor-consultation-nook close-up (interior-reception.jpg) and turned the homepage "Inside the Store" section into a 2-image gallery (data-testids: interior-image-wrap, interior-image-reception). Verified live via screenshot.
 - Note: niche products are AI-composited approximations of the real packs; swap for studio jar shots when available.
+
+## Update (2026-07) — Removed "Inside the Store" Section
+- Per user request, removed the homepage "Inside the Store" interior gallery section and its click-to-zoom lightbox; cleaned up related state, Escape-key effect, and unused imports (AnimatePresence, X). Interior render files retained in /brand-assets/store/ (unused) in case of future re-add. Homepage now flows Location -> Journal.
