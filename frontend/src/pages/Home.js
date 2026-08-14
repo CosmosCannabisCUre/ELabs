@@ -6,7 +6,7 @@ import { ArrowUpRight, MapPin } from "lucide-react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
-const PARTNERS = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
+const PARTNERS = ["Moon Impact", "Trost", "Cannazo"];
 
 const ANATOMY_LEFT = [
   { n: "01", t: "Cola", d: "The dense flowering cluster at the top — where potency concentrates." },
@@ -143,7 +143,7 @@ export default function Home() {
           <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
         </motion.div>
         {(() => {
-          const order = ["Moon Impact", "Trost", "Cannazo", "Rasta"];
+          const order = ["Moon Impact", "Trost", "Cannazo"];
           const groups = {};
           products.forEach((p) => { (groups[p.brand] = groups[p.brand] || []).push(p); });
           const brands = [...order.filter((b) => groups[b]), ...Object.keys(groups).filter((b) => !order.includes(b))];

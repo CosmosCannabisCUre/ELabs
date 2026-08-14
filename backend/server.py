@@ -987,81 +987,6 @@ SEED_PRODUCTS = [
         "stock": 50,
         "featured": True,
     },
-    {
-        "slug": "rasta-strawberry-3-5",
-        "brand": "Rasta",
-        "name": "Strawberry Relax & Reset",
-        "tagline": "3.5% · Pack of 5.",
-        "description": "Rastafari Wellness Relax & Reset gummies in a sweet strawberry, 3.5% full-spectrum Vijaya. A gentle daily reset that unwinds the body and quiets the mind — broad-spectrum and lab-tested.",
-        "price": 702,
-        "thc": "3.5%",
-        "cbd": "Broad-spectrum",
-        "effect": "Relax",
-        "flavor": "Strawberry",
-        "image": "/brand-assets/cutout/rasta-strawberry.png",
-        "stock": 100,
-        "featured": True,
-    },
-    {
-        "slug": "rasta-orange-5",
-        "brand": "Rasta",
-        "name": "Orange Relax & Reset",
-        "tagline": "5% · Pack of 5.",
-        "description": "Bright, zesty orange Relax & Reset gummies from Rastafari Wellness at 5% full-spectrum Vijaya. Balanced calm with a citrus lift — crafted for everyday ease.",
-        "price": 900,
-        "thc": "5%",
-        "cbd": "Broad-spectrum",
-        "effect": "Balance",
-        "flavor": "Orange",
-        "image": "/brand-assets/cutout/rasta-orange.png",
-        "stock": 90,
-        "featured": True,
-    },
-    {
-        "slug": "rasta-mango-5",
-        "brand": "Rasta",
-        "name": "Mango Relax & Reset",
-        "tagline": "5% · Pack of 5.",
-        "description": "Ripe Alphonso-style mango Relax & Reset gummies from Rastafari Wellness, 5% full-spectrum. Warm, rounded relaxation with a tropical sweetness.",
-        "price": 900,
-        "thc": "5%",
-        "cbd": "Broad-spectrum",
-        "effect": "Relax",
-        "flavor": "Mango",
-        "image": "/brand-assets/cutout/rasta-mango.png",
-        "stock": 85,
-        "featured": True,
-    },
-    {
-        "slug": "rasta-kala-khatta-5",
-        "brand": "Rasta",
-        "name": "Kala Khatta Relax & Reset",
-        "tagline": "5% · Pack of 5.",
-        "description": "A nostalgic Indian kala khatta twist on Rastafari Wellness's Relax & Reset gummies, 5% full-spectrum Vijaya. Tangy, bold and deeply calming.",
-        "price": 900,
-        "thc": "5%",
-        "cbd": "Broad-spectrum",
-        "effect": "Hybrid",
-        "flavor": "Kala Khatta",
-        "image": "/brand-assets/cutout/rasta-kala-khatta.png",
-        "stock": 80,
-        "featured": True,
-    },
-    {
-        "slug": "rasta-cappuccino-5",
-        "brand": "Rasta",
-        "name": "Cappuccino Relax & Reset",
-        "tagline": "5% · Pack of 5.",
-        "description": "A rich cappuccino Relax & Reset gummy from Rastafari Wellness at 5% full-spectrum. Coffee-forward comfort that grounds and soothes — a connoisseur's evening treat.",
-        "price": 900,
-        "thc": "5%",
-        "cbd": "Broad-spectrum",
-        "effect": "Sleep",
-        "flavor": "Cappuccino",
-        "image": "/brand-assets/cutout/rasta-cappuccino.png",
-        "stock": 75,
-        "featured": True,
-    },
 ]
 
 SEED_BLOG = [
@@ -1069,7 +994,7 @@ SEED_BLOG = [
         "slug": "understanding-thc-cbd-ratios",
         "title": "Understanding THC & CBD Ratios",
         "excerpt": "The single most important number on your gummy jar — and how to read it.",
-        "body": "The ratio of THC to CBD shapes almost everything about how a gummy feels. THC drives the psychoactive lift; CBD softens, lengthens and grounds it. A 1:1 ratio like Trost tends to feel balanced and functional, while a THC-forward profile like Rasta leans richer and more sedative.\n\nStart low. A 5–10mg dose is plenty for most first-time and occasional consumers. Wait a full 90 minutes before considering more — edibles metabolise slowly through the liver, and the peak often arrives later than expected.\n\nKeep a simple journal: product, dose, time, and how you felt at 60 and 120 minutes. Within a week you'll know your ideal ratio precisely.",
+        "body": "The ratio of THC to CBD shapes almost everything about how a gummy feels. THC drives the psychoactive lift; CBD softens, lengthens and grounds it. A 1:1 ratio like Trost tends to feel balanced and functional, while a THC-forward profile leans richer and more sedative.\n\nStart low. A 5–10mg dose is plenty for most first-time and occasional consumers. Wait a full 90 minutes before considering more — edibles metabolise slowly through the liver, and the peak often arrives later than expected.\n\nKeep a simple journal: product, dose, time, and how you felt at 60 and 120 minutes. Within a week you'll know your ideal ratio precisely.",
         "category": "Education",
         "read_time": "4 min",
         "date": "2026-05-28",
@@ -1118,7 +1043,8 @@ async def startup():
 
     for p in SEED_PRODUCTS:
         await db.products.update_one({"slug": p["slug"]}, {"$set": p}, upsert=True)
-    await db.products.delete_many({"slug": {"$in": ["moon-impact", "trost", "cannoza", "rasta", "rasta-hybrid-cubes"]}})
+    await db.products.delete_many({"slug": {"$in": ["moon-impact", "trost", "cannoza", "rasta", "rasta-hybrid-cubes", "rasta-strawberry-3-5", "rasta-orange-5", "rasta-mango-5", "rasta-kala-khatta-5", "rasta-cappuccino-5"]}})
+    await db.products.delete_many({"brand": {"$in": ["Rasta", "Rastafari", "Rastafari Wellness"]}})
     for b in SEED_BLOG:
         await db.blog.update_one({"slug": b["slug"]}, {"$setOnInsert": b}, upsert=True)
 

@@ -39,19 +39,6 @@ export const BRANDS = {
       "Every batch undergoes certified third-party lab testing for accurate potency and zero contaminants, so strength and results stay reliable, jar after jar.",
     ],
   },
-  rasta: {
-    name: "Rasta",
-    slug: "rasta",
-    tagline: "Relax & reset, the natural way.",
-    origin: "India",
-    house: "Relax & Reset gummies",
-    site: "rastafariwellness.com",
-    ethos: [
-      "Rasta — by Rastafari Wellness — honours the roots of the plant with broad-spectrum Vijaya-infused Relax & Reset gummies in vivid Indian flavours.",
-      "From sweet strawberry and zesty orange to nostalgic kala khatta and rich cappuccino, each gummy is a rounded body-and-mind ease — timeless, generous and true.",
-      "Full-spectrum, lab-tested and thoughtfully dosed, Rasta makes daily reset a simple, joyful ritual.",
-    ],
-  },
 };
 
 export const brandSlug = (brand) => (brand || "").toLowerCase().replace(/\s+/g, "-");
