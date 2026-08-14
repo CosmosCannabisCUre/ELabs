@@ -404,12 +404,26 @@ export default function Home() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden aspect-[3/2] md:aspect-[16/9]"
+            className="overflow-hidden aspect-[3/2] md:aspect-[16/9] mb-4"
             data-testid="interior-image-wrap"
           >
             <img
               src="/brand-assets/store/interior-concept.jpg"
-              alt="Cosmos Cannabis Cure interior concept"
+              alt="Cosmos Cannabis Cure interior — product niches and island counter"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden aspect-[3/2] md:aspect-[21/9]"
+            data-testid="interior-image-reception"
+          >
+            <img
+              src="/brand-assets/store/interior-reception.jpg"
+              alt="Cosmos Cannabis Cure reception desk and doctor consultation nook"
               className="w-full h-full object-cover"
             />
           </motion.div>

@@ -135,3 +135,8 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 
 ## Update (2026-07) — Interior Layout Refinement
 - Reworked interior render per feedback: island counter rotated LENGTHWISE with glass display top facing the entrance; niche walls now wherever "Display" was marked (full back wall + right wall + flanking the embedded TV), each niche with a single spotlit product; curved sculpted reception desk (lit COSMOS logo); back-left seating designated as the DOCTOR CONSULTATION nook (two armchairs + round table). Same white/cream plaster + red niche palette. Updated /brand-assets/store/interior-concept.jpg (live in the "Inside the Store" section).
+
+## Update (2026-07) — Real Products in Niches + Interior Gallery
+- Composited the actual featured product packs (Moon Impact / Trost mello / Cannazo UPLIFT) into the three interior niches via image editing (interior-concept.jpg updated).
+- Generated a reception + doctor-consultation-nook close-up (interior-reception.jpg) and turned the homepage "Inside the Store" section into a 2-image gallery (data-testids: interior-image-wrap, interior-image-reception). Verified live via screenshot.
+- Note: niche products are AI-composited approximations of the real packs; swap for studio jar shots when available.
