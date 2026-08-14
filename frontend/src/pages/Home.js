@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Marquee from "react-fast-marquee";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin, Leaf } from "lucide-react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
@@ -117,11 +117,12 @@ export default function Home() {
       </section>
 
       {/* MARQUEE */}
-      <section className="py-8 border-y border-white/10 overflow-hidden">
-        <Marquee speed={60} gradient={false}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <span key={i} className="font-display text-5xl md:text-7xl mx-8 flex items-center gap-8">
-              Cosmos Cannabis Cure <span className="text-[#DF0000]">~</span> Premium Gummies <span className="text-[#DF0000]">~</span> Bangalore <span className="marquee-outline">~</span>
+      <section className="py-8 border-y border-white/10 overflow-hidden" data-testid="ribbon">
+        <Marquee speed={55} gradient={false}>
+          {["The Cure, Delivered", "Precisely Dosed", "Lab-Tested Vijaya", "Rest · Uplift · Balance", "Ayurvedic, Elevated", "Crafted in Bangalore"].map((phrase, i) => (
+            <span key={i} className="font-display text-5xl md:text-7xl flex items-center">
+              <span className={i % 2 === 1 ? "marquee-outline" : ""}>{phrase}</span>
+              <Leaf className="w-7 h-7 md:w-9 md:h-9 text-[#DF0000] mx-8 md:mx-12 shrink-0" strokeWidth={1.5} />
             </span>
           ))}
         </Marquee>

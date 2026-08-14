@@ -143,3 +143,6 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 
 ## Update (2026-07) — Removed "Inside the Store" Section
 - Per user request, removed the homepage "Inside the Store" interior gallery section and its click-to-zoom lightbox; cleaned up related state, Escape-key effect, and unused imports (AnimatePresence, X). Interior render files retained in /brand-assets/store/ (unused) in case of future re-add. Homepage now flows Location -> Journal.
+
+## Update (2026-07) — Ribbon/Marquee Redesign
+- Replaced the repetitive "Cosmos Cannabis Cure ~ Premium Gummies ~ Bangalore" scrolling ribbon with a rotating set of evocative phrases (The Cure Delivered / Precisely Dosed / Lab-Tested Vijaya / Rest·Uplift·Balance / Ayurvedic Elevated / Crafted in Bangalore), alternating solid vs outlined (marquee-outline) typography, separated by a red lucide Leaf glyph. data-testid: ribbon.
