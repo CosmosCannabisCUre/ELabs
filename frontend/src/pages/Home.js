@@ -381,6 +381,41 @@ export default function Home() {
         </div>
       </section>
 
+      {/* INTERIOR SHOWCASE */}
+      <section className="border-t border-white/10 py-24 md:py-32" data-testid="interior-section">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6"
+          >
+            <div>
+              <div className="label text-[#FF2A2A] mb-4">[ The Space ]</div>
+              <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9]">Inside the Store</h2>
+            </div>
+            <p className="text-white/50 max-w-sm text-sm">
+              Hand-sculpted plaster, warm light and curated niches — every jar displayed like a piece of art.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden aspect-[3/2] md:aspect-[16/9]"
+            data-testid="interior-image-wrap"
+          >
+            <img
+              src="/brand-assets/store/interior-concept.jpg"
+              alt="Cosmos Cannabis Cure interior concept"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </div>
+      </section>
+
       {/* JOURNAL */}
       <section className="border-t border-white/10 py-24 md:py-32">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
