@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ReactLenis } from "lenis/react";
 import { Toaster } from "sonner";
 import { CartProvider } from "@/context/CartContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import AgeGate from "@/components/AgeGate";
 import LaunchCountdown from "@/components/LaunchCountdown";
 import Navbar from "@/components/Navbar";
@@ -65,19 +66,21 @@ function App() {
 
   return (
     <ReactLenis root options={{ lerp: 0.09, smoothWheel: true }}>
-      <CartProvider>
-        <BrowserRouter>
-          <Toaster position="bottom-right" theme="light" />
-          <div className="grain-global" aria-hidden />
-          {!verified && !isAdmin && !isVerify && <AgeGate onVerified={() => setVerified(true)} />}
-          {showCountdown && <LaunchCountdown onClose={closeCountdown} />}
-          <Routes>
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/*" element={<Site />} />
-          </Routes>
-        </BrowserRouter>
-      </CartProvider>
+      <ThemeProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <Toaster position="bottom-right" theme="light" />
+            <div className="grain-global" aria-hidden />
+            {!verified && !isAdmin && !isVerify && <AgeGate onVerified={() => setVerified(true)} />}
+            {showCountdown && <LaunchCountdown onClose={closeCountdown} />}
+            <Routes>
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/*" element={<Site />} />
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
+      </ThemeProvider>
     </ReactLenis>
   );
 }

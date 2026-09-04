@@ -146,3 +146,9 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 
 ## Update (2026-07) — Ribbon/Marquee Redesign
 - Replaced the repetitive "Cosmos Cannabis Cure ~ Premium Gummies ~ Bangalore" scrolling ribbon with a rotating set of evocative phrases (The Cure Delivered / Precisely Dosed / Lab-Tested Vijaya / Rest·Uplift·Balance / Ayurvedic Elevated / Crafted in Bangalore), alternating solid vs outlined (marquee-outline) typography, separated by a red lucide Leaf glyph. data-testid: ribbon.
+
+## Update (2026) — Day/Night Theme + Partner Brands + White Light Mode
+- Added automatic day/night theme: LIGHT 06:00–18:00 local time, DARK otherwise, PLUS a navbar sun/moon toggle (data-testid theme-toggle) that overrides & persists (localStorage ccc_theme_override). Applied site-wide via `.theme-light` global overrides in index.css remapping dark utility classes to a light palette; red (#DF0000) + green accents kept. context/ThemeContext.js manages state; App.js wraps in ThemeProvider. Navbar swaps to a dark seal logo (cosmos-seal-dark.png) in light mode.
+- Light palette changed from cream to WHITE (#FFFFFF bg, #F2F2F2 surfaces, #111 ink) per user request.
+- Fixed HIGH bug (testing iteration_9): removed a mis-scoped `.theme-light .bg-[#0A0A0A]{color}` rule that made the AgeGate heading invisible; added text-white/25 & /85 light overrides. AgeGate + LaunchCountdown now theme correctly.
+- Partner Brands: reworded "four" -> "three" independent maisons and centered the section + brand grid (Moon Impact, Trost, Cannazo).

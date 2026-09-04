@@ -55,7 +55,7 @@ export default function Home() {
             src="/brand-assets/cosmic/hero-nebula.jpg"
             alt=""
             aria-hidden
-            className="absolute inset-0 w-full h-full object-cover object-right"
+            className="hero-nebula-img absolute inset-0 w-full h-full object-cover object-right"
           />
         </motion.div>
 
@@ -171,13 +171,13 @@ export default function Home() {
       {/* PARTNER BRANDS */}
       <section className="border-y border-white/10 py-16 md:py-20">
         <div className="max-w-[1600px] mx-auto px-6 md:px-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="flex flex-col items-center text-center gap-4 mb-10">
             <div className="label text-[#FF2A2A]">[ Partner Brands ]</div>
             <p className="text-white/45 text-sm max-w-md">
-              Cosmos curates four independent maisons of cannabis wellness — each a specialist in its craft, united under one roof in Bangalore.
+              Cosmos curates three independent maisons of cannabis wellness — each a specialist in its craft, united under one roof in Bangalore.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-l border-white/10 max-w-4xl mx-auto">
             {PARTNERS.map((b, i) => (
               <motion.div
                 key={b}

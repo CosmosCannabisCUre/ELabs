@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, Sun, Moon } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Navbar() {
   const { count } = useCart();
+  const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -34,7 +36,7 @@ export default function Navbar() {
     >
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-20 md:h-24 flex items-center justify-between">
         <Link to="/" data-testid="nav-logo" className="flex items-center gap-1.5 leading-none">
-          <img src="/brand-assets/logos/cosmos-seal.png" alt="Cosmos Cannabis Cure" className="h-16 md:h-20 w-auto" />
+          <img src={theme === "light" ? "/brand-assets/logos/cosmos-seal-dark.png" : "/brand-assets/logos/cosmos-seal.png"} alt="Cosmos Cannabis Cure" className="h-16 md:h-20 w-auto" />
           <span data-testid="nav-wordmark" className="font-display text-2xl md:text-3xl tracking-[0.12em]">COSMOS</span>
         </Link>
 
@@ -47,6 +49,14 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-5">
+          <button
+            data-testid="theme-toggle"
+            onClick={toggle}
+            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            className="hover:text-[#DF0000] transition-colors"
+          >
+            {theme === "light" ? <Moon className="w-5 h-5" strokeWidth={1.5} /> : <Sun className="w-5 h-5" strokeWidth={1.5} />}
+          </button>
           <Link to="/cart" data-testid="nav-cart" className="relative">
             <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
             {count > 0 && (
