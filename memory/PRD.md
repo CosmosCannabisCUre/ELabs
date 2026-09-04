@@ -152,3 +152,6 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 - Light palette changed from cream to WHITE (#FFFFFF bg, #F2F2F2 surfaces, #111 ink) per user request.
 - Fixed HIGH bug (testing iteration_9): removed a mis-scoped `.theme-light .bg-[#0A0A0A]{color}` rule that made the AgeGate heading invisible; added text-white/25 & /85 light overrides. AgeGate + LaunchCountdown now theme correctly.
 - Partner Brands: reworded "four" -> "three" independent maisons and centered the section + brand grid (Moon Impact, Trost, Cannazo).
+
+## Update (2026) — Scrolled Navbar Shade Fix
+- Fixed reported bug: in light mode the sticky navbar background was cream when scrolled. Added a dedicated `.nav-scrolled` class (rgba(8,8,10,0.88) dark glass + white text + light border + blur) applied in BOTH themes; navbar logo swaps to the light seal whenever scrolled or in dark theme. Verified 100% pass by testing_agent (iteration_10.json) across light/dark at top and scrolled.

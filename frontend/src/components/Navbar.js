@@ -31,12 +31,12 @@ export default function Navbar() {
     <header
       data-testid="navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-[#050507]/90 backdrop-blur-md border-b border-white/10" : "bg-transparent"
+        scrolled ? "nav-scrolled" : "bg-transparent"
       }`}
     >
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-20 md:h-24 flex items-center justify-between">
         <Link to="/" data-testid="nav-logo" className="flex items-center gap-1.5 leading-none">
-          <img src={theme === "light" ? "/brand-assets/logos/cosmos-seal-dark.png" : "/brand-assets/logos/cosmos-seal.png"} alt="Cosmos Cannabis Cure" className="h-16 md:h-20 w-auto" />
+          <img src={scrolled || theme !== "light" ? "/brand-assets/logos/cosmos-seal.png" : "/brand-assets/logos/cosmos-seal-dark.png"} alt="Cosmos Cannabis Cure" className="h-16 md:h-20 w-auto" />
           <span data-testid="nav-wordmark" className="font-display text-2xl md:text-3xl tracking-[0.12em]">COSMOS</span>
         </Link>
 

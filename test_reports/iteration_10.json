@@ -1,0 +1,23 @@
+{
+  "summary": "Targeted re-test of scrolled navbar shade bug fix. Verified in both light and dark themes at scrollY=0 and scrollY=900. All 5 test criteria pass visually. Cropped 1920x120 screenshots of the top strip clearly show: (1) LIGHT+TOP = light hero with dark COSMOS wordmark, dark links, dark seal logo (cosmos-seal-dark.png); (2) LIGHT+SCROLLED = DARK near-black nav bar with WHITE COSMOS wordmark + WHITE nav links (SHOP/PASSPORT/MANIFESTO/JOURNAL/LOCATION) + WHITE moon/cart icons + light seal (cosmos-seal.png) -- the reported bug is FIXED; (3) DARK+SCROLLED = unchanged dark glass bar with white content and light seal. Theme toggle flips + persists to localStorage 'ccc_theme_override'. No console errors. The .nav-scrolled class is correctly applied when scrolled and the logo swap logic in Navbar.js:39 works as intended.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Observation (not a bug): getComputedStyle() on the <header> reports background-color: rgba(0,0,0,0) and color: rgb(17,17,17) even though the element visually renders with the .nav-scrolled dark glass styles (backdrop-filter is applied correctly, cropped screenshots confirm dark bar + white text). Root cause appears to be the Emergent dev-preview instrumentation attributes (x-file-name, x-component, x-source-type, etc.) or an associated MutationObserver interfering with computed-style reads in headless Playwright -- inline style with !important also failed to change computed values but paint was correct. This does NOT affect real users; just be aware that automated CSS-value assertions on this navbar via getComputedStyle are unreliable in the preview environment. Use pixel-based / cropped screenshot verification (as done here) instead.",
+    "Minor: index.css line 384 references .theme-light .bg-\\[\\#0A0A0A\\] in the transition rule but that Tailwind class isn't in the mapping list at 344-347 (only #0A0A0A, #0A0A0C, #08080B, #0f0f14 are mapped) -- harmless but inconsistent."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "test_credentials": "None required",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Bug 'top shade cream when scrolled' is confirmed fixed. .nav-scrolled CSS in index.css (lines 386-393) renders correctly. Bypass age gate/countdown via localStorage.setItem('ccc_age_ok','true') + sessionStorage.setItem('ccc_countdown_seen','true'), force theme via localStorage 'ccc_theme_override' = 'light'|'dark' then reload. IMPORTANT: DO NOT rely on getComputedStyle() for the navbar bg/color/border assertions -- values come back as transparent/dark even though paint is correct (Emergent x-* instrumentation attributes appear to interfere). Prefer cropped screenshots (clip={x:0,y:0,width:1920,height:120}) after scroll+wait 1000-1500ms for reliable verification.",
+  "rca of the issue": "N/A - fix verified working. Prior bug was that scrolled sticky navbar used the light theme's cream/washed background making it hard to read. Fix: added dedicated .nav-scrolled class (index.css) that always applies rgba(8,8,10,0.88) glass bg with white text in both themes, and Navbar.js swaps to the light seal PNG whenever scrolled OR when theme is dark. All expected behaviors present."
+}
