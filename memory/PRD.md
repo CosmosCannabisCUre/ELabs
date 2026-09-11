@@ -170,3 +170,7 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 - Trost store launch announcement (their OWN new physical store, Sat 12 Sep 2026, Richmond Town, Bangalore): slim red announcement bar pinned under the navbar (data-testid announcement-bar, links /#trost-launch) + dedicated homepage section (id/data-testid trost-launch) with Opening Day / Location cards, "Visit the Store" (Google Maps Richmond Town) + "Explore Trost" (/brand/trost) buttons.
 - Cosmos physical-store presence REMOVED (business is online-only e-commerce): homepage Location/Flagship section (Indiranagar address, hours, Get Directions, storefront.jpg) deleted; navbar "Location" → "Store" (/#trost-launch); footer "Location" explore link → "Trost Store"; footer "Visit" column → "Contact" (online-only note, email/phone, partner-store line); LaunchCountdown post-launch text now "Shop the collection online — we deliver across Bangalore."
 - Verified by testing_agent (iteration_12.json) — all 9 criteria PASS, no console errors.
+
+## Update (2026-09) — Trost Exact Map Pin + Address
+- "Visit the Store" button and the footer "Partner store" line now link to the exact Google Maps place pin (user-provided place URL, data-testids: trost-launch-directions-btn, footer-trost-store-link).
+- Trost launch section Location card now shows the full resolved address "18, Convent Road, Richmond Town, Bangalore 560094" + store hours "12 PM – 10 PM" (resolved from the Google Maps place page). Verified via screenshot.

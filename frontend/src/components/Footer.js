@@ -34,7 +34,15 @@ export default function Footer() {
               info@cosmoscannabis.in<br />
               +91 90369 47840<br /><br />
               <span className="text-white/40">Partner store:</span><br />
-              Trost — Richmond Town, Bangalore
+              <a
+                href="https://www.google.com/maps/place/The+Trost+-+Richmond+Town/data=!4m2!3m1!1s0x0:0x199c9b7159f53289"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="footer-trost-store-link"
+                className="hover:text-[#DF0000] transition-colors"
+              >
+                Trost — Richmond Town, Bangalore
+              </a>
             </p>
           </div>
         </div>

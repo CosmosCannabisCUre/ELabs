@@ -332,13 +332,14 @@ export default function Home() {
               </div>
               <div className="bg-[#050507] p-6 md:p-8">
                 <div className="label text-white/40 mb-2">Location</div>
-                <div className="font-display text-2xl md:text-3xl leading-tight">Richmond Town,<br />Bangalore</div>
+                <div className="font-display text-2xl md:text-3xl leading-tight">18, Convent Road,</div>
+                <div className="text-white/55 text-sm mt-1">Richmond Town, Bangalore 560094 · 12 PM – 10 PM</div>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-4">
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Richmond+Town,+Bangalore"
+                href="https://www.google.com/maps/place/The+Trost+-+Richmond+Town/data=!4m2!3m1!1s0x0:0x199c9b7159f53289"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="trost-launch-directions-btn"
