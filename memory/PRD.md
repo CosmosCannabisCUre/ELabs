@@ -174,3 +174,10 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 ## Update (2026-09) — Trost Exact Map Pin + Address
 - "Visit the Store" button and the footer "Partner store" line now link to the exact Google Maps place pin (user-provided place URL, data-testids: trost-launch-directions-btn, footer-trost-store-link).
 - Trost launch section Location card now shows the full resolved address "18, Convent Road, Richmond Town, Bangalore 560094" + store hours "12 PM – 10 PM" (resolved from the Google Maps place page). Verified via screenshot.
+
+## Update (2026-09) — Full Partner Catalogs (37 Products)
+- Expanded the shop from 9 to **37 products** — the complete live catalogs pulled from the official brand sites: Moon Impact 2 (Stellardust 350mg ₹3,300, Mission Brief 150mg ₹3,000), Trost 12 (Mello + Kosha gummies 5%–13% ₹1,999–₹5,999 + 4 hemp herbal cigarettes ₹599–₹799), Cannazo 23 (gummies, oils, tablets, capsules, roll-on, spray, RSO, drops, combos, Pet CBD oil, Liposomal Berberine).
+- Prices synced to official brand INR prices (incl. blackcurrant correction ₹2,499→₹2,599 via one-off startup update_one).
+- Removed products hidden NON-DESTRUCTIVELY via `HIDDEN_SLUGS` (`moon-impact-drift` — coming soon on brand site; `trost-mello-5-cola` — was misnamed, corrected to `trost-kosha-5-cola`). Hidden slugs return 404 on detail and are excluded from listings; DB docs preserved for order history.
+- New products hotlink official brand Shopify CDN images; existing hero products keep local studio cutouts.
+- Shop filters ordered All / Trost / Moon Impact / Cannazo (BRAND_ORDER in Shop.js). Verified by testing_agent (iteration_13.json) — 100% backend (pytest test_catalog.py) + frontend pass.
