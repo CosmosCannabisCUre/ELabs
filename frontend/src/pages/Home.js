@@ -6,7 +6,7 @@ import { ArrowUpRight, MapPin, Cannabis } from "lucide-react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
-const PARTNERS = ["Moon Impact", "Trost", "Cannazo"];
+const PARTNERS = ["Trost", "Moon Impact", "Cannazo"];
 
 const ANATOMY_LEFT = [
   { n: "01", t: "Cola", d: "The dense flowering cluster at the top — where potency concentrates." },
@@ -144,7 +144,7 @@ export default function Home() {
           <p className="text-white/50 max-w-sm text-sm">Each jar is a mood, engineered. Choose your effect.</p>
         </motion.div>
         {(() => {
-          const order = ["Moon Impact", "Trost", "Cannazo"];
+          const order = ["Trost", "Moon Impact", "Cannazo"];
           const groups = {};
           products.forEach((p) => { (groups[p.brand] = groups[p.brand] || []).push(p); });
           const brands = [...order.filter((b) => groups[b]), ...Object.keys(groups).filter((b) => !order.includes(b))];
@@ -192,6 +192,7 @@ export default function Home() {
                   data-testid={`partner-brand-${b.toLowerCase().replace(/\s+/g, "-")}`}
                   className="py-10 md:py-14 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.03] transition-colors"
                 >
+                  {b === "Trost" && <div className="label text-[#FF2A2A] text-[9px] mb-1">[ First Partner ]</div>}
                   <div className="font-display text-2xl md:text-3xl group-hover:text-[#FF2A2A] transition-colors">{b}</div>
                   <div className="label text-white/30 text-[9px]">View brand →</div>
                 </Link>
@@ -300,84 +301,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* LOCATION */}
-      <section id="location" className="max-w-[1600px] mx-auto px-6 md:px-10 py-24 md:py-32">
-        <div className="grid md:grid-cols-12 gap-10 items-center">
+      {/* TROST STORE — first partner, physical retail endorsement */}
+      <section id="trost-launch" data-testid="trost-launch-section" className="relative border-t border-white/10 py-24 md:py-32 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div
+            className="absolute -top-48 right-[-10%] w-[700px] h-[700px] rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(223,0,0,0.22), transparent 65%)" }}
+          />
+        </div>
+        <div className="relative max-w-[1600px] mx-auto px-6 md:px-10">
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="md:col-span-6 order-2 md:order-1"
           >
-            <div className="label text-[#FF2A2A] mb-6">[ The Flagship ]</div>
-            <h2 className="font-display text-5xl md:text-6xl tracking-tight leading-[0.9] mb-8">
-              Visit us in<br />Bangalore
+            <div className="label text-[#FF2A2A] mb-6">[ First Partner · New Store ]</div>
+            <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9] mb-8">
+              Trost opens<br />its doors.
             </h2>
-            <div className="space-y-6 max-w-md">
-              <div className="border-t border-white/10 pt-5">
-                <div className="label text-white/40 mb-2">Address</div>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=3104%2C+6th+B+Main%2C+HAL+II+Stage%2C+Indiranagar%2C+Bangalore+560008"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-testid="location-address-link"
-                  className="text-lg block transition-colors hover:text-[#FF2A2A]"
-                >
-                  3104, 6th &apos;B&apos; Main, HAL II Stage, Indiranagar, Bangalore 560008
-                </a>
-              </div>
-              <div className="border-t border-white/10 pt-5">
-                <div className="label text-white/40 mb-2">Hours</div>
-                <p className="text-lg">Monday – Sunday / 10:00 – 22:00</p>
-              </div>
-              <div className="border-t border-white/10 pt-5">
-                <div className="label text-white/40 mb-2">Contact</div>
-                <p className="text-lg">
-                  <a
-                    href="mailto:info@cosmoscannabis.in"
-                    data-testid="location-email-link"
-                    className="transition-colors hover:text-[#FF2A2A]"
-                  >
-                    info@cosmoscannabis.in
-                  </a>
-                  <span className="text-white/40"> · </span>
-                  <a
-                    href="tel:+919036947840"
-                    data-testid="location-phone-link"
-                    className="transition-colors hover:text-[#FF2A2A]"
-                  >
-                    +91 90369 47840
-                  </a>
-                </p>
-              </div>
-            </div>
-            <a
-              href="https://www.google.com/maps/search/?api=1&query=3104%2C+6th+B+Main%2C+HAL+II+Stage%2C+Indiranagar%2C+Bangalore+560008"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-testid="get-directions-btn"
-              className="btn-fill mt-8 inline-flex items-center gap-3 px-8 py-4 bg-[#DF0000] text-white label border border-[#DF0000]"
-            >
-              <MapPin className="w-4 h-4" /> Get Directions
-            </a>
-          </motion.div>
+            <p className="text-white/55 max-w-xl leading-relaxed mb-12">
+              Cosmos is an online-only dispensary — and our first partner, Trost, is taking the experience to the street.
+              Their very own store launches in Bangalore tomorrow. Step in, say hello, and explore the Trost universe in person.
+            </p>
 
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="md:col-span-6 order-1 md:order-2"
-          >
-            <div className="group relative overflow-hidden aspect-[16/10] rounded-sm ring-1 ring-white/5 transition-all duration-700 hover:ring-[#FF2A2A]/40 hover:shadow-[0_0_60px_-10px_rgba(255,42,42,0.55)]" data-testid="store-exterior">
-              <img
-                src="/brand-assets/store/storefront.jpg"
-                alt="Cosmos Cannabis Cure storefront exterior"
-                className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-              />
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_45%,rgba(255,190,120,0.28),transparent_45%)]" />
+            <div className="grid sm:grid-cols-2 gap-px bg-white/10 border border-white/10 max-w-2xl mb-12">
+              <div className="bg-[#050507] p-6 md:p-8">
+                <div className="label text-white/40 mb-2">Opening Day</div>
+                <div className="font-display text-2xl md:text-3xl leading-tight">Saturday,<br />12 September 2026</div>
+              </div>
+              <div className="bg-[#050507] p-6 md:p-8">
+                <div className="label text-white/40 mb-2">Location</div>
+                <div className="font-display text-2xl md:text-3xl leading-tight">Richmond Town,<br />Bangalore</div>
+              </div>
             </div>
+
+            <div className="flex flex-wrap gap-4">
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Richmond+Town,+Bangalore"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="trost-launch-directions-btn"
+                className="btn-fill inline-flex items-center gap-3 px-8 py-4 bg-[#DF0000] text-white label border border-[#DF0000]"
+              >
+                <MapPin className="w-4 h-4" /> Visit the Store
+              </a>
+              <Link
+                to="/brand/trost"
+                data-testid="trost-launch-brand-btn"
+                className="btn-fill inline-flex items-center gap-3 px-8 py-4 border border-white/25 hover:border-white/60 label transition-colors"
+              >
+                Explore Trost <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <p className="label text-white/30 text-[10px] mt-10">Cosmos remains online-only — every order ships discreetly to your door.</p>
           </motion.div>
         </div>
       </section>

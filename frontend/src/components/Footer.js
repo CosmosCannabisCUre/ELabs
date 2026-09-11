@@ -22,18 +22,19 @@ export default function Footer() {
               <li><Link to="/passport" data-testid="footer-passport-link" className="hover:text-[#DF0000] transition-colors">COSMOS Passport</Link></li>
               <li><Link to="/journal" className="hover:text-[#DF0000] transition-colors">Journal</Link></li>
               <li><a href="/#manifesto" className="hover:text-[#DF0000] transition-colors">Manifesto</a></li>
-              <li><a href="/#location" className="hover:text-[#DF0000] transition-colors">Location</a></li>
+              <li><a href="/#trost-launch" className="hover:text-[#DF0000] transition-colors">Trost Store</a></li>
               <li><Link to="/legal" data-testid="footer-legal-link" className="hover:text-[#DF0000] transition-colors">Legal &amp; Compliance</Link></li>
             </ul>
           </div>
           <div className="md:col-span-3">
-            <div className="label text-white/40 mb-5">Visit</div>
+            <div className="label text-white/40 mb-5">Contact</div>
             <p className="text-sm text-white/70 leading-relaxed">
-              3104, 6th 'B' Main<br />
-              HAL II Stage, Indiranagar<br />
-              Bangalore 560008<br /><br />
-              +91 90369 47840<br />
-              Mon–Sun / 10:00 – 22:00
+              Online-only dispensary —<br />
+              we deliver to your door.<br /><br />
+              info@cosmoscannabis.in<br />
+              +91 90369 47840<br /><br />
+              <span className="text-white/40">Partner store:</span><br />
+              Trost — Richmond Town, Bangalore
             </p>
           </div>
         </div>

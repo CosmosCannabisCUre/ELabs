@@ -10,7 +10,9 @@ export default function Shop() {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
   }, []);
 
-  const brands = ["All", ...Array.from(new Set(products.map((p) => p.brand)))];
+  const BRAND_ORDER = ["Trost", "Moon Impact", "Cannazo"];
+  const present = Array.from(new Set(products.map((p) => p.brand)));
+  const brands = ["All", ...BRAND_ORDER.filter((b) => present.includes(b)), ...present.filter((b) => !BRAND_ORDER.includes(b))];
   const shown = filter === "All" ? products : products.filter((p) => p.brand === filter);
 
   return (

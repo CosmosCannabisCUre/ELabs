@@ -160,3 +160,13 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 - Product images: kept the real brand packaging (Moon Impact / Trost / Cannazo) and enhanced presentation with a soft studio drop-shadow (.product-media in index.css, tuned per theme) on shop cards and cart so packs lift off the page. ProductDetail already had a shadow.
 - Shop page copy: "Four partner brands" -> "Three partner brands".
 - Deployment hardening (deployment_agent PASS): removed destructive delete_many from startup; product seeding now uses $setOnInsert (preserves admin edits, only inserts missing); retired brands (Rasta) hidden non-destructively via RETIRED_BRANDS $nin filter on GET /api/products and /api/products/{slug}. Backend healthy (200, 9 products, no Rasta).
+
+
+## Update (2026-09) — Permanent Dark Theme (Light Mode Removed)
+- Per user request, reverted to the original always-dark "cosmos" template: deleted context/ThemeContext.js, removed ThemeProvider from App.js, removed the navbar sun/moon toggle, removed all `.theme-light` overrides from index.css, and the navbar now always uses the light-on-dark seal (cosmos-seal.png). Sonner toaster set to dark. Verified by testing_agent (iteration_11.json) — body bg #050507 everywhere, no theme toggle present.
+
+## Update (2026-09) — Trost First Partner + Store Launch + Online-Only Pivot
+- Trost is now the FIRST partner site-wide: order arrays in Home.js (PARTNERS + featured grid) and Shop.js (BRAND_ORDER) lead with Trost; Trost's partner card carries a red "[ First Partner ]" tag.
+- Trost store launch announcement (their OWN new physical store, Sat 12 Sep 2026, Richmond Town, Bangalore): slim red announcement bar pinned under the navbar (data-testid announcement-bar, links /#trost-launch) + dedicated homepage section (id/data-testid trost-launch) with Opening Day / Location cards, "Visit the Store" (Google Maps Richmond Town) + "Explore Trost" (/brand/trost) buttons.
+- Cosmos physical-store presence REMOVED (business is online-only e-commerce): homepage Location/Flagship section (Indiranagar address, hours, Get Directions, storefront.jpg) deleted; navbar "Location" → "Store" (/#trost-launch); footer "Location" explore link → "Trost Store"; footer "Visit" column → "Contact" (online-only note, email/phone, partner-store line); LaunchCountdown post-launch text now "Shop the collection online — we deliver across Bangalore."
+- Verified by testing_agent (iteration_12.json) — all 9 criteria PASS, no console errors.

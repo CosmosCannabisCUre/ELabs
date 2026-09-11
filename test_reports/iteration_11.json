@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend regression test after removing Light/Dark theme feature. Verified permanent dark theme, no theme toggle, logo rendering, all key pages, and no console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verification_results": {
+    "body_bg_all_pages": "rgb(5, 5, 7) confirmed on /, /shop, /journal, /passport, /cart, /checkout, /product/:slug",
+    "theme_toggle_absent_desktop": true,
+    "theme_toggle_absent_mobile_menu": true,
+    "navbar_logo_top": "/brand-assets/logos/cosmos-seal.png",
+    "navbar_logo_scrolled": "/brand-assets/logos/cosmos-seal.png (nav-scrolled class applied)",
+    "age_gate_works": true,
+    "countdown_popup_closes": true,
+    "console_errors": 0,
+    "product_detail_renders_dark": true
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "App.js line 74-78: outer Routes wraps Site which has its own inner Routes — works but slightly redundant; not blocking.",
+    "Navbar links use raw <a href='/#manifesto'> which triggers full page navigation from other routes; consider react-router HashLink for smooth in-app scroll (pre-existing, not related to this change)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Light/dark theme regression fully verified. ThemeContext.js deleted, ThemeProvider removed from App.js, no theme-toggle testid anywhere, Sonner Toaster theme='dark', body permanently rgb(5,5,7). Safe to move on."
+}

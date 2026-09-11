@@ -112,7 +112,7 @@ export default function LaunchCountdown({ onClose }) {
               </h2>
               <p className="text-white/50 text-sm max-w-md mx-auto mb-10 leading-relaxed">
                 {t.done
-                  ? "The doors are open. Visit us in Indiranagar, Bangalore."
+                  ? "The doors are open. Shop the collection online — we deliver across Bangalore."
                   : "India's first premium cannabis dispensary is almost here. Be the first through the doors."}
               </p>
 

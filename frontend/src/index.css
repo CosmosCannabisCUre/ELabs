@@ -321,69 +321,7 @@ body::after {
     * { @apply border-border; }
 }
 
-/* ============================================================
-   LIGHT / DAY THEME  (activated via <html class="theme-light">)
-   Warm cream palette with deep-red + green accents.
-   ============================================================ */
-html.theme-light,
-html.theme-light body {
-    background: #FFFFFF;
-    color: #111111;
-}
-html.theme-light body::before {
-    background:
-        radial-gradient(1200px 600px at 80% -5%, rgba(223, 0, 0, 0.10), transparent 60%),
-        radial-gradient(900px 500px at 10% 110%, rgba(0,0,0,0.04), transparent 60%),
-        #FFFFFF;
-}
-html.theme-light body::after { opacity: 0.10; filter: invert(1); }
-
-/* Backgrounds */
-.theme-light .bg-\[\#050507\] { background-color: #FFFFFF !important; }
-.theme-light .bg-\[\#050507\]\/90 { background-color: rgba(244,238,225,0.92) !important; }
-.theme-light .bg-\[\#0A0A0A\],
-.theme-light .bg-\[\#0A0A0C\],
-.theme-light .bg-\[\#08080B\],
-.theme-light .bg-\[\#0f0f14\] { background-color: #F2F2F2 !important; }
-.theme-light .bg-white\/5 { background-color: rgba(17,17,17,0.05) !important; }
-.theme-light .bg-white\/\[0\.03\] { background-color: rgba(17,17,17,0.035) !important; }
-
-/* Text: white -> warm ink */
-.theme-light .text-white { color: #111111 !important; }
-.theme-light .text-white\/70 { color: rgba(17,17,17,0.72) !important; }
-.theme-light .text-white\/60 { color: rgba(17,17,17,0.64) !important; }
-.theme-light .text-white\/55 { color: rgba(17,17,17,0.60) !important; }
-.theme-light .text-white\/50 { color: rgba(17,17,17,0.56) !important; }
-.theme-light .text-white\/45 { color: rgba(17,17,17,0.52) !important; }
-.theme-light .text-white\/40 { color: rgba(17,17,17,0.50) !important; }
-.theme-light .text-white\/35 { color: rgba(17,17,17,0.46) !important; }
-.theme-light .text-white\/30 { color: rgba(17,17,17,0.42) !important; }
-.theme-light .text-white\/20 { color: rgba(17,17,17,0.32) !important; }
-
-/* Borders: white -> ink */
-.theme-light .border-white,
-.theme-light .border-white\/10 { border-color: rgba(17,17,17,0.14) !important; }
-.theme-light .border-white\/5 { border-color: rgba(17,17,17,0.08) !important; }
-.theme-light .border-white\/15 { border-color: rgba(17,17,17,0.18) !important; }
-
-/* Keep red controls readable: white text on red stays white */
-.theme-light .bg-\[\#DF0000\],
-.theme-light .bg-\[\#DF0000\] .text-white { color: #ffffff !important; }
-.theme-light .text-white\/85 { color: rgba(17,17,17,0.85) !important; }
-.theme-light .text-white\/25 { color: rgba(17,17,17,0.38) !important; }
-
-/* Hero: soften the dark nebula photo, dim starfield & comets */
-.theme-light .hero-nebula-img { opacity: 0.16; mix-blend-mode: multiply; }
-.theme-light .twinkle-layer { opacity: 0.12 !important; }
-.theme-light .shooting-star { opacity: 0.25; }
-.theme-light .marquee-outline { -webkit-text-stroke: 1px rgba(17,17,17,0.4); }
-
-/* Smooth theme transition */
-html.theme-light body,
-.theme-light .bg-\[\#050507\],
-.theme-light .bg-\[\#0A0A0A\] { transition: background-color 0.5s ease, color 0.5s ease; }
-
-/* Scrolled navbar: always a dark glass shade (both themes) with light content */
+/* Scrolled navbar: dark glass shade with light content */
 .nav-scrolled {
     background-color: rgba(8, 8, 10, 0.88);
     color: #ffffff;
@@ -394,4 +332,3 @@ html.theme-light body,
 
 /* Product packs: soft studio drop-shadow so they lift off the page */
 .product-media { filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.55)); }
-.theme-light .product-media { filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.20)); }
