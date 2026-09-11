@@ -24,7 +24,7 @@ export default function Cart() {
               {items.map((i) => (
                 <div key={i.product_id} data-testid={`cart-item-${i.product_id}`} className="flex gap-6 py-6 border-b border-white/10">
                   <div className="w-24 h-28 overflow-hidden shrink-0">
-                    <img src={i.image} alt={i.name} className="w-full h-full object-contain" />
+                    <img src={i.image} alt={i.name} className="product-media w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">

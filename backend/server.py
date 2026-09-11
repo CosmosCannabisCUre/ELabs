@@ -298,15 +298,18 @@ async def me(admin: dict = Depends(get_current_admin)):
 
 
 # ---------------- Product routes ----------------
+RETIRED_BRANDS = ["Rasta", "Rastafari", "Rastafari Wellness"]
+
+
 @api_router.get("/products")
 async def list_products():
-    docs = await db.products.find().to_list(200)
+    docs = await db.products.find({"brand": {"$nin": RETIRED_BRANDS}}).to_list(200)
     return [clean(d) for d in docs]
 
 
 @api_router.get("/products/{slug}")
 async def get_product(slug: str):
-    doc = await db.products.find_one({"slug": slug})
+    doc = await db.products.find_one({"slug": slug, "brand": {"$nin": RETIRED_BRANDS}})
     if not doc:
         raise HTTPException(status_code=404, detail="Product not found")
     return clean(doc)
@@ -1042,9 +1045,7 @@ async def startup():
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
 
     for p in SEED_PRODUCTS:
-        await db.products.update_one({"slug": p["slug"]}, {"$set": p}, upsert=True)
-    await db.products.delete_many({"slug": {"$in": ["moon-impact", "trost", "cannoza", "rasta", "rasta-hybrid-cubes", "rasta-strawberry-3-5", "rasta-orange-5", "rasta-mango-5", "rasta-kala-khatta-5", "rasta-cappuccino-5"]}})
-    await db.products.delete_many({"brand": {"$in": ["Rasta", "Rastafari", "Rastafari Wellness"]}})
+        await db.products.update_one({"slug": p["slug"]}, {"$setOnInsert": p}, upsert=True)
     for b in SEED_BLOG:
         await db.blog.update_one({"slug": b["slug"]}, {"$setOnInsert": b}, upsert=True)
 

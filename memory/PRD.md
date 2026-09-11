@@ -155,3 +155,8 @@ admin@cosmoscure.in / Cosmos@2026 (also in /app/memory/test_credentials.md)
 
 ## Update (2026) — Scrolled Navbar Shade Fix
 - Fixed reported bug: in light mode the sticky navbar background was cream when scrolled. Added a dedicated `.nav-scrolled` class (rgba(8,8,10,0.88) dark glass + white text + light border + blur) applied in BOTH themes; navbar logo swaps to the light seal whenever scrolled or in dark theme. Verified 100% pass by testing_agent (iteration_10.json) across light/dark at top and scrolled.
+
+## Update (2026) — Product Image Polish + Deployment Readiness
+- Product images: kept the real brand packaging (Moon Impact / Trost / Cannazo) and enhanced presentation with a soft studio drop-shadow (.product-media in index.css, tuned per theme) on shop cards and cart so packs lift off the page. ProductDetail already had a shadow.
+- Shop page copy: "Four partner brands" -> "Three partner brands".
+- Deployment hardening (deployment_agent PASS): removed destructive delete_many from startup; product seeding now uses $setOnInsert (preserves admin edits, only inserts missing); retired brands (Rasta) hidden non-destructively via RETIRED_BRANDS $nin filter on GET /api/products and /api/products/{slug}. Backend healthy (200, 9 products, no Rasta).

@@ -18,7 +18,7 @@ export default function Shop() {
       <div className="max-w-[1600px] mx-auto px-6 md:px-10">
         <div className="label text-[#FF2A2A] mb-4">[ Shop All ]</div>
         <h1 className="font-display text-6xl md:text-8xl tracking-tight leading-[0.85] mb-4">The Collection</h1>
-        <p className="text-white/50 max-w-lg mb-12">Four partner brands. One curated dispensary. Filter by house below.</p>
+        <p className="text-white/50 max-w-lg mb-12">Three partner brands. One curated dispensary. Filter by house below.</p>
 
         <div className="flex flex-wrap gap-3 mb-16 border-t border-white/10 pt-8">
           {brands.map((e) => (
