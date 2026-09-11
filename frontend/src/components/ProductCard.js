@@ -22,6 +22,9 @@ export default function ProductCard({ product, index = 0 }) {
             className="product-media relative z-10 w-full h-full object-contain p-6 transition-transform duration-[900ms] ease-out group-hover:scale-105"
           />
           <span className="absolute top-4 left-4 label bg-white text-black px-2 py-1">{product.effect}</span>
+          {product.bestseller && (
+            <span data-testid={`bestseller-badge-${product.slug}`} className="absolute top-4 right-4 label text-[9px] border border-[#DF0000]/70 text-[#FF2A2A] bg-black/60 backdrop-blur-sm px-2 py-1">Bestseller</span>
+          )}
         </div>
         <div className="flex items-baseline justify-between mt-5">
           <div>

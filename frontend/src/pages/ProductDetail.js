@@ -91,7 +91,12 @@ export default function ProductDetail() {
               {product.name}
             </motion.h1>
             <p className="text-xl text-white/50 mt-3 mb-2">{product.tagline}</p>
-            <div className="label text-white/35 mb-6">A Cosmos Partner Brand · {product.effect}</div>
+            <div className="label text-white/35 mb-6 flex items-center gap-3 flex-wrap">
+              <span>A Cosmos Partner Brand · {product.category || "Gummies"}</span>
+              {product.bestseller && (
+                <span data-testid="product-bestseller-badge" className="text-[9px] border border-[#DF0000]/70 text-[#FF2A2A] px-2 py-1">Bestseller</span>
+              )}
+            </div>
             <div className="font-mono text-2xl mb-8">{formatINR(product.price)}</div>
             <p className="text-white/70 leading-relaxed max-w-md mb-10">{product.description}</p>
 

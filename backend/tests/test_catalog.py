@@ -110,3 +110,54 @@ def test_admin_login_and_products():
     if r2.status_code == 404:
         pytest.skip("No /api/admin/products endpoint")
     assert r2.status_code == 200, r2.text
+
+
+# ============ Iteration 14: Categories, Bestsellers, Image Overhaul ============
+
+EXPECTED_CATEGORY_COUNTS = {
+    "Gummies": 15,
+    "Oils & Drops": 8,
+    "Smokes": 4,
+    "Kits & Combos": 4,
+    "Tablets & Capsules": 3,
+    "Topicals": 2,
+    "Pet Care": 1,
+}
+
+EXPECTED_BESTSELLERS = {
+    "moon-impact-stellardust",
+    "trost-mello-13-blueberry",
+    "cannazo-uplift-mango",
+    "cannazo-revive-roll-on",
+}
+
+
+def test_all_products_have_category(products):
+    missing = [p["slug"] for p in products if not p.get("category")]
+    assert not missing, f"Products missing category: {missing}"
+
+
+def test_category_counts(products):
+    from collections import Counter
+    counts = Counter(p.get("category") for p in products)
+    for cat, n in EXPECTED_CATEGORY_COUNTS.items():
+        assert counts.get(cat) == n, f"{cat}: expected {n}, got {counts.get(cat)}"
+
+
+def test_bestseller_flags(products):
+    bs = {p["slug"] for p in products if p.get("bestseller")}
+    assert bs == EXPECTED_BESTSELLERS, f"bestsellers mismatch: {bs}"
+
+
+def test_all_images_local(products):
+    bad = [(p["slug"], p.get("image")) for p in products
+           if not (p.get("image") or "").startswith("/brand-assets/")]
+    assert not bad, f"Non-local images: {bad}"
+
+
+def test_cannazo_revive_roll_on_detail():
+    r = requests.get(f"{API}/products/cannazo-revive-roll-on", timeout=15)
+    assert r.status_code == 200
+    d = r.json()
+    assert d.get("category") == "Topicals"
+    assert d.get("bestseller") is True

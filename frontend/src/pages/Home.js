@@ -5,6 +5,7 @@ import Marquee from "react-fast-marquee";
 import { ArrowUpRight, MapPin, Cannabis } from "lucide-react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
+import { isTrostLaunched } from "@/lib/trost";
 
 const PARTNERS = ["Trost", "Moon Impact", "Cannazo"];
 
@@ -34,6 +35,7 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [posts, setPosts] = useState([]);
   const [hovered, setHovered] = useState(null);
+  const launched = isTrostLaunched();
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const starsY = useTransform(scrollYProgress, [0, 1], [0, 120]);
@@ -316,18 +318,19 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="label text-[#FF2A2A] mb-6">[ First Partner · New Store ]</div>
+            <div className="label text-[#FF2A2A] mb-6">{launched ? "[ First Partner · Now Open ]" : "[ First Partner · New Store ]"}</div>
             <h2 className="font-display text-5xl md:text-7xl tracking-tight leading-[0.9] mb-8">
-              Trost opens<br />its doors.
+              {launched ? <>Trost is<br />now open.</> : <>Trost opens<br />its doors.</>}
             </h2>
             <p className="text-white/55 max-w-xl leading-relaxed mb-12">
-              Cosmos is an online-only dispensary — and our first partner, Trost, is taking the experience to the street.
-              Their very own store launches in Bangalore tomorrow. Step in, say hello, and explore the Trost universe in person.
+              {launched
+                ? "Cosmos is an online-only dispensary — and our first partner, Trost, has taken the experience to the street. Their very own store is now open in Richmond Town. Step in, say hello, and explore the Trost universe in person."
+                : "Cosmos is an online-only dispensary — and our first partner, Trost, is taking the experience to the street. Their very own store launches in Bangalore tomorrow. Step in, say hello, and explore the Trost universe in person."}
             </p>
 
             <div className="grid sm:grid-cols-2 gap-px bg-white/10 border border-white/10 max-w-2xl mb-12">
               <div className="bg-[#050507] p-6 md:p-8">
-                <div className="label text-white/40 mb-2">Opening Day</div>
+                <div className="label text-white/40 mb-2">{launched ? "Opened" : "Opening Day"}</div>
                 <div className="font-display text-2xl md:text-3xl leading-tight">Saturday,<br />12 September 2026</div>
               </div>
               <div className="bg-[#050507] p-6 md:p-8">
@@ -345,7 +348,7 @@ export default function Home() {
                 data-testid="trost-launch-directions-btn"
                 className="btn-fill inline-flex items-center gap-3 px-8 py-4 bg-[#DF0000] text-white label border border-[#DF0000]"
               >
-                <MapPin className="w-4 h-4" /> Visit the Store
+                <MapPin className="w-4 h-4" /> {launched ? "Get Directions" : "Visit the Store"}
               </a>
               <Link
                 to="/brand/trost"

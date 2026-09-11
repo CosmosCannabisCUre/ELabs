@@ -155,6 +155,8 @@ class ProductCreate(BaseModel):
     image: str
     stock: int = 100
     featured: bool = True
+    category: str = "Gummies"
+    bestseller: bool = False
 
 
 class OrderItem(BaseModel):
@@ -302,6 +304,68 @@ RETIRED_BRANDS = ["Rasta", "Rastafari", "Rastafari Wellness"]
 # Slugs hidden non-destructively (kept in DB for order history, never listed)
 HIDDEN_SLUGS = ["moon-impact-drift", "trost-mello-5-cola"]
 PRODUCT_FILTER = {"brand": {"$nin": RETIRED_BRANDS}, "slug": {"$nin": HIDDEN_SLUGS}}
+
+# Product type taxonomy + editorial bestseller picks + local studio cutouts.
+# Applied to the DB at startup via non-destructive $set (idempotent).
+CATEGORY_BY_SLUG = {
+    # Gummies
+    "moon-impact-stellardust": "Gummies",
+    "moon-impact-mission-brief": "Gummies",
+    "trost-mello-13-blueberry": "Gummies",
+    "trost-kosha-13-berry-blast": "Gummies",
+    "trost-kosha-5-cola": "Gummies",
+    "trost-mello-9-blueberry": "Gummies",
+    "trost-mello-13-cola": "Gummies",
+    "trost-mello-9-cola": "Gummies",
+    "trost-kosha-9-cola": "Gummies",
+    "trost-kosha-7-cola": "Gummies",
+    "cannazo-uplift-mango": "Gummies",
+    "cannazo-uplift-cola": "Gummies",
+    "cannazo-uplift-blackcurrant": "Gummies",
+    "cannazo-uplift-citrus-lemon": "Gummies",
+    "cannazo-uplift-craft-cola-250": "Gummies",
+    # Oils & Drops
+    "cannazo-uplift-drops": "Oils & Drops",
+    "cannazo-vijaya-amrit": "Oils & Drops",
+    "cannazo-ambrosia-drops": "Oils & Drops",
+    "cannazo-placidiol": "Oils & Drops",
+    "cannazo-elevate-recovery-oil": "Oils & Drops",
+    "cannazo-brain-easer": "Oils & Drops",
+    "cannazo-calm-drops": "Oils & Drops",
+    "cannazo-cannaronil-rso": "Oils & Drops",
+    # Tablets & Capsules
+    "cannazo-elevate-tablets": "Tablets & Capsules",
+    "cannazo-elevate-capsules": "Tablets & Capsules",
+    "cannazo-berberine": "Tablets & Capsules",
+    # Topicals
+    "cannazo-revive-roll-on": "Topicals",
+    "cannazo-orthodiol-spray": "Topicals",
+    # Kits & Combos
+    "cannazo-pain-relief-combo": "Kits & Combos",
+    "cannazo-uplift-unwind-kit": "Kits & Combos",
+    "cannazo-mental-health-duo": "Kits & Combos",
+    "cannazo-mood-elevating-kit": "Kits & Combos",
+    # Smokes
+    "trost-rollen-earthy": "Smokes",
+    "trost-rollen-woody": "Smokes",
+    "trost-rollen-fruity": "Smokes",
+    "trost-boom": "Smokes",
+    # Pet Care
+    "cannazo-pet-oil": "Pet Care",
+}
+
+BESTSELLER_SLUGS = ["moon-impact-stellardust", "trost-mello-13-blueberry", "cannazo-uplift-mango", "cannazo-revive-roll-on"]
+
+# Products whose brand-CDN photo is replaced by a local studio cutout (/brand-assets/cutout/<slug>.png)
+CUTOUT_SLUGS = [
+    "trost-mello-9-blueberry", "trost-mello-13-cola", "trost-mello-9-cola", "trost-kosha-9-cola", "trost-kosha-7-cola",
+    "trost-kosha-5-cola", "trost-rollen-earthy", "trost-rollen-woody", "trost-rollen-fruity", "trost-boom",
+    "cannazo-uplift-citrus-lemon", "cannazo-uplift-craft-cola-250", "cannazo-uplift-drops", "cannazo-elevate-tablets",
+    "cannazo-pain-relief-combo", "cannazo-uplift-unwind-kit", "cannazo-revive-roll-on", "cannazo-mental-health-duo",
+    "cannazo-mood-elevating-kit", "cannazo-vijaya-amrit", "cannazo-ambrosia-drops", "cannazo-berberine",
+    "cannazo-placidiol", "cannazo-pet-oil", "cannazo-orthodiol-spray", "cannazo-elevate-capsules",
+    "cannazo-elevate-recovery-oil", "cannazo-cannaronil-rso", "cannazo-brain-easer", "cannazo-calm-drops",
+]
 
 
 @api_router.get("/products")
@@ -1474,8 +1538,14 @@ async def startup():
     for b in SEED_BLOG:
         await db.blog.update_one({"slug": b["slug"]}, {"$setOnInsert": b}, upsert=True)
 
-    # One-off field corrections for pre-existing docs (non-destructive; $setOnInsert above won't update them)
+    # Catalog field sync for seeded products (non-destructive $set; runs every startup, idempotent)
     await db.products.update_one({"slug": "cannazo-uplift-blackcurrant"}, {"$set": {"price": 2599}})
+    for slug, cat in CATEGORY_BY_SLUG.items():
+        await db.products.update_one({"slug": slug}, {"$set": {"category": cat}})
+    for slug in BESTSELLER_SLUGS:
+        await db.products.update_one({"slug": slug}, {"$set": {"bestseller": True}})
+    for slug in CUTOUT_SLUGS:
+        await db.products.update_one({"slug": slug}, {"$set": {"image": f"/brand-assets/cutout/{slug}.png"}})
 
     asyncio.create_task(_renewal_reminder_loop())
 

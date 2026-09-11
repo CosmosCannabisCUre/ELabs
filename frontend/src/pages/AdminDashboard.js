@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/select";
 
 const STATUSES = ["awaiting_consultation", "confirmed", "processing", "shipped", "delivered", "cancelled", "pending"];
-const EMPTY = { slug: "", name: "", tagline: "", description: "", price: 0, thc: "10mg", cbd: "0mg", effect: "Balance", flavor: "Berry", image: "", stock: 100, featured: true };
+const EMPTY = { slug: "", name: "", tagline: "", description: "", price: 0, thc: "10mg", cbd: "0mg", effect: "Balance", flavor: "Berry", image: "", stock: 100, featured: true, category: "Gummies", bestseller: false };
+const CATEGORIES = ["Gummies", "Oils & Drops", "Tablets & Capsules", "Topicals", "Kits & Combos", "Smokes", "Pet Care"];
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState("queue");
@@ -373,6 +374,21 @@ export default function AdminDashboard() {
                   className="w-full border border-[#0A0A0A]/20 focus:border-[#0A0A0A] outline-none px-3 py-2 font-mono text-sm" />
               </div>
             ))}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="label block mb-1">Category</label>
+                <select data-testid="product-field-category" value={form.category || "Gummies"} onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  className="w-full border border-[#0A0A0A]/20 focus:border-[#0A0A0A] outline-none px-3 py-2 font-mono text-sm bg-white">
+                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="flex items-end pb-2">
+                <label className="flex items-center gap-2 label cursor-pointer">
+                  <input type="checkbox" data-testid="product-field-bestseller" checked={!!form.bestseller} onChange={(e) => setForm({ ...form, bestseller: e.target.checked })} className="w-4 h-4 accent-[#DF0000]" />
+                  Bestseller
+                </label>
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className="label block mb-1">Price (₹)</label><input type="number" required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border border-[#0A0A0A]/20 outline-none px-3 py-2 font-mono text-sm" /></div>
               <div><label className="label block mb-1">Stock</label><input type="number" required value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full border border-[#0A0A0A]/20 outline-none px-3 py-2 font-mono text-sm" /></div>

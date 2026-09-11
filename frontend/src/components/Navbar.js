@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { isTrostLaunched } from "@/lib/trost";
 
 export default function Navbar() {
   const { count } = useCart();
@@ -69,7 +70,9 @@ export default function Navbar() {
         data-testid="announcement-bar"
         className="block bg-[#DF0000] hover:bg-[#b80000] transition-colors text-white text-center py-2 px-4 label text-[9px] md:text-[10px] tracking-[0.18em]"
       >
-        Trost opens its own store tomorrow — Saturday, 12 September 2026 · Richmond Town, Bangalore →
+        {isTrostLaunched()
+          ? "Trost's new store is now open — 18, Convent Road, Richmond Town · 12 PM – 10 PM →"
+          : "Trost opens its own store tomorrow — Saturday, 12 September 2026 · Richmond Town, Bangalore →"}
       </a>
 
       {open && (
